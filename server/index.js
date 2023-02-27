@@ -21,6 +21,16 @@ database.exec(fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8"));
 app.get("/", (req, res) => {
     res.send("Hello World!");
 });
+
+app.post("/api/createUser", (req, res) => {
+    const { username, email, password } = req.body;
+    const stmt = database.prepare(
+        "INSERT INTO user (username, email, password) VALUES (?, ?, ?)"
+    );
+    const info = stmt.run(username, email, password);
+    res.send(info);
+});
+
 app.listen(3001, () => {
     console.log("Server running on port 3001");
 });
