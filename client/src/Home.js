@@ -5,7 +5,7 @@ import Navbar from "./Navbar";
 class Home extends React.Component {
     render() {
         return (
-            <div>
+            <div id="pageContainer">
                 <h1> Hello World </h1>
             </div>
         );

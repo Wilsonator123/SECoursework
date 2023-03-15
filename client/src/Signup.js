@@ -1,6 +1,6 @@
 export default function Home() {
     return (
-        <div>
+        <div id="pageContainer">
             <h1> SIGN UP PAGE </h1>
         </div>
     );
