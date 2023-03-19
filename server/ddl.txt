@@ -1,27 +1,12 @@
 CREATE TABLE IF NOT EXISTS 'group'(
     id INT PRIMARY KEY AUTOINCREMENT,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    img VARCHAR(255),
-    
+    name VARCHAR(255) NOT NULL unique,
 )
 
-CREATE TABLE IF NOT EXISTS 'groupGoal'(
-    id INT PRIMARY KEYAUTOINCREMENT,
-    group_id INT NOT NULL,
-    goalType VARCHAR(255) NOT NULL,
-    current INT NOT NULL,
-    target INT,
-    timeLimit INT,
-    notes TEXT,
-    
-    FOREIGN KEY (group_id) REFERENCES group(id) ON DELETE CASCADE ON UPDATE CASCADE
-)
 
 CREATE OR TABLE IF NOT EXISTS 'groupUser'(
-    id INT PRIMARY KEY AUTOINCREMENT,
-    group_id INT NOT NULL,
-    user_id INT NOT NULL,
+    group_id INT NOT NULL PRIMARY KEY,
+    user_id INT NOT NULL PRIMARY KEY,
     PRIMARY KEY (id),
     FOREIGN KEY (group_id) REFERENCES group(id) ON DELETE CASCADE ON UPDATE CASCADE, 
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
