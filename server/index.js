@@ -1,3 +1,4 @@
+/*************************IMPORTS******************************/
 const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
@@ -6,15 +7,10 @@ const dB = require("better-sqlite3");
 const fs = require("fs");
 const cors = require("cors");
 const multer = require("multer");
+const { checkEmailFormat } = require("./interface.js");
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, "../client/public/images/");
-    },
-    filename: function (req, file, cb) {
-        cb(null, req.body.username + "pp.png");
-    },
-});
+/*************************MIDDLEWARE******************************/
+
 app.use(cors({ origin: true, credentials: true }));
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -23,6 +19,17 @@ app.use((req, res, next) => {
     next();
 });
 app.use(bodyParser.json());
+
+/*************************DATABASE TINGS******************************/
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "../client/public/images/");
+    },
+    filename: function (req, file, cb) {
+        cb(null, req.body.username + "pp.png");
+    },
+});
+
 const upload = multer({ storage });
 const database = new dB("database.db", { verbose: console.log });
 /**
@@ -43,7 +50,7 @@ app.get("/", (req, res) => {
 /*************************LOG IN PAGE******************************/
 
 app.post("/api/checkEmail", (req, res) => {
-    // if (!checkEmail(req.params.email, res)) res.send(false);
+    if (!checkEmailFormat(req.params.email)) res.send(false);
     const stmt = database.prepare("SELECT * FROM user WHERE email = ?");
     const info = stmt.all(req.body.email);
     info.length === 0 ? res.send(true) : res.send(false);
