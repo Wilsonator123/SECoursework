@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 //Create a general form CSS file!
 
-
-
 function AccountCreation() {
-
     //Used to push the user to the home page on a valid account creation
     const navigate = useNavigate();
 
@@ -14,49 +11,45 @@ function AccountCreation() {
     const [form, setForm] = useState({
         username: "",
         firstname: "",
-        surname: "",
+        lastname: "",
         email: "",
         password: "",
-
 
         gender: "",
         dob: "",
         height: "",
         weight: "",
-        idealweight: ""
+        tweight: "",
     });
 
-
-    //Handles submission of a new account - will need a 
+    //Handles submission of a new account - will need a
     // createUser method for this!
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log(form);
         fetch("http://localhost:3001/api/createUser", {
             method: "POST",
+            body: JSON.stringify(form),
             headers: {
                 "Content-Type": "application/json",
             },
 
             //Will need to change the body here as it's not just string stuff!
-            body: JSON.stringify(form),
         })
             .then((response) => response.json())
 
             .then((data) => {
                 console.log("Successful Account Creation");
-                
-                //May need to be updated to another page
-                navigate('http://localhost:3001/home');
 
+                //May need to be updated to another page
+                if (data) {
+                    navigate("/diet");
+                }
             })
             .catch((error) => {
                 console.error("Error:", error);
             });
     };
-
-
-
 
     //Handles updates to all of the data in the form
     const handleChange = (event) => {
@@ -65,10 +58,6 @@ function AccountCreation() {
             [event.target.name]: event.target.value,
         });
     };
-
-
-
-
 
     //Checks if email is unique after a user
     //clicks OFF the email part of the form - need a checkEmail backend function
@@ -83,18 +72,18 @@ function AccountCreation() {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(form.email),
+            body: JSON.stringify({ email: form.email }),
         })
             .then((response) => response.json())
 
-
             //Check if this is correct? Will need to be updated to notify user
             .then((data) => {
-                if (data.valid){
+                if (data) {
                     console.log("Unique and valid email:", form.email);
-                }
-                else {
-                    console.log("Invalid email:", form.email)
+                } else {
+                    alert(form.email + " is already in use!");
+                    console.log("Invalid email:", form.email);
+                    // setState = { email: undefined };
                 }
             })
 
@@ -103,160 +92,171 @@ function AccountCreation() {
             });
     };
 
-
-
-
-
-        //Checks if username is unique - need a checkUsername backend function
-        const checkUsername = (event) => {
-            event.preventDefault();
-            console.log(form.username);
-            fetch("http://localhost:3001/api/checkUsername", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(form.username),
+    //Checks if username is unique - need a checkUsername backend function
+    const checkUsername = (event) => {
+        event.preventDefault();
+        console.log(form.username);
+        fetch("http://localhost:3001/api/checkUsername", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(form.username),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.valid) {
+                    console.log("Unique username: ", form.username);
+                } else {
+                    console.log("Invalid username: ", form.username);
+                }
             })
-
-
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.valid){
-                        console.log("Unique username: ", form.username);
-                    } else {
-                        console.log("Invalid username: ", form.username);
-                    }
-                })
-                .catch((error) => {
-                    console.error("Invalid username:", error);
-                });
-        };
-
-
-
-
-
-
-
-
+            .catch((error) => {
+                console.error("Invalid username:", error);
+            });
+    };
 
     //Returns the account creation form that we need
     return (
         <form onSubmit={handleSubmit}>
-
             <label htmlFor="username">Username:</label>
-                    <input type="text" id="username" name="username" value={form.username}
-                    onChange={handleChange}
-                    onBlur={checkUsername}
-                    />
+            <input
+                type="text"
+                id="username"
+                name="username"
+                value={form.username}
+                onChange={handleChange}
+                onBlur={checkUsername}
+            />
 
             <br />
 
             <label htmlFor="firstname">First Name:</label>
-                    <input type="text" id="firstname" name="firstname" value={form.firstname}
-                    onChange={handleChange}
-                    />
-
-
-            <br />
-
-
-            <label htmlFor="surname">Surname:</label>
-                    <input type="text" id="surname" name="surname" value={form.surname}
-                    onChange={handleChange}
-                    />
-
+            <input
+                type="text"
+                id="firstname"
+                name="firstname"
+                value={form.firstname}
+                onChange={handleChange}
+            />
 
             <br />
 
-       
+            <label htmlFor="lastname">lastname:</label>
+            <input
+                type="text"
+                id="lastname"
+                name="lastname"
+                value={form.lastname}
+                onChange={handleChange}
+            />
+
+            <br />
+
             <label htmlFor="email">Email:</label>
-                    <input type="text" id="email" name="email" value={form.email}
-                    onChange={handleChange}
-                    onBlur={checkEmail}
-                    />
+            <input
+                type="text"
+                id="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                onBlur={checkEmail}
+            />
 
-
-            <br />     
-
+            <br />
 
             <label htmlFor="password">Password:</label>
-                    <input type="password" id="password" name="password" value={form.password}
-                    onChange={handleChange}
-                    />
-
+            <input
+                type="password"
+                id="password"
+                name="password"
+                value={form.password}
+                onChange={handleChange}
+            />
 
             <br />
             <br />
             <br />
             <br />
-
-
-
 
             <label htmlFor="gender">Gender:</label>
-                    <select name="gender" value={form.gender} onChange={handleChange}>
-                            <option disabled value="">Select</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            <option value="other">Other/Prefer not to say</option>
-                    </select>
+            <select name="gender" value={form.gender} onChange={handleChange}>
+                <option disabled value="">
+                    Select
+                </option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other/Prefer not to say</option>
+            </select>
 
-
-            <br />  
-
+            <br />
 
             <label htmlFor="dob">Date of Birth:</label>
-                    <input type="date" id="dob" name="dob" value={form.dob}
-                    onChange={handleChange}
+            <input
+                type="date"
+                id="dob"
+                name="dob"
+                value={form.dob}
+                onChange={handleChange}
+            />
 
-                    /> 
-
-            <br /> 
-
+            <br />
 
             <label htmlFor="height">Height (cm):</label>
-                    <input type="number" id="height" name="height" value={form.height}
-                    //The tallest person ever was 272cm. I'm playing it safe here just in
-                    // case we get a record beater using our website (very, VERY unlikely)
-                    min="0" max="300"
-                    onChange={(event) =>
-                        setForm({ ...form, height: parseInt(event.target.value) })
-                      }
-                    />  
+            <input
+                type="number"
+                id="height"
+                name="height"
+                value={form.height}
+                //The tallest person ever was 272cm. I'm playing it safe here just in
+                // case we get a record beater using our website (very, VERY unlikely)
+                min="0"
+                max="300"
+                onChange={(event) =>
+                    setForm({ ...form, height: parseInt(event.target.value) })
+                }
+            />
 
-            <br />    
-
+            <br />
 
             <label htmlFor="weight">Weight (kg):</label>
-                    <input type="number" id="weight" name="weight" value={form.weight}
-                    //Apparently the heaviest person in the world was 635kg? So I guess this
-                    //has to be our max?
-                    min="0" max="635"
-                    onChange={(event) =>
-                        setForm({ ...form, weight: parseInt(event.target.value) })
-                      }
-                    />  
+            <input
+                type="number"
+                id="weight"
+                name="weight"
+                value={form.weight}
+                //Apparently the heaviest person in the world was 635kg? So I guess this
+                //has to be our max?
+                min="0"
+                max="635"
+                onChange={(event) =>
+                    setForm({ ...form, weight: parseInt(event.target.value) })
+                }
+            />
 
             <br />
 
-
-
-            <label htmlFor="idealweight">Ideal Weight (kg):</label>
-                    <input type="number" id="idealweight" name="idealweight" value={form.idealweight}
-                    min="0" max="635"
-                    onChange={(event) =>
-                        setForm({ ...form, idealweight: parseInt(event.target.value) })
-                      }
-                    />  
+            <label htmlFor="tweight">Ideal Weight (kg):</label>
+            <input
+                type="number"
+                id="tweight"
+                name="tweight"
+                value={form.tweight}
+                min="0"
+                max="635"
+                onChange={(event) =>
+                    setForm({
+                        ...form,
+                        tweight: parseInt(event.target.value),
+                    })
+                }
+            />
 
             <br />
-            <br /> 
-            <br />         
-                    
+            <br />
+            <br />
 
-        <button type="submit">Create Account</button>
+            <button type="submit">Create Account</button>
         </form>
     );
 }

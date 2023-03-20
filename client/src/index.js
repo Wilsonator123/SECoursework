@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "./App";
 import Home from "./Home";
 import Account from "./Account";
-import Diet from "./Diet";
+import Meal from "./Diet";
 import Exercise from "./Exercise";
 import Goal from "./Goal";
 import Group from "./Group";
@@ -20,7 +20,7 @@ root.render(
         <Routes>
             <Route path="/" element={<Navbar />}>
                 <Route index element={<App />} />
-                <Route path="Diet" element={<Diet />} />
+                <Route path="Meal" element={<Meal />} />
                 <Route path="Account" element={<Account />} />
                 <Route path="Exercise" element={<Exercise />} />
                 <Route path="Goal" element={<Goal />} />

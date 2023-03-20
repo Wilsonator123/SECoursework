@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const app = express();
 const dB = require("better-sqlite3");
 const fs = require("fs");
-const interface = require("./interface");
+const cors = require("cors");
 const multer = require("multer");
 
 const storage = multer.diskStorage({
@@ -15,21 +15,26 @@ const storage = multer.diskStorage({
         cb(null, req.body.username + "pp.png");
     },
 });
-
-app.use(bodyParser.json());
-
+app.use(cors({ origin: true, credentials: true }));
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
     res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     next();
 });
-
+app.use(bodyParser.json());
+const upload = multer({ storage });
 const database = new dB("database.db", { verbose: console.log });
 /**
  * This will handle all requests from the server
  */
 database.exec(fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8"));
+// database.exec(
+//     fs.readFileSync(path.join(__dirname, "data/activity.sql"), "utf8")
+// );
+// database.exec(
+//     fs.readFileSync(path.join(__dirname, "data/food_drink.sql"), "utf8")
+// );
 
 app.get("/", (req, res) => {
     res.send("Hello World!");
@@ -37,24 +42,24 @@ app.get("/", (req, res) => {
 
 /*************************LOG IN PAGE******************************/
 
-app.get("/api/checkEmail", (req, res) => {
-    if (!checkEmail(req.params.email, res)) res.send(false);
-    const stmt = database.prepare("SELECT * FROM user WHERE email = '$1'");
-    stmt.all(req.email);
-    info.rows.length > 0 ? res.send(false) : res.send(true);
+app.post("/api/checkEmail", (req, res) => {
+    // if (!checkEmail(req.params.email, res)) res.send(false);
+    const stmt = database.prepare("SELECT * FROM user WHERE email = ?");
+    const info = stmt.all(req.body.email);
+    info.length === 0 ? res.send(true) : res.send(false);
 });
 
 app.get("/api/checkUsername", (req, res) => {
-    const stmt = database.prepare("SELECT * FROM user WHERE username = '$1'");
-    stmt.all(req.username);
-    info.rows.length > 0 ? res.send(false) : res.send(true);
+    const stmt = database.prepare("SELECT * FROM user WHERE username = '?'");
+    const info = stmt.all(req.body.username);
+    info.rows() === 0 ? res.send(true) : res.send(false);
 });
 
-app.get("/api/checkPassword", (req, res) => {
-    const stmt = database.prepare("SELECT * FROM user WHERE password = '$1'");
-    stmt.all(req.password);
-    info.rows.length > 0 ? res.send(true) : res.send(false);
-});
+// app.get("/api/checkPassword", (req, res) => {
+//     const stmt = database.prepare("SELECT * FROM user WHERE password = '$1'");
+//     const info = stmt.all(req.body.password);
+//     info.rows() > 0 ? res.send(false) : res.send(true);
+// });
 
 app.post("/api/createUser", (req, res) => {
     const {
@@ -69,6 +74,7 @@ app.post("/api/createUser", (req, res) => {
         tweight,
         dob,
     } = req.body;
+
     if (req.file === undefined) img = "default.png";
     else img = req.body.username + "pp.png";
     const stmt = database.prepare(
@@ -87,7 +93,8 @@ app.post("/api/createUser", (req, res) => {
         dob,
         img
     );
-    res.send(info);
+    if (info.changes === 1) res.send(true);
+    else res.send(false);
 });
 
 /*************************HOME PAGE******************************/
