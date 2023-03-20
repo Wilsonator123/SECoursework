@@ -35,13 +35,14 @@ const database = new dB("database.db", { verbose: console.log });
 /**
  * This will handle all requests from the server
  */
-database.exec(fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8"));
+// database.exec(fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8"));
 // database.exec(
 //     fs.readFileSync(path.join(__dirname, "data/activity.sql"), "utf8")
 // );
 // database.exec(
 //     fs.readFileSync(path.join(__dirname, "data/food_drink.sql"), "utf8")
 // );
+// database.exec("DELETE FROM user");
 
 app.get("/", (req, res) => {
     res.send("Hello World!");
@@ -56,10 +57,10 @@ app.post("/api/checkEmail", (req, res) => {
     info.length === 0 ? res.send(true) : res.send(false);
 });
 
-app.get("/api/checkUsername", (req, res) => {
-    const stmt = database.prepare("SELECT * FROM user WHERE username = '?'");
+app.post("/api/checkUsername", (req, res) => {
+    const stmt = database.prepare("SELECT * FROM user WHERE username = ?");
     const info = stmt.all(req.body.username);
-    info.rows() === 0 ? res.send(true) : res.send(false);
+    info.length === 0 ? res.send(true) : res.send(false);
 });
 
 // app.get("/api/checkPassword", (req, res) => {
@@ -81,6 +82,21 @@ app.post("/api/createUser", (req, res) => {
         tweight,
         dob,
     } = req.body;
+    if (
+        username === "" ||
+        firstname === "" ||
+        lastname === "" ||
+        gender === "" ||
+        password === "" ||
+        email === "" ||
+        weight === "" ||
+        height === "" ||
+        tweight === "" ||
+        dob === ""
+    ) {
+        res.send(false);
+        return;
+    }
 
     if (req.file === undefined) img = "default.png";
     else img = req.body.username + "pp.png";

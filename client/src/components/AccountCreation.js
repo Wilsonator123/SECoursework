@@ -91,28 +91,31 @@ function AccountCreation() {
                 console.error("Error:", error);
             });
     };
-
-    //Checks if username is unique - need a checkUsername backend function
     const checkUsername = (event) => {
         event.preventDefault();
         console.log(form.username);
+
         fetch("http://localhost:3001/api/checkUsername", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(form.username),
+            body: JSON.stringify({ username: form.username }),
         })
             .then((response) => response.json())
+
+            //Check if this is correct? Will need to be updated to notify user
             .then((data) => {
-                if (data.valid) {
-                    console.log("Unique username: ", form.username);
+                if (data) {
+                    console.log("Unique username:", form.username);
                 } else {
-                    console.log("Invalid username: ", form.username);
+                    alert(form.username + " is already in use!");
+                    console.log("Invalid email:", form.email);
+                    // setState = { email: undefined };
                 }
             })
             .catch((error) => {
-                console.error("Invalid username:", error);
+                console.error("Error:", error);
             });
     };
 
