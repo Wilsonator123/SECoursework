@@ -10,6 +10,7 @@ import Goal from "./Goal";
 import Group from "./Group";
 import History from "./History";
 import Navbar from "./Navbar";
+import "./css/index.css";
 
 // const root = ReactDOM.createRoot(document.getElementById("root"));
 // root.render(<App />);
