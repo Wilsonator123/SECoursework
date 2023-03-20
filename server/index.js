@@ -35,6 +35,8 @@ app.get("/", (req, res) => {
     res.send("Hello World!");
 });
 
+/*************************LOG IN PAGE******************************/
+
 app.get("/api/checkEmail", (req, res) => {
     if (!checkEmail(req.params.email, res)) res.send(false);
     const stmt = database.prepare("SELECT * FROM user WHERE email = '$1'");
@@ -48,20 +50,10 @@ app.get("/api/checkUsername", (req, res) => {
     info.rows.length > 0 ? res.send(false) : res.send(true);
 });
 
-app.get("/api/getActiveGoals", (req, res) => {
-    const stmt = database.prepare(
-        "SELECT * FROM goals WHERE id = '$1' AND status NOT IN ('inactive')"
-    );
-    const info = stmt.all(req.id);
-    res.send(info);
-});
-
-app.get("/api/getGoalHistory", (req, res) => {
-    const stmt = database.prepare(
-        "SELECT * FROM goals WHERE id = '$1' AND status IN ('inactive')"
-    );
-    const info = stmt.all(req.id);
-    res.send(info);
+app.get("/api/checkPassword", (req, res) => {
+    const stmt = database.prepare("SELECT * FROM user WHERE password = '$1'");
+    stmt.all(req.password);
+    info.rows.length > 0 ? res.send(true) : res.send(false);
 });
 
 app.post("/api/createUser", (req, res) => {
@@ -95,6 +87,24 @@ app.post("/api/createUser", (req, res) => {
         dob,
         img
     );
+    res.send(info);
+});
+
+/*************************HOME PAGE******************************/
+
+app.get("/api/getActiveGoals", (req, res) => {
+    const stmt = database.prepare(
+        "SELECT * FROM goals WHERE id = '$1' AND status NOT IN ('inactive')"
+    );
+    const info = stmt.all(req.id);
+    res.send(info);
+});
+
+app.get("/api/getGoalHistory", (req, res) => {
+    const stmt = database.prepare(
+        "SELECT * FROM goals WHERE id = '$1' AND status IN ('inactive')"
+    );
+    const info = stmt.all(req.id);
     res.send(info);
 });
 
