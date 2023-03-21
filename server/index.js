@@ -51,7 +51,7 @@ app.get("/", (req, res) => {
 /*************************LOG IN PAGE******************************/
 
 app.post("/api/checkEmail", (req, res) => {
-    if (!checkEmailFormat(req.params.email)) res.send(false);
+    if (!checkEmailFormat(req.body.email)) res.send(false);
     const stmt = database.prepare("SELECT * FROM user WHERE email = ?");
     const info = stmt.all(req.body.email);
     info.length === 0 ? res.send(true) : res.send(false);
