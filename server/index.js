@@ -69,6 +69,15 @@ app.post("/api/checkUsername", (req, res) => {
 //     info.rows() > 0 ? res.send(false) : res.send(true);
 // });
 
+app.post("/api/login", (req, res) => {
+    const stmt = database.prepare(
+        "SELECT * FROM user WHERE username = ? AND password = ?"
+    );
+    const info = stmt.all(req.body.username, req.body.password);
+    if (info.length === 0) res.send(false);
+    else res.send(true);
+});
+
 app.post("/api/createUser", (req, res) => {
     const {
         username,

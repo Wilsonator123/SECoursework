@@ -22,6 +22,10 @@ function AccountCreation() {
         tweight: "",
     });
 
+    //Used to show error messages for invalid data
+    const [emailError, setEmailError] = useState("");
+    const [usernameError, setUsernameError] = useState("");
+
     //Handles submission of a new account - will need a
     // createUser method for this!
     const handleSubmit = (event) => {
@@ -39,11 +43,13 @@ function AccountCreation() {
             .then((response) => response.json())
 
             .then((data) => {
-                console.log("Successful Account Creation");
+                
 
                 //May need to be updated to another page
                 if (data) {
-                    navigate("/diet");
+                    navigate("/account");
+                } else {
+                    alert("Invalid account creation details.")
                 }
             })
             .catch((error) => {
@@ -80,16 +86,22 @@ function AccountCreation() {
             .then((data) => {
                 if (data) {
                     console.log("Unique and valid email:", form.email);
+                    setEmailError('');
                 } else {
-                    alert(form.email + " is already in use!");
+                    setEmailError('Invalid email, please enter another');
                     console.log("Invalid email:", form.email);
-                    // setState = { email: undefined };
+                    
+                    setForm({ ...form, email: "" });
                 }
             })
 
             .catch((error) => {
                 console.error("Error:", error);
             });
+
+
+
+
     };
     const checkUsername = (event) => {
         event.preventDefault();
@@ -108,10 +120,11 @@ function AccountCreation() {
             .then((data) => {
                 if (data) {
                     console.log("Unique username:", form.username);
+                    setUsernameError('');
                 } else {
-                    alert(form.username + " is already in use!");
-                    console.log("Invalid email:", form.email);
-                    // setState = { email: undefined };
+                    setUsernameError('Username already taken, please enter another');
+                    console.log("Invalid username:", form.username);
+                    setForm({ ...form, username: "" });
                 }
             })
             .catch((error) => {
@@ -132,6 +145,8 @@ function AccountCreation() {
                 onBlur={checkUsername}
             />
 
+            {usernameError && <p>{usernameError}</p>}
+            
             <br />
 
             <label htmlFor="firstname">First Name:</label>
@@ -165,6 +180,8 @@ function AccountCreation() {
                 onChange={handleChange}
                 onBlur={checkEmail}
             />
+
+            {emailError && <p>{emailError}</p>}
 
             <br />
 
