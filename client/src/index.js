@@ -1,8 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+//All of our pages we will use later!
 import App from "./App";
-import Home from "./Home";
+//Not sure if we will be using this page?
+//import Home from "./Home";
 import Account from "./Account";
 import Meal from "./Diet";
 import Exercise from "./Exercise";
@@ -10,15 +13,22 @@ import Goal from "./Goal";
 import Group from "./Group";
 import History from "./History";
 import Navbar from "./Navbar";
-import "./css/index.css";
 
-// const root = ReactDOM.createRoot(document.getElementById("root"));
-// root.render(<App />);
 
+//Get our root element and put the paths for the account creation page and
+//all other pages there
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
+
     <BrowserRouter>
         <Routes>
+
+            {/*On the Account Creation, no other pages should be accessed */}
+            <Route index element={<App />} />
+
+
+
+            {/*Normal NavBar links (will need to be updated!) */}
             <Route path="/" element={<Navbar />}>
                 <Route index element={<App />} />
                 <Route path="Meal" element={<Meal />} />
@@ -28,10 +38,9 @@ root.render(
                 <Route path="Group" element={<Group />} />
                 <Route path="History" element={<History />} />
             </Route>
+            
         </Routes>
     </BrowserRouter>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+ 

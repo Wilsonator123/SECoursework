@@ -34,6 +34,7 @@ function Login() {
 
                 //May need to be updated to another page
                 if (data) {
+                    
                     navigate("/account");
                 } else {
                     alert("Invalid login details.")
@@ -54,4 +55,41 @@ function Login() {
             [event.target.name]: event.target.value,
         });
     };
+
+
+
+
+
+    return (
+        <form onSubmit={handleSubmit}>
+
+
+            <label htmlFor="username">Username:</label>
+            <input
+                type="text"
+                id="username"
+                name="username"
+                value={form.username}
+                onChange={handleChange}
+            />
+
+            {usernameError && <p>{usernameError}</p>}
+            
+            <br />
+
+            <label htmlFor="password">Password:</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                value={form.password}
+                onChange={handleChange}
+            />
+
+            <br/>
+            <button type="submit">Log In</button>
+
+        </form>
+            )
 }
+export default Login;
