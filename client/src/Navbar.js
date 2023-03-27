@@ -17,22 +17,19 @@ export default function Navbar() {
                     </li>
 
                     <li>
-                        <Link to="/Diet">Diet</Link>
+                        <Link to="/Meal">Record Meal</Link>
                     </li>
 
                     <li>
-                        <Link to="/Exercise">Exercise</Link>
+                        <Link to="/Exercise">Record Exercise</Link>
                     </li>
 
                     <li>
-                        <Link to="/Goal">Goal</Link>
+                        <Link to="/Goal">Goals</Link>
                     </li>
 
                     <li>
-                        <Link to="/Group">Group</Link>
-                    </li>
-                    <li>
-                        <Link to="/History">History</Link>
+                        <Link to="/Group">Groups</Link>
                     </li>
                     <li>
                         <Link to="/Account">Account</Link>

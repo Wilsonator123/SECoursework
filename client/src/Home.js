@@ -2,10 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./Navbar";
 import Navbar from "./Navbar";
+
 class Home extends React.Component {
     render() {
         return (
-            <div id="pageContainer">
+            <div>
                 <h1> Hello World </h1>
             </div>
         );
