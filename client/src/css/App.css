@@ -22,25 +22,14 @@
     height: 100%;
     width: 75%;
     margin: 10%;
-    background-color: #E8E7ED;
+    background-color: #e8e7ed;
     padding-top: 5rem;
     padding-bottom: 5rem;
 }
-
 
 #pageContainer {
     height: 1500px;
     margin-top: 30px;
     padding: 20px;
     color: #444444;
-}
-
-button, [type='button'], [type='reset'], [type='submit'] {
-    background-color: #EBBB52;
-}
-
-[type='text'], [type='email'], [type='url'], [type='password'], [type='number'], [type='date'], [type='datetime-local'], [type='month'], [type='search'], [type='tel'], [type='time'], [type='week'], [multiple], textarea, select {
-    background-color: #E8E7ED;
-    border-color: #444444;
-    border-width: 1.5px;
 }
