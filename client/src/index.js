@@ -42,6 +42,7 @@ function Index() {
         console.log("Set Token has been called!");
         console.log("User Token in save Token");
         console.log(userToken.token);
+        window.location.reload(false);
       };
 
     
@@ -53,16 +54,16 @@ function Index() {
         return (
             <BrowserRouter>
                 <Routes>
-                    <Route path="" element={<Navbar />}>
-                    <Route path="/" element={<Account />}>
+                    
+                    <Route path="/" element={<Navbar />}>
+                        <Route index element = {<Account />} />
                         <Route path="Meal" element={<Meal />} />
-                        <Route path="/Account" element={<Account />} />
+                        <Route path="Account" element={<Account />} />
                         <Route path="Exercise" element={<Exercise />} />
                         <Route path="Goal" element={<Goal />} />
                         <Route path="Group" element={<Group />} />
                         <Route path="History" element={<History />} />
-                        <Route path="*" element={<h1>No pages here!</h1>} />
-                    </Route>
+                        <Route path="*" element={<h1><br/><br/>404: No pages here!</h1>} />
                     </Route>
                     
                 </Routes>
@@ -71,8 +72,6 @@ function Index() {
     }
 
     else {
-        console.log("should only be showing sign in page");
-        console.log("user ID not found");
         return <App setToken={saveToken}/>
 
     } 
