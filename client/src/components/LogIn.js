@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 
-function Login() {
+
+export default function Login({ setToken }) {
     //Used to push the user to the home page on a valid login
-    const navigate = useNavigate();
+
 
     //All data needed for account creation (could be split up?)
     const [form, setForm] = useState({
@@ -34,9 +34,13 @@ function Login() {
 
                 //May need to be updated to another page
                 if (data) {
+
+                    setToken(data.id);
+                    console.log(data.id);
+                    console.log("We can set the token correctly!");
                     
-                    navigate("/account");
                 } else {
+                    
                     alert("Invalid login details.")
                 }
             })
@@ -92,4 +96,6 @@ function Login() {
         </form>
             )
 }
-export default Login;
+
+
+

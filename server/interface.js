@@ -9,22 +9,25 @@ class Interface {
 
     /*********************************USER**********************************/
 
-    checkEmail(email) {
-        //Returns true if email is not in this.database, false if it is
-        if (!checkEmailFormat(email)) return false; //If email is not in correct format
-        const stmt = this.database.prepare(
-            "SELECT * FROM user WHERE email = ?"
-        );
-        const info = stmt.all(email);
-        if (info.length === 0) return true; //If email is not in this.database
-        else return false; //If email is in this.database
-    }
+
 
     checkEmailFormat(email) {
         //Returns true if email is in correct format, false if it is not
         console.log("Email: " + email);
         const re = /\S+@\S+\.\S+/; //Regex for email format
         return re.test(email);
+    }
+
+
+    checkEmail(email) {
+        //Returns true if email is not in this.database, false if it is
+        if (!this.checkEmailFormat(email)) return false; //If email is not in correct format
+        const stmt = this.database.prepare(
+            "SELECT * FROM user WHERE email = ?"
+        );
+        const info = stmt.all(email);
+        if (info.length === 0) return true; //If email is not in this.database
+        else return false; //If email is in this.database
     }
 
     checkUsername(username) {
@@ -85,8 +88,8 @@ class Interface {
                 "SELECT * FROM user WHERE username = ?"
             );
             const info = stmt.all(username);
-            const user = info[0].id;
             return (body = {
+                user: info[0].id,
                 bmi: this.checkWeight(weight, height, tweight),
                 goal: this.estimateGoal(user),
             });
@@ -94,28 +97,28 @@ class Interface {
     }
 
     checkLogin(login, password) {
-        //Returns 0 if login is successful, 1 if login is not in this.database, 2 if login and password do not match
+        //Returns the user's id if successful, false if login is not in this.database,
         if (this.checkEmailFormat(login)) {
             //If its an email
-            if (this.checkEmail(login)) return 1; //If email is not in this.database
+            if (this.checkEmail(login)) return false; //If email is not in this.database
             const stmt = this.database.prepare(
-                "SELECT * FROM user WHERE email = ? AND password = ?"
+                "SELECT id FROM user WHERE email = ? AND password = ?"
             );
             const info = stmt.all(login, password);
             if (info.length === 0)
-                return 2; //If email and password do not match
-            else return 0; //If email and password match
+                return false; //If email and password do not match
+            else return info[0].id; //If email and password match
         } else {
             //If its a username
-            if (this.checkUsername(username)) return 1; //If username is not in this.database
+            if (this.checkUsername(username)) return false; //If username is not in this.database
             const stmt = this.database.prepare(
                 "SELECT * FROM user WHERE username = ? AND password = ?"
             );
 
             const info = stmt.all(username, password);
             if (info.length === 0)
-                return 2; //If username and password do not match
-            else return 0; //If username and password match
+                return false; //If username and password do not match
+            else return info[0].id; //If username and password match
         }
     }
 
@@ -284,7 +287,7 @@ class Interface {
                 current: 0,
                 target: 5,
                 date: futureDate,
-                notes: "Walk 5 miles this week! Come on fatty!",
+                notes: "Walk 5 miles this week!",
             });
         }
     }

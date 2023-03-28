@@ -66,14 +66,37 @@ app.get("/api/checkPassword", (req, res) => {
 });
 
 app.post("/api/login", (req, res) => {
-    res.send(interface.checkLogin(req.body.login, req.body.password));
+    //Returns the user's id, or a a false error status otherwise
+    const isValidLogin = interface.checkLogin(req.body.username, req.body.password);
+
+    //returns the user's ID if successful
+    if (isValidLogin){
+        res.send({ id: isValidLogin })
+    }
+
+    //returns an error message if unsuccessful
+    else {
+        res.send(false);
+    }
+
 });
 
 app.post("/api/createUser", upload.single("file"), (req, res) => {
     var img;
-    if (body.file === undefined) img = "default.png";
+    if (req.body.file === undefined) img = "default.png";
     else img = body.username + "pp.png";
-    res.send(interface.createUser(req.body, img));
+    
+    const isValidAccountCreation = interface.createUser(req.body, img);
+
+    //Return data on a successful login including their user id, a
+    // BMI, and a target goal if applicable
+    if (isValidAccountCreation){
+        res.send({ data: isValidAccountCreation })
+    }    
+    
+    else {
+        res.send(false);
+    }
 });
 
 /*************************HOME PAGE******************************/
