@@ -1,0 +1,10 @@
+INSERT INTO activity (name) VALUES ('Walking');
+INSERT INTO activity (name) VALUES ('Running');
+INSERT INTO activity (name) VALUES ('Swimming');
+INSERT INTO activity (name) VALUES ('Cycling');
+INSERT INTO activity (name) VALUES ('Yoga');
+INSERT INTO activity (name) VALUES ('Weightlifting');
+INSERT INTO activity (name) VALUES ('Pilates');
+INSERT INTO activity (name) VALUES ('Dancing');
+INSERT INTO activity (name) VALUES ('Hiking');
+INSERT INTO activity (name) VALUES ('Martial Arts');

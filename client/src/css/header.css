@@ -1,12 +1,12 @@
 nav {
-    background-color: #000;
+    background-color: #766DB0;
     height: 50px;
     width: 100%;
     position: fixed;
     top: 0;
     left: 0;
     z-index: 100;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 10px #393553;
 }
 
 nav ul {
@@ -28,7 +28,7 @@ nav ul li a {
     height: 100%;
     padding: 0 20px;
     text-decoration: none;
-    color: #fff;
+    color: #E8E7ED;
     font-size: 1.2rem;
     line-height: 50px;
 }
