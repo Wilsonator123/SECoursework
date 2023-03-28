@@ -41,11 +41,12 @@ export default function Login({ setToken }) {
                     
                 } else {
                     
-                    alert("Invalid login details.")
+                    alert("Incorrect Password. Please try again.")
                 }
             })
             .catch((error) => {
                 console.error("Error:", error);
+                alert("No account found with that username. Please try again.");
             });
     };
 

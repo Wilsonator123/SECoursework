@@ -1,4 +1,4 @@
-import React, { StrictMode, useState } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -14,13 +14,14 @@ import Group from "./Group";
 import History from "./History";
 import Navbar from "./Navbar";
 
-
-//Login authentication and storing user ID tokens adapted from
+//------------------------REFERENCE-----------------------------//
+//Login authentication and storing user ID tokens adapted from tutorial:
 // https://www.digitalocean.com/community/tutorials/how-to-add-login-authentication-to-react-applications
 
 
 function Index() {
 
+    //Gets the token (i.e. the userID from the session storage)
     const getToken = () => {
         const tokenString = sessionStorage.getItem('token');
         const userToken = JSON.parse(tokenString);
@@ -32,33 +33,38 @@ function Index() {
       };
 
 
+    //use state stuff that is used on all the pages, really
     const [token, setToken] = useState(getToken());
     
 
-
+    //saves the token (userID) to session storage
     const saveToken = (userToken) => {
         sessionStorage.setItem("token", JSON.stringify(userToken));
         setToken(userToken.token);
-        console.log("Set Token has been called!");
-        console.log("User Token in save Token");
         console.log(userToken.token);
+        //We need to refresh as otherwise it stays on the login page?
+        //And cause the App component isnt in a browser router with the
+        //others we can't use navigate to move between them.
+
+        //If anyone has a better idea on how to do this fix it pls
         window.location.reload(false);
       };
 
-    
 
-    console.log("userID = ");
-    
+    //If token ISN'T falsy i.e. user has logged in! We need to show them everything
     if (token){
-        console.log("should be showing everything else!");
+        
         return (
             <BrowserRouter>
                 <Routes>
                     
                     <Route path="/" element={<Navbar />}>
+
+                        {/*Default to account page on refresh after login! */}
                         <Route index element = {<Account />} />
+
                         <Route path="Meal" element={<Meal />} />
-                        <Route path="Account" element={<Account />} />
+                        <Route path="Account" element={<Account userID={getToken} />} />
                         <Route path="Exercise" element={<Exercise />} />
                         <Route path="Goal" element={<Goal />} />
                         <Route path="Group" element={<Group />} />
@@ -71,15 +77,14 @@ function Index() {
         );
     }
 
+    //We have to pass saveToken so the login and account creation stuff 
+    //can set the token when the user logs in.
     else {
         return <App setToken={saveToken}/>
-
     } 
 
 
 }
-
-
 
 //Get our root element and put the paths for the account creation page and
 //all other pages there

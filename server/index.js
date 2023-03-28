@@ -109,6 +109,12 @@ app.get("/api/getGoalHistory", (req, res) => {
     res.send(interface.getGoalHistory(req.body.id));
 });
 
+app.post("/api/getBMI", (req, res) => {
+    console.log("Called correctly!");
+    console.log(req.body.id);
+    res.send(JSON.stringify(interface.bmi(req.body.id)));
+});
+
 app.listen(3001, () => {
     console.log("Server running on port 3001");
 });

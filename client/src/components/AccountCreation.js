@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import PropTypes from 'prop-types';
+
 
 //Create a general form CSS file!
 

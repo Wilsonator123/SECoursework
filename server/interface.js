@@ -144,12 +144,15 @@ class Interface {
     }
 
     bmi(id) {
-        //Returns BMI
+        //Returns BMI for a specific user
+        console.log("In interface method");
+        console.log(id);
         const stmt = this.database.prepare("SELECT * FROM user WHERE id = ?");
         const info = stmt.all(id);
         const weight = info[0].weight;
-        const height = info[0].height;
-        return weight / (height * height);
+        const height = info[0].height/100;
+        //Gotta have it to 2dp or it gets UGLY
+        return (weight / (height * height)).toFixed(2);
     }
 
     /*********************************GOALS**********************************/
