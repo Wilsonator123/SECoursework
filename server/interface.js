@@ -1,4 +1,7 @@
 const dB = require("better-sqlite3");
+const fs = require('fs');
+const path = require('path');
+
 
 
 class Interface {
@@ -6,8 +9,12 @@ class Interface {
         this.database = new dB("database.db", {
             verbose: console.log,
         });
-        database.exec("DROP TABLE EXERCISE");
-        database.exec(fs.readFileSync(path.join(__dirname, "ddl.sql")));
+
+
+        //IMPORTANT DATABASE STUFF WE MIGHT NEED AGAIN!
+
+        //this.database.exec("DROP TABLE GOAL");
+        //this.database.exec(fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8"));
     }
 
     /*********************************USER**********************************/

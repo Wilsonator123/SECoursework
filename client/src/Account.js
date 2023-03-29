@@ -1,11 +1,11 @@
 
-import React, { useState } from "react";
+import React from "react";
 import HealthDetails from "./components/HealthDetails";
 
 
 export default function Account({ userID }) {
 
-    console.log({userID});
+    
 
     return (
         <div id="pageContainer">
