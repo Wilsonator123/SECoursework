@@ -1,5 +1,6 @@
 const dB = require("better-sqlite3");
 
+
 class Interface {
     constructor() {
         this.database = new dB("database.db", {
