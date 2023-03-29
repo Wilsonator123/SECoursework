@@ -6,6 +6,8 @@ class Interface {
         this.database = new dB("database.db", {
             verbose: console.log,
         });
+        database.exec("DROP TABLE EXERCISE");
+        database.exec(fs.readFileSync(path.join(__dirname, "ddl.sql")));
     }
 
     /*********************************USER**********************************/
@@ -121,6 +123,7 @@ class Interface {
                 return false; //If username and password do not match
             else return info[0].id; //If username and password match
         }
+        body = { id: status }
     }
 
     checkWeight(weight, tweight, height) {
