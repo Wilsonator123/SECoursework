@@ -5,7 +5,7 @@ class Interface {
         this.database = new dB("database.db", {
             verbose: console.log,
         });
-        databae.exec("DROP TABLE EXERCISE");
+        database.exec("DROP TABLE EXERCISE");
         database.exec(fs.readFileSync(path.join(__dirname, "ddl.sql")));
     }
 
