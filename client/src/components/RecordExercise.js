@@ -1,24 +1,39 @@
-import React, { useState } from "react";
-
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 //Used on the Exercise page to record a new exercise
 export default function RecordExercise() {
 
+    const navigate = useNavigate();
+
+    //Get the user's id stored in session storage
+    const tokenString = sessionStorage.getItem('token');
+    const userToken = JSON.parse(tokenString);
+
     const [form, setForm] = useState({
-        username: "",
-        password: ""
+        id: userToken,
+        name: "",
+        activity: "",
+        quantity: "",
+        measurement: ""
     });
 
-    const [usernameError, setUsernameError] = useState("");
+    //Gonna get a list of activities from DB to put in form
+    const [activities, setActivities] = useState([]);
 
-    //Need to put the code to get all activities in here!
-   
+    //At creatiom of form, get all activities in here!
+    useEffect(() => {
+        fetch("http://localhost:3001/api/getActivities")
+          .then(response => response.json())
+          .then(data => setActivities(data));
+      }, []);
+
 
 
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log(form);
-        fetch("http://localhost:3001/api/login", {
+        fetch("http://localhost:3001/api/recordExercise", {
             method: "POST",
             body: JSON.stringify(form),
             headers: {
@@ -29,18 +44,18 @@ export default function RecordExercise() {
             .then((response) => response.json())
 
             .then((data) => {
-                
-
+        
                 //May need to be updated to another page
                 if (data) {
-
+                    alert("Recorded successfully!");
                     
                 } else {
-
+                    alert("Failed to record.");
                 }
             })
             .catch((error) => {
                 console.error("Error:", error);
+                alert("ERROR");
             });
     };
 
@@ -61,30 +76,63 @@ export default function RecordExercise() {
         <form onSubmit={handleSubmit}>
 
 
-            <label htmlFor="username">Username:</label>
+            <label htmlFor="name">Name:</label>
             <input
                 type="text"
-                id="username"
-                name="username"
-                value={form.username}
+                id="name"
+                name="name"
+                value={form.name}
                 onChange={handleChange}
             />
-
-            {usernameError && <p>{usernameError}</p>}
             
             <br />
 
-            <label htmlFor="password">Password:</label>
+
+
+            <label htmlFor="activity">Activity:</label>
+            <select name="activity" type="number" value={form.activity} onChange={(event) =>
+                    setForm({ ...form, activity: parseInt(event.target.value) })
+                }>
+                    
+                    <option disabled value="">Select</option>
+
+                    {/*Gets ALL the activities and maps them in a list*/}
+                    {activities.map(activity => (
+                        <option key={activity.id} value={activity.id}>
+                        {activity.name}
+                    </option>
+                     ))}
+
+
+            </select>        
+
+
+            <br />
+            <label htmlFor="quantity">Quantity:</label>
             <input
-                type="password"
-                id="password"
-                name="password"
-                value={form.password}
-                onChange={handleChange}
+                type="number"
+                id="quantity"
+                name="quantity"
+                value={form.quantity}
+                min="0"
+                onChange={(event) =>
+                    setForm({ ...form, quantity: parseInt(event.target.value) })
+                }
             />
 
             <br/>
-            <button type="submit">Log In</button>
+            <label htmlFor="measurement">Measurement:</label>
+            <select name="measurement" value={form.measurement} onChange={handleChange}>
+                <option disabled value="">
+                    Select
+                </option>
+                <option value="m">Metres</option>
+                <option value="mins">Minutes</option>
+            </select>
+
+
+            <br/>
+            <button type="submit">Record Exercise</button>
 
         </form>
             )
