@@ -8,7 +8,8 @@ export default function HealthDetails({ userID }) {
     const [BMI, setBMI] = useState('3');
 
     const getBMI = () => {
-        const tokenString = sessionStorage.getItem('token');
+        const tokenString = localStorage.getItem('token');
+        console.log(tokenString);
         const userToken = JSON.parse(tokenString);
         console.log("userToken in account page: ");
         console.log(JSON.stringify(tokenString));
