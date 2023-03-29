@@ -13,7 +13,7 @@ class Interface {
 
         //IMPORTANT DATABASE STUFF WE MIGHT NEED AGAIN!
 
-        //this.database.exec("DROP TABLE GOAL");
+        //this.database.exec("DROP TABLE EXERCISE");
         //this.database.exec(fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8"));
     }
 
@@ -164,6 +164,63 @@ class Interface {
         const height = info[0].height/100;
         //Gotta have it to 2dp or it gets UGLY
         return (weight / (height * height)).toFixed(2);
+    }
+
+
+
+    /********************************EXERCISE********************************/
+
+    //Gets all activities a user can do when recording an exercise
+    getActivities(){
+        console.log("Trying to get activities");
+        const stmt = this.database.prepare(
+            "SELECT * FROM activity"
+        );
+        const info = stmt.all();
+        return info;
+    }
+
+
+
+    //All details about an exercise given, checks if valid, then inserts into array
+    recordExercise(body){
+       //ID here refers to USER ID, NOT ACTIVITY ID OR EXERCISE ID
+        const {
+            id,
+            name,
+            activity,
+            quantity,
+            measurement,
+            
+        } = body;
+        if (
+            id === "" ||
+            name === "" ||
+            quantity === "" ||
+            measurement === "" ||
+            activity === ""
+        ) {
+            return false;
+        }
+        console.log("in the interface");
+        console.log(body);
+        console.log(id);
+        console.log(activity);
+        //We need to put ALL dates in the better format, not
+        //the... weird and wrong US one
+        const date = new Date().toLocaleDateString('en-GB');
+
+
+        const stmt = this.database.prepare(
+            'INSERT INTO exercise (user_id, name, quantity, measurement, date, type) VALUES (?, ?, ?, ?, ?, ?)'
+        );
+
+        const result = stmt.run(id, name, quantity, measurement, date, activity);
+        return true;
+
+
+
+
     }
 
     /*********************************GOALS**********************************/

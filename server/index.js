@@ -99,6 +99,23 @@ app.post("/api/createUser", upload.single("file"), (req, res) => {
     }
 });
 
+
+/*********************RECORD EXERCISE PAGE**********************/
+
+app.get("/api/getActivities", (req, res) => {
+    res.send(interface.getActivities());
+});
+
+app.post("/api/recordExercise", (req, res) => {
+    console.log("Called correctly!");
+    console.log(req.body);
+    res.send(interface.recordExercise(req.body));
+});
+
+
+
+
+
 /*************************HOME PAGE******************************/
 
 app.get("/api/getActiveGoals", (req, res) => {
@@ -118,3 +135,7 @@ app.post("/api/getBMI", (req, res) => {
 app.listen(3001, () => {
     console.log("Server running on port 3001");
 });
+
+
+
+
