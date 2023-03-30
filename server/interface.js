@@ -1,12 +1,15 @@
 const dB = require("better-sqlite3");
-
+const fs = require("fs");
+const path = require("path");
 class Interface {
     constructor() {
         this.database = new dB("database.db", {
             verbose: console.log,
         });
-        database.exec("DROP TABLE EXERCISE");
-        database.exec(fs.readFileSync(path.join(__dirname, "ddl.sql")));
+
+        this.database.exec(
+            fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8")
+        );
     }
 
     /*********************************USER**********************************/
@@ -100,15 +103,14 @@ class Interface {
         //Returns 0 if login is successful, 1 if login is not in this.database, 2 if login and password do not match
         if (this.checkEmailFormat(login)) {
             //If its an email
-            if (this.checkEmail(login)) status=1; //If email is not in this.database
+            if (this.checkEmail(login)) status = 1; //If email is not in this.database
             const stmt = this.database.prepare(
                 "SELECT * FROM user WHERE email = ? AND password = ?"
             );
             const info = stmt.all(login, password);
             if (info.length === 0)
-                status=2; //If email and password do not match
-            else status=0; //If email and password match
-
+                status = 2; //If email and password do not match
+            else status = 0; //If email and password match
         } else {
             //If its a username
             if (this.checkUsername(username)) status = 1; //If username is not in this.database
@@ -118,10 +120,10 @@ class Interface {
 
             const info = stmt.all(username, password);
             if (info.length === 0)
-                status= 2; //If username and password do not match
-            else status= 0; //If username and password match
+                status = 2; //If username and password do not match
+            else status = 0; //If username and password match
         }
-        body = { id: status }
+        body = { id: status };
     }
 
     checkWeight(weight, tweight, height) {
