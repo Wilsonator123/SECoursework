@@ -7,11 +7,13 @@ export default function RecordExercise() {
     const navigate = useNavigate();
 
     //Get the user's id stored in session storage
-    const tokenString = sessionStorage.getItem('token');
+    const tokenString = localStorage.getItem('token');
+    
     const userToken = JSON.parse(tokenString);
+    console.log(tokenString);
 
     const [form, setForm] = useState({
-        id: userToken,
+        id: tokenString,
         name: "",
         activity: "",
         quantity: "",
@@ -48,6 +50,7 @@ export default function RecordExercise() {
                 //May need to be updated to another page
                 if (data) {
                     alert("Recorded successfully!");
+                    navigate("/Account");
                     
                 } else {
                     alert("Failed to record.");

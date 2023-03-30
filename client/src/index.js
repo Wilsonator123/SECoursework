@@ -23,7 +23,7 @@ function Index() {
 
     //Gets the token (i.e. the userID from the session storage)
     const getToken = () => {
-        const tokenString = sessionStorage.getItem('token');
+        const tokenString = localStorage.getItem('token');
         const userToken = JSON.parse(tokenString);
         console.log("userToken: ");
         console.log(userToken);
@@ -39,7 +39,7 @@ function Index() {
 
     //saves the token (userID) to session storage
     const saveToken = (userToken) => {
-        sessionStorage.setItem("token", JSON.stringify(userToken));
+        localStorage.setItem("token", JSON.stringify(userToken));
         setToken(userToken.token);
         console.log(userToken.token);
         //We need to refresh as otherwise it stays on the login page?

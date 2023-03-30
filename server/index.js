@@ -112,6 +112,12 @@ app.post("/api/recordExercise", (req, res) => {
     res.send(interface.recordExercise(req.body));
 });
 
+app.post("/api/getUserExercises", (req, res) => {
+    console.log("Called correctly!");
+    console.log(req.body);
+    res.send(interface.getUserExercises(req.body));
+});
+
 
 
 

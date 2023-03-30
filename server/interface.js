@@ -182,6 +182,22 @@ class Interface {
 
 
 
+    getUserExercises(body){
+        console.log("Trying to get exercises");
+        console.log(body);
+        
+        //Get all exercises and their names for the given user (based on their token)
+        const stmt = this.database.prepare(
+            'SELECT exercise.id, exercise.user_id, exercise.name, exercise.quantity, exercise.measurement, exercise.date, activity.name AS activity_name FROM exercise INNER JOIN activity ON exercise.type = activity.id WHERE exercise.user_id = ? ORDER BY exercise.date DESC'
+        );
+
+        const info = stmt.all(body.userToken);
+        console.log(info);
+        return info;
+    }
+
+
+
     //All details about an exercise given, checks if valid, then inserts into array
     recordExercise(body){
        //ID here refers to USER ID, NOT ACTIVITY ID OR EXERCISE ID
