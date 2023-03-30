@@ -11,7 +11,7 @@ class Interface {
 
     checkEmail(email) {
         //Returns true if email is not in this.database, false if it is
-        if (!checkEmailFormat(email)) return false; //If email is not in correct format
+        if (!this.checkEmailFormat(email)) return false; //If email is not in correct format
         const stmt = this.database.prepare(
             "SELECT * FROM user WHERE email = ?"
         );
@@ -67,7 +67,7 @@ class Interface {
             return false;
         }
         if (!this.checkEmail(email)) return false;
-        if(!this.checkUsername(username)) return false;
+        if (!this.checkUsername(username)) return false;
         const stmt = this.database.prepare(
             "INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         );
