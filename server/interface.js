@@ -1,9 +1,6 @@
 const dB = require("better-sqlite3");
-const fs = require('fs');
-const path = require('path');
-
-
-
+const fs = require("fs");
+const path = require("path");
 class Interface {
     constructor() {
         this.database = new dB("database.db", {
@@ -15,6 +12,9 @@ class Interface {
 
         //this.database.exec("DROP TABLE EXERCISE");
         //this.database.exec(fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8"));
+        this.database.exec(
+            fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8")
+        );
     }
 
     /*********************************USER**********************************/
@@ -130,7 +130,7 @@ class Interface {
                 return false; //If username and password do not match
             else return info[0].id; //If username and password match
         }
-        body = { id: status }
+        body = { id: status };
     }
 
     checkWeight(weight, tweight, height) {
