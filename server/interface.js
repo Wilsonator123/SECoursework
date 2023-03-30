@@ -1,15 +1,24 @@
 const dB = require("better-sqlite3");
 const fs = require("fs");
 const path = require("path");
+
+/**
+ * This will handle all requests from the server
+ */
+// database.exec(fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8"));
+// database.exec(
+//     fs.readFileSync(path.join(__dirname, "data/activity.sql"), "utf8")
+// );
+// database.exec(
+//     fs.readFileSync(path.join(__dirname, "data/food_drink.sql"), "utf8")
+// );
+// database.exec("DELETE FROM user");
+
 class Interface {
     constructor() {
         this.database = new dB("database.db", {
             verbose: console.log,
         });
-
-        this.database.exec(
-            fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8")
-        );
     }
 
     /*********************************USER**********************************/
