@@ -1,0 +1,23 @@
+.grid-container {
+    display: grid;
+    grid: 100px / auto auto auto;
+}
+.dietBox1, .dietBox2, .dietBox3, .dietBox4 {
+	margin:10px;
+	padding:10px;
+    background:#7EBB94;
+    border-radius: 25px;
+}
+
+.dietBox1 {
+    grid-column: 1;
+}
+.dietBox2 {
+    grid-column: 2;
+}
+.dietBox3 {
+    grid-column: 3;
+}
+.dietBox4 {
+    grid-column: 1 / span 3;
+}
