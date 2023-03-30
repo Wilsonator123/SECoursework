@@ -66,62 +66,15 @@ app.get("/api/checkPassword", (req, res) => {
 });
 
 app.post("/api/login", (req, res) => {
-    //Returns the user's id, or a a false error status otherwise
-    const isValidLogin = interface.checkLogin(req.body.username, req.body.password);
-
-    //returns the user's ID if successful
-    if (isValidLogin){
-        res.send({ id: isValidLogin })
-    }
-
-    //returns an error message if unsuccessful
-    else {
-        res.send(false);
-    }
-
+    res.send(interface.checkLogin(req.body.login, req.body.password));
 });
 
 app.post("/api/createUser", upload.single("file"), (req, res) => {
     var img;
     if (req.body.file === undefined) img = "default.png";
-    else img = body.username + "pp.png";
-    
-    const isValidAccountCreation = interface.createUser(req.body, img);
-
-    //Return data on a successful login including their user id, a
-    // BMI, and a target goal if applicable
-    if (isValidAccountCreation){
-        console.log(isValidAccountCreation);
-        res.send({id: isValidAccountCreation})
-    }    
-    
-    else {
-        res.send(false);
-    }
+    else img = req.body.username + "pp.png";
+    res.send(interface.createUser(req.body, img));
 });
-
-
-/*********************RECORD EXERCISE PAGE**********************/
-
-app.get("/api/getActivities", (req, res) => {
-    res.send(interface.getActivities());
-});
-
-app.post("/api/recordExercise", (req, res) => {
-    console.log("Called correctly!");
-    console.log(req.body);
-    res.send(interface.recordExercise(req.body));
-});
-
-app.post("/api/getUserExercises", (req, res) => {
-    console.log("Called correctly!");
-    console.log(req.body);
-    res.send(interface.getUserExercises(req.body));
-});
-
-
-
-
 
 /*************************HOME PAGE******************************/
 
@@ -133,16 +86,6 @@ app.get("/api/getGoalHistory", (req, res) => {
     res.send(interface.getGoalHistory(req.body.id));
 });
 
-app.post("/api/getBMI", (req, res) => {
-    console.log("Called correctly!");
-    console.log(req.body.id);
-    res.send(JSON.stringify(interface.bmi(req.body.id)));
-});
-
 app.listen(3001, () => {
     console.log("Server running on port 3001");
 });
-
-
-
-
