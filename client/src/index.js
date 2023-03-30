@@ -28,8 +28,8 @@ function Index() {
         const tokenString = localStorage.getItem('token');
         console.log("tokenString");
         console.log(tokenString);
-        if (tokenString === "NOT_SET") {
-            console.log("tokenString is undefined");
+        if (!tokenString){
+            console.log("falsy");
             return null;
         }
         console.log("hello! tokenString is truthy");
