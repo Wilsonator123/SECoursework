@@ -45,6 +45,7 @@ class Interface {
     }
 
     createUser(body, img) {
+        console.log("Body :" + body);
         //Creates a new user
         const {
             username,
@@ -72,6 +73,11 @@ class Interface {
         ) {
             return false;
         }
+        if (!this.checkEmail(email)) return false;
+        if (!this.checkUsername(username)) return false;
+        const stmt = this.database.prepare(
+            "INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        );
 
         const info = stmt.run(
             username,
@@ -92,11 +98,8 @@ class Interface {
                 "SELECT * FROM user WHERE username = ?"
             );
             const info = stmt.all(username);
-            return (body = {
-                user: info[0].id,
-                bmi: this.checkWeight(weight, height, tweight),
-                goal: this.estimateGoal(user),
-            });
+            const user = info[0].id;
+            return (user);
         } else return false;
     }
 
@@ -117,12 +120,12 @@ class Interface {
 
         } else {
             //If its a username
-            if (this.checkUsername(username)) return false; //If username is not in this.database
+            if (this.checkUsername(login)) return false; //If username is not in this.database
             const stmt = this.database.prepare(
                 "SELECT * FROM user WHERE username = ? AND password = ?"
             );
 
-            const info = stmt.all(username, password);
+            const info = stmt.all(login, password);
             if (info.length === 0)
 
                 return false; //If username and password do not match

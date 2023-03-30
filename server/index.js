@@ -91,7 +91,8 @@ app.post("/api/createUser", upload.single("file"), (req, res) => {
     //Return data on a successful login including their user id, a
     // BMI, and a target goal if applicable
     if (isValidAccountCreation){
-        res.send({ data: isValidAccountCreation })
+        console.log(isValidAccountCreation);
+        res.send({id: isValidAccountCreation})
     }    
     
     else {

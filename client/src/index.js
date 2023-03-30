@@ -27,11 +27,13 @@ function Index() {
     const getToken = () => {
         const tokenString = localStorage.getItem('token');
         console.log("tokenString");
-        
-        if (typeof tokenString === Number){
+        console.log(tokenString);
+        console.log(typeof tokenString);
+        if (typeof tokenString === undefined){
             console.log("falsy");
             return null;
         }
+        console.log(tokenString);
         console.log("hello! tokenString is truthy");
         const userToken = JSON.parse(tokenString);
         console.log("userToken: ");
