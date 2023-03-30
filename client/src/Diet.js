@@ -4,7 +4,7 @@ export default function Home() {
     return (
         <div id="pageContainer">
             <h1> DIET PAGE </h1>
-            <div class="grid-container">
+            <div class="grid-container-diet">
             <div class="dietBox1">
                 <h2>Breakfast</h2>
             </div>

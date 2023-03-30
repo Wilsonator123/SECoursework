@@ -1,6 +1,6 @@
-.grid-container {
+.grid-container-goal {
     display: grid;
-    grid: 150px / auto auto;
+    grid: 100px / auto auto;
 }
 .goalBox1, .goalBox2 {
     grid-column: 1;

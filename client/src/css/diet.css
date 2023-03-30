@@ -1,4 +1,4 @@
-.grid-container {
+.grid-container-diet {
     display: grid;
     grid: 100px / auto auto auto;
 }

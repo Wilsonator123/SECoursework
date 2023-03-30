@@ -1,6 +1,6 @@
-.grid-container {
+.grid-container-exercise {
     display: grid;
-    grid: 150px / auto auto;
+    grid: 100px / auto auto;
 }
 .exerciseBox {
     grid-column: 1 / span 2;
