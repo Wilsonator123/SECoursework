@@ -1,11 +1,11 @@
 CREATE TABLE IF NOT EXISTS 'user'(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL unique,
     firstname VARCHAR(255) NOT NULL,
     lastname  VARCHAR(255) NOT NULL,
     gender VARCHAR(255) NOT NULL DEFAULT 'MALE',
     password VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL unique,
     weight INT NOT NULL,
     height INT NOT NULL,
     tweight INT NOT NULL,
