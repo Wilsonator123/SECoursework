@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-
-
+import { useNavigate } from "react-router-dom";
 
 //Create a general form CSS file!
 
-function AccountCreation({ setUserID }) {
+function AccountCreation() {
     //Used to push the user to the home page on a valid account creation
-
+    const navigate = useNavigate();
 
     //All data needed for account creation (could be split up?)
     const [form, setForm] = useState({
@@ -48,8 +47,7 @@ function AccountCreation({ setUserID }) {
 
                 //May need to be updated to another page
                 if (data) {
-                    setUserID(data.user);
-                    
+                    navigate("/account");
                 } else {
                     alert("Invalid account creation details.")
                 }
@@ -282,7 +280,5 @@ function AccountCreation({ setUserID }) {
         </form>
     );
 }
-
-
 
 export default AccountCreation;
