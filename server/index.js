@@ -71,8 +71,8 @@ app.post("/api/login", (req, res) => {
 
 app.post("/api/createUser", upload.single("file"), (req, res) => {
     var img;
-    if (body.file === undefined) img = "default.png";
-    else img = body.username + "pp.png";
+    if (req.body.file === undefined) img = "default.png";
+    else img = req.body.username + "pp.png";
     res.send(interface.createUser(req.body, img));
 });
 

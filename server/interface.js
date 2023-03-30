@@ -38,6 +38,7 @@ class Interface {
     }
 
     createUser(body, img) {
+        console.log("Body :" + body);
         //Creates a new user
         const {
             username,
@@ -65,6 +66,9 @@ class Interface {
         ) {
             return false;
         }
+        const stmt = this.database.prepare(
+            "INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        );
 
         const info = stmt.run(
             username,
