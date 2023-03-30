@@ -66,6 +66,8 @@ class Interface {
         ) {
             return false;
         }
+        if (!this.checkEmail(email)) return false;
+        if(!this.checkUsername(username)) return false;
         const stmt = this.database.prepare(
             "INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         );
