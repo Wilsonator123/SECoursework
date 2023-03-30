@@ -66,6 +66,7 @@ app.get("/api/checkPassword", (req, res) => {
 });
 
 app.post("/api/login", (req, res) => {
+    console.log(interface.checkLogin(req.body.login, req.body.password));
     res.send(interface.checkLogin(req.body.login, req.body.password));
 });
 

@@ -22,7 +22,6 @@ class Interface {
 
     checkEmailFormat(email) {
         //Returns true if email is in correct format, false if it is not
-        console.log("Email: " + email);
         const re = /\S+@\S+\.\S+/; //Regex for email format
         return re.test(email);
     }
@@ -100,6 +99,7 @@ class Interface {
     }
 
     checkLogin(login, password) {
+        console.log("Login: " + login);
         //Returns 0 if login is successful, 1 if login is not in this.database, 2 if login and password do not match
         if (this.checkEmailFormat(login)) {
             //If its an email
@@ -113,7 +113,7 @@ class Interface {
             else return true; //If email and password match
         } else {
             //If its a username
-            if (this.checkUsername(login)) return 1; //If username is not in this.database
+            if (this.checkUsername(login)) return false; //If username is not in this.database
             const stmt = this.database.prepare(
                 "SELECT * FROM user WHERE username = ? AND password = ?"
             );

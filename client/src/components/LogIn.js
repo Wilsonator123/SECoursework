@@ -1,20 +1,15 @@
 import React, { useState } from "react";
 
-
-
 export default function Login({ setToken }) {
     //Used to push the user to the home page on a valid login
 
-
     //All data needed for account creation (could be split up?)
     const [form, setForm] = useState({
-        username: "",
-        password: ""
+        login: "",
+        password: "",
     });
 
-    const [usernameError, setUsernameError] = useState("");
-
-
+    const [loginError, setLoginError] = useState("");
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -25,34 +20,25 @@ export default function Login({ setToken }) {
             headers: {
                 "Content-Type": "application/json",
             },
-
         })
             .then((response) => response.json())
 
             .then((data) => {
-                
-
                 //May need to be updated to another page
                 if (data) {
-
                     setToken(data.id);
                     console.log(data.id);
                     console.log("We can set the token correctly!");
-                    
                 } else {
-                    
-                    alert("Incorrect Password. Please try again.")
+                    alert("Incorrect Password. Please try again.");
                 }
             })
             .catch((error) => {
                 console.error("Error:", error);
-                alert("No account found with that username. Please try again.");
+                alert(error);
             });
     };
 
-
-
-    
     //Handles updates to all of the data in the form
     const handleChange = (event) => {
         setForm({
@@ -61,25 +47,19 @@ export default function Login({ setToken }) {
         });
     };
 
-
-
-
-
     return (
         <form onSubmit={handleSubmit}>
-
-
-            <label htmlFor="username">Username:</label>
+            <label htmlFor="login">Email or Password:</label>
             <input
                 type="text"
-                id="username"
-                name="username"
-                value={form.username}
+                id="login"
+                name="login"
+                value={form.login}
                 onChange={handleChange}
             />
 
-            {usernameError && <p>{usernameError}</p>}
-            
+            {loginError && <p>{loginError}</p>}
+
             <br />
 
             <label htmlFor="password">Password:</label>
@@ -91,12 +71,8 @@ export default function Login({ setToken }) {
                 onChange={handleChange}
             />
 
-            <br/>
+            <br />
             <button type="submit">Log In</button>
-
         </form>
-            )
+    );
 }
-
-
-
