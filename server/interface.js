@@ -110,7 +110,9 @@ class Interface {
         //Returns the user's id if successful, false if login is not in this.database,
         if (this.checkEmailFormat(login)) {
             //If its an email
+
             if (this.checkEmail(login)) return false; //If email is not in this.database
+
             const stmt = this.database.prepare(
                 "SELECT id FROM user WHERE email = ? AND password = ?"
             );
@@ -127,8 +129,10 @@ class Interface {
 
             const info = stmt.all(username, password);
             if (info.length === 0)
+
                 return false; //If username and password do not match
             else return info[0].id; //If username and password match
+
         }
         body = { id: status };
     }
