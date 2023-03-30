@@ -103,25 +103,25 @@ class Interface {
         //Returns 0 if login is successful, 1 if login is not in this.database, 2 if login and password do not match
         if (this.checkEmailFormat(login)) {
             //If its an email
-            if (this.checkEmail(login)) return 1; //If email is not in this.database
+            if (this.checkEmail(login)) return false; //If email is not in this.database
             const stmt = this.database.prepare(
                 "SELECT * FROM user WHERE email = ? AND password = ?"
             );
             const info = stmt.all(login, password);
             if (info.length === 0)
-                return 2; //If email and password do not match
-            else return 0; //If email and password match
+                return false; //If email and password do not match
+            else return true; //If email and password match
         } else {
             //If its a username
-            if (this.checkUsername(username)) return 1; //If username is not in this.database
+            if (this.checkUsername(login)) return 1; //If username is not in this.database
             const stmt = this.database.prepare(
                 "SELECT * FROM user WHERE username = ? AND password = ?"
             );
 
-            const info = stmt.all(username, password);
+            const info = stmt.all(login, password);
             if (info.length === 0)
-                return 2; //If username and password do not match
-            else return 0; //If username and password match
+                return false; //If username and password do not match
+            else return true; //If username and password match
         }
     }
 
