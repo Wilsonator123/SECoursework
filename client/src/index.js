@@ -28,7 +28,7 @@ function Index() {
         const tokenString = localStorage.getItem('token');
         console.log("tokenString");
         console.log(tokenString);
-        if (!tokenString){
+        if (tokenString.value === undefined){
             console.log("falsy");
             return null;
         }
