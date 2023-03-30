@@ -1,20 +1,14 @@
 const dB = require("better-sqlite3");
-const fs = require('fs');
-const path = require('path');
-
-
-
+const fs = require("fs");
+const path = require("path");
 class Interface {
     constructor() {
         this.database = new dB("database.db", {
             verbose: console.log,
         });
-
-
-        //IMPORTANT DATABASE STUFF WE MIGHT NEED AGAIN!
-
-        //this.database.exec("DROP TABLE EXERCISE");
-        //this.database.exec(fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8"));
+        this.database.exec(
+            fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8")
+        );
     }
 
     /*********************************USER**********************************/
@@ -110,7 +104,9 @@ class Interface {
         //Returns the user's id if successful, false if login is not in this.database,
         if (this.checkEmailFormat(login)) {
             //If its an email
+
             if (this.checkEmail(login)) return false; //If email is not in this.database
+
             const stmt = this.database.prepare(
                 "SELECT id FROM user WHERE email = ? AND password = ?"
             );
@@ -118,6 +114,7 @@ class Interface {
             if (info.length === 0)
                 return false; //If email and password do not match
             else return info[0].id; //If email and password match
+
         } else {
             //If its a username
             if (this.checkUsername(username)) return false; //If username is not in this.database
@@ -127,10 +124,12 @@ class Interface {
 
             const info = stmt.all(username, password);
             if (info.length === 0)
+
                 return false; //If username and password do not match
             else return info[0].id; //If username and password match
+
         }
-        body = { id: status }
+        body = { id: status };
     }
 
     checkWeight(weight, tweight, height) {
