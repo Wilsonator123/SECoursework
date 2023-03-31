@@ -121,6 +121,16 @@ app.post("/api/getUserExercises", (req, res) => {
 
 
 
+/*********************RECORD MEAL PAGE**********************/
+
+app.post("/api/getFood", (req, res) => {
+    console.log("Getting food in index");
+    console.log(req.body);
+    res.send(interface.getFood(req.body));
+});
+
+
+
 
 
 /*************************HOME PAGE******************************/

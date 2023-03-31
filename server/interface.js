@@ -9,6 +9,9 @@ class Interface {
         this.database.exec(
             fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8")
         );
+
+        //this.database.exec("DROP TABLE MEAL");
+        
     }
 
     /*********************************USER**********************************/
@@ -240,6 +243,25 @@ class Interface {
 
 
     }
+
+
+    /********************************MEALS********************************/
+
+    getFood(body){
+
+        console.log("Trying to get food");
+        const stmt = this.database.prepare(
+            "SELECT * FROM food WHERE createdBy = ? OR createdBy = 0"
+        );
+        const info = stmt.all(body.userToken);
+        console.log(info);
+        return info;
+    }
+
+
+
+
+
 
     /*********************************GOALS**********************************/
 

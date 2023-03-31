@@ -1,5 +1,7 @@
 
 import HealthDetails from "./components/HealthDetails";
+import MealHistory from "./components/MealHistory";
+
 import React, { useState, useEffect } from "react";
 
 export default function Account({ userID }) {
@@ -64,6 +66,10 @@ export default function Account({ userID }) {
 
             <br/><br/>
 
+
+
+
+
             <div>
                 <h2>Exercise History:</h2>
 
@@ -78,6 +84,15 @@ export default function Account({ userID }) {
                      ))}
                 
             </div>
+
+
+            <br/><br/>
+
+            <div>
+                <h2>Meal History</h2>
+                {/*<MealHistory />*/}
+
+            </div>   
 
         </div>
     );
