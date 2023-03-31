@@ -237,7 +237,7 @@ class Interface {
         );
 
         const result = stmt.run(id, name, quantity, measurement, date, activity);
-        return true;
+        return result;
 
 
 
@@ -256,6 +256,68 @@ class Interface {
         const info = stmt.all(body.userToken);
         console.log(info);
         return info;
+    }
+
+
+
+    getDrink(body){
+
+        console.log("Trying to get drink");
+        const stmt = this.database.prepare(
+            "SELECT * FROM drink WHERE createdBy = ? OR createdBy = 0"
+        );
+        const info = stmt.all(body.userToken);
+        console.log(info);
+        return info;
+    }
+
+
+        //All details about an exercise given, checks if valid, then inserts into array
+    recordMeal(body){
+       //ID here refers to USER ID, NOT ACTIVITY ID OR EXERCISE ID
+
+       console.log(body);
+
+        const {
+            user_id,
+            name,
+            mealType,
+            food,
+            foodAmount,
+            drink,
+            drinkAmount
+        } = body;
+
+
+        if (
+            user_id === "" ||
+            name === "" ||
+            mealType === "" ||
+            food === "" ||
+            foodAmount === "" ||
+            drink === "" ||
+            drinkAmount === ""
+        ) {
+            return false;
+        }
+
+        console.log(user_id);
+        console.log(name);
+        console.log(typeof user_id);
+
+
+        const date = new Date().toLocaleDateString('en-GB');
+
+        const stmt = this.database.prepare(
+            'INSERT INTO meal (user_id, name, mealType, food, foodAmount, drink, drinkAmount, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+        );
+
+        const result = stmt.run(user_id, name, mealType, food, foodAmount, drink, drinkAmount, date);
+        return true;
+
+
+
+
     }
 
 
