@@ -1,20 +1,17 @@
 const dB = require("better-sqlite3");
-const fs = require('fs');
-const path = require('path');
-
-
-
+const fs = require("fs");
+const path = require("path");
 class Interface {
     constructor() {
         this.database = new dB("database.db", {
             verbose: console.log,
         });
+        this.database.exec(
+            fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8")
+        );
 
-
-        //IMPORTANT DATABASE STUFF WE MIGHT NEED AGAIN!
-
-        //this.database.exec("DROP TABLE EXERCISE");
-        //this.database.exec(fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8"));
+        //this.database.exec("DROP TABLE MEAL");
+        
     }
 
     /*********************************USER**********************************/
@@ -51,6 +48,7 @@ class Interface {
     }
 
     createUser(body, img) {
+        console.log("Body :" + body);
         //Creates a new user
         const {
             username,
@@ -78,6 +76,11 @@ class Interface {
         ) {
             return false;
         }
+        if (!this.checkEmail(email)) return false;
+        if (!this.checkUsername(username)) return false;
+        const stmt = this.database.prepare(
+            "INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        );
 
         const info = stmt.run(
             username,
@@ -98,11 +101,8 @@ class Interface {
                 "SELECT * FROM user WHERE username = ?"
             );
             const info = stmt.all(username);
-            return (body = {
-                user: info[0].id,
-                bmi: this.checkWeight(weight, height, tweight),
-                goal: this.estimateGoal(user),
-            });
+            const user = info[0].id;
+            return (user);
         } else return false;
     }
 
@@ -110,7 +110,9 @@ class Interface {
         //Returns the user's id if successful, false if login is not in this.database,
         if (this.checkEmailFormat(login)) {
             //If its an email
+
             if (this.checkEmail(login)) return false; //If email is not in this.database
+
             const stmt = this.database.prepare(
                 "SELECT id FROM user WHERE email = ? AND password = ?"
             );
@@ -118,19 +120,22 @@ class Interface {
             if (info.length === 0)
                 return false; //If email and password do not match
             else return info[0].id; //If email and password match
+
         } else {
             //If its a username
-            if (this.checkUsername(username)) return false; //If username is not in this.database
+            if (this.checkUsername(login)) return false; //If username is not in this.database
             const stmt = this.database.prepare(
                 "SELECT * FROM user WHERE username = ? AND password = ?"
             );
 
-            const info = stmt.all(username, password);
+            const info = stmt.all(login, password);
             if (info.length === 0)
+
                 return false; //If username and password do not match
             else return info[0].id; //If username and password match
+
         }
-        body = { id: status }
+        body = { id: status };
     }
 
     checkWeight(weight, tweight, height) {
@@ -232,12 +237,93 @@ class Interface {
         );
 
         const result = stmt.run(id, name, quantity, measurement, date, activity);
+        return result;
+
+
+
+
+    }
+
+
+    /********************************MEALS********************************/
+
+    getFood(body){
+
+        console.log("Trying to get food");
+        const stmt = this.database.prepare(
+            "SELECT * FROM food WHERE createdBy = ? OR createdBy = 0"
+        );
+        const info = stmt.all(body.userToken);
+        console.log(info);
+        return info;
+    }
+
+
+
+    getDrink(body){
+
+        console.log("Trying to get drink");
+        const stmt = this.database.prepare(
+            "SELECT * FROM drink WHERE createdBy = ? OR createdBy = 0"
+        );
+        const info = stmt.all(body.userToken);
+        console.log(info);
+        return info;
+    }
+
+
+        //All details about an exercise given, checks if valid, then inserts into array
+    recordMeal(body){
+       //ID here refers to USER ID, NOT ACTIVITY ID OR EXERCISE ID
+
+       console.log(body);
+
+        const {
+            user_id,
+            name,
+            mealType,
+            food,
+            foodAmount,
+            drink,
+            drinkAmount
+        } = body;
+
+
+        if (
+            user_id === "" ||
+            name === "" ||
+            mealType === "" ||
+            food === "" ||
+            foodAmount === "" ||
+            drink === "" ||
+            drinkAmount === ""
+        ) {
+            return false;
+        }
+
+        console.log(user_id);
+        console.log(name);
+        console.log(typeof user_id);
+
+
+        const date = new Date().toLocaleDateString('en-GB');
+
+        const stmt = this.database.prepare(
+            'INSERT INTO meal (user_id, name, mealType, food, foodAmount, drink, drinkAmount, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+        );
+
+        const result = stmt.run(user_id, name, mealType, food, foodAmount, drink, drinkAmount, date);
         return true;
 
 
 
 
     }
+
+
+
+
+
 
     /*********************************GOALS**********************************/
 

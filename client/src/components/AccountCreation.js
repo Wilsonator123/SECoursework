@@ -4,7 +4,7 @@ import React, { useState } from "react";
 
 //Create a general form CSS file!
 
-function AccountCreation({ setUserID }) {
+function AccountCreation({ setToken }) {
     //Used to push the user to the home page on a valid account creation
 
 
@@ -45,10 +45,10 @@ function AccountCreation({ setUserID }) {
 
             .then((data) => {
                 
-
                 //May need to be updated to another page
                 if (data) {
-                    setUserID(data.user);
+                    
+                    setToken(data.id);
                     
                 } else {
                     alert("Invalid account creation details.")
