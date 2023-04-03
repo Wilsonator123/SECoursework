@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 
-//Used on the Record Meal page to add a new food item
-export default function NewFood({getFood}) {
+//Used on the Record Meal page to add a new drink item
+export default function NewFood({getDrink}) {
 
     //Get the user's id stored in session storage
     const tokenString = localStorage.getItem('token');
@@ -11,7 +11,7 @@ export default function NewFood({getFood}) {
     console.log(tokenString);
 
 
-    const [foodMessage, setFoodMessage] = useState();
+    const [drinkMessage, setDrinkMessage] = useState();
 
     const [form, setForm] = useState({
         id: tokenString,
@@ -25,7 +25,7 @@ export default function NewFood({getFood}) {
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log(form);
-        fetch("http://localhost:3001/api/recordNewFood", {
+        fetch("http://localhost:3001/api/recordNewDrink", {
             method: "POST",
             body: JSON.stringify(form),
             headers: {
@@ -39,8 +39,8 @@ export default function NewFood({getFood}) {
         
                 
                 if (data) {
-                    setFoodMessage("Added new food item!");
-                    getFood();
+                    setDrinkMessage("Added new food item!");
+                    getDrink();
                     setForm({
                         name: "",
                         calories: ""
@@ -48,12 +48,12 @@ export default function NewFood({getFood}) {
                     
                     
                 } else {
-                    setFoodMessage("Failed to add new food item.");
+                    setDrinkMessage("Failed to add new food item.");
                 }
             })
             .catch((error) => {
                 console.error("Error:", error);
-                setFoodMessage("An error has occurred.");
+                setDrinkMessage("An error has occurred.");
             });
     };
 
@@ -73,7 +73,7 @@ export default function NewFood({getFood}) {
     return (
         <div>
             <br/>
-            <h2>Add New Food:</h2>
+            <h2>Add New Drink:</h2>
         <form onSubmit={handleSubmit}>
 
 
@@ -90,7 +90,7 @@ export default function NewFood({getFood}) {
   
 
 
-            <label htmlFor="calories">Calories per 100g:</label>
+            <label htmlFor="calories">Calories per 100ml:</label>
             <input
                 type="number"
                 id="calories"
@@ -104,9 +104,9 @@ export default function NewFood({getFood}) {
 
             <br/>
 
-            <button type="submit">Add Food</button>
+            <button type="submit">Add Drink</button>
 
-            <p>{foodMessage}</p>
+            <p>{drinkMessage}</p>
 
         </form>
         </div>

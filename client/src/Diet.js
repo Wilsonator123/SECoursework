@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import NewFood from "./components/NewFood";
+import NewDrink from "./components/NewDrink";
 
 
 export default function Diet() {
@@ -32,6 +33,7 @@ export default function Diet() {
     //And also the list of drinks
     const [food, setFood] = useState([]);
     const [drink, setDrink] = useState([]);
+
 
     //Update the foods when food changes (will be used when a new one added)
     useEffect(() => {
@@ -148,12 +150,13 @@ export default function Diet() {
 
 
 
+
+
+
     return (
         <div id="pageContainer">
             <h1> RECORD MEAL </h1>
 
-            <NewFood getFood = {getFood} />
-            <br/>
             <br/>
         <form onSubmit={handleSubmit}>
 
@@ -181,8 +184,6 @@ export default function Diet() {
             </select>
 
             <br/>
-
-
 
             <label htmlFor="food">Food:</label>
             <select name="food" type="number" value={form.food} onChange={(event) =>
@@ -252,6 +253,14 @@ export default function Diet() {
             <button type="submit">Record Meal</button>
 
         </form>
+
+        <br/>
+            <NewFood getFood={getFood} />
+        <br/>
+
+        <br/>
+            <NewDrink getDrink={getDrink} />
+        <br/>
             
         </div>
     );

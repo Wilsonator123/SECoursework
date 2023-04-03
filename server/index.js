@@ -137,6 +137,11 @@ app.post("/api/recordNewFood", (req, res) => {
     res.send(interface.recordNewFood(req.body));
 });
 
+app.post("/api/recordNewDrink", (req, res) => {
+    console.log(req.body);
+    res.send(interface.recordNewDrink(req.body));
+});
+
 
 
 app.post("/api/recordMeal", (req, res) => {

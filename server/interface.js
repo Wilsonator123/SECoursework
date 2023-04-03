@@ -285,9 +285,38 @@ class Interface {
          const result = stmt.run(name, calories, id);
          return result;
  
+     }
+
+
+
+
+     recordNewDrink(body){
+        //ID here refers to USER ID
+         const {
+             id,
+             name,
+             calories
+         } = body;
+
+
+         if (
+             id === "" ||
+             name === "" ||
+             calories === ""
+         ) {
+             return false;
+         }
+
+         console.log(body);
+
+         const stmt = this.database.prepare(
+             'INSERT INTO drink (name, calories, createdBy) VALUES (?, ?, ?)'
+         );
  
+         const result = stmt.run(name, calories, id);
+         return result;
  
- 
+
      }
 
 
