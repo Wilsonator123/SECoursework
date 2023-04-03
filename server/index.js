@@ -66,15 +66,94 @@ app.get("/api/checkPassword", (req, res) => {
 });
 
 app.post("/api/login", (req, res) => {
-    res.send(interface.checkLogin(req.body.login, req.body.password));
+    //Returns the user's id, or a a false error status otherwise
+    const isValidLogin = interface.checkLogin(req.body.username, req.body.password);
+
+    //returns the user's ID if successful
+    if (isValidLogin){
+        res.send({ id: isValidLogin })
+    }
+
+    //returns an error message if unsuccessful
+    else {
+        res.send(false);
+    }
+
 });
 
 app.post("/api/createUser", upload.single("file"), (req, res) => {
     var img;
     if (req.body.file === undefined) img = "default.png";
-    else img = req.body.username + "pp.png";
-    res.send(interface.createUser(req.body, img));
+
+    else img = body.username + "pp.png";
+    
+    const isValidAccountCreation = interface.createUser(req.body, img);
+    //Return data on a successful login including their user id, a
+    // BMI, and a target goal if applicable
+    if (isValidAccountCreation){
+        console.log(isValidAccountCreation);
+        res.send({id: isValidAccountCreation})
+    }    
+    
+    else {
+        res.send(false);
+    }
+
 });
+
+
+/*********************RECORD EXERCISE PAGE**********************/
+
+app.get("/api/getActivities", (req, res) => {
+    res.send(interface.getActivities());
+});
+
+app.post("/api/recordExercise", (req, res) => {
+    console.log(req.body);
+    res.send(interface.recordExercise(req.body));
+});
+
+app.post("/api/getUserExercises", (req, res) => {
+    console.log(req.body);
+    res.send(interface.getUserExercises(req.body));
+});
+
+
+
+/*********************RECORD MEAL PAGE**********************/
+
+app.post("/api/getFood", (req, res) => {
+    console.log("Getting food in index");
+    console.log(req.body);
+    res.send(interface.getFood(req.body));
+});
+
+app.post("/api/getDrink", (req, res) => {
+    console.log(req.body);
+    res.send(interface.getDrink(req.body));
+});
+
+app.post("/api/recordNewFood", (req, res) => {
+    console.log(req.body);
+    res.send(interface.recordNewFood(req.body));
+});
+
+app.post("/api/recordNewDrink", (req, res) => {
+    console.log(req.body);
+    res.send(interface.recordNewDrink(req.body));
+});
+
+
+
+app.post("/api/recordMeal", (req, res) => {
+    console.log(req.body);
+    res.send(interface.recordMeal(req.body));
+});
+
+
+
+
+
 
 /*************************HOME PAGE******************************/
 
@@ -86,6 +165,16 @@ app.get("/api/getGoalHistory", (req, res) => {
     res.send(interface.getGoalHistory(req.body.id));
 });
 
+app.post("/api/getBMI", (req, res) => {
+    console.log("Called correctly!");
+    console.log(req.body.id);
+    res.send(JSON.stringify(interface.bmi(req.body.id)));
+});
+
 app.listen(3001, () => {
     console.log("Server running on port 3001");
 });
+
+
+
+
