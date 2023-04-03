@@ -259,6 +259,38 @@ class Interface {
     }
 
 
+    recordNewFood(body){
+        //ID here refers to USER ID
+         const {
+             id,
+             name,
+             calories
+         } = body;
+
+
+         if (
+             id === "" ||
+             name === "" ||
+             calories === ""
+         ) {
+             return false;
+         }
+
+         console.log(body);
+
+         const stmt = this.database.prepare(
+             'INSERT INTO food (name, calories, createdBy) VALUES (?, ?, ?)'
+         );
+ 
+         const result = stmt.run(name, calories, id);
+         return result;
+ 
+ 
+ 
+ 
+     }
+
+
 
     getDrink(body){
 
@@ -314,10 +346,6 @@ class Interface {
 
         const result = stmt.run(user_id, name, mealType, food, foodAmount, drink, drinkAmount, date);
         return true;
-
-
-
-
     }
 
 

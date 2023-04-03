@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import NewFood from "./components/NewFood";
 
 
 export default function Diet() {
@@ -151,7 +152,9 @@ export default function Diet() {
         <div id="pageContainer">
             <h1> RECORD MEAL </h1>
 
-
+            <NewFood getFood = {getFood} />
+            <br/>
+            <br/>
         <form onSubmit={handleSubmit}>
 
 
