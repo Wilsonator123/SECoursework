@@ -33,7 +33,7 @@ export default function MealHistory() {
             setMeals(data);
             console.log(meals);       
             } else {
-                    alert("Could not find mealsfor this user.")
+                    alert("Could not find meals for this user.")
                 }
             })
             .catch((error) => {
