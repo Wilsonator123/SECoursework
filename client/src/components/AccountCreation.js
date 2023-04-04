@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
+
 
 //Create a general form CSS file!
 
@@ -133,8 +134,8 @@ function AccountCreation() {
     };
 
     //Returns the account creation form that we need
-    return (
-        <form onSubmit={handleSubmit}>
+    return ( 
+        <form class="app-form" onSubmit={handleSubmit}> 
             <label htmlFor="username">Username:</label>
             <input
                 type="text"
@@ -276,7 +277,7 @@ function AccountCreation() {
             <br />
             <br />
 
-            <button type="submit">Create Account</button>
+            <button class="submit-btn" type="submit">Create Account</button>
         </form>
     );
 }
