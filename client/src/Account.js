@@ -74,14 +74,15 @@ export default function Account({ userID }) {
                 <h2>Exercise History:</h2>
 
                 {/*Gets ALL the exercises and maps them in divs*/}
-                {userExercises.map(userExercise=> (
+                {userExercises.map(userExercise => 
+                (
                     <div key={userExercise.id}>
                         <p>{userExercise.name}</p>
                         <p>{userExercise.activity_name}: {userExercise.quantity} {userExercise.measurement}</p>
                         <p>Date: {userExercise.date}</p>
                         <br/>
                     </div>
-                     ))}
+                ))}
                 
             </div>
 
