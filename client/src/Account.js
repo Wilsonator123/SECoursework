@@ -1,13 +1,17 @@
-
 import HealthDetails from "./components/HealthDetails";
 
+
 import React, { useState, useEffect } from "react";
+
 
 export default function Account({ userID }) {
 
     //Used to get all exercises a user has done
     const [userExercises, setUserExercises] = useState([]);
+    const [userMeals, setUserMeals] = useState([]);
 
+    //Used to get the date for which we want to view exercises and meals
+    const [date, setDate] = useState(new Date());
 
     //Used to get users id from session storage
     const tokenString = localStorage.getItem('token');
@@ -15,17 +19,7 @@ export default function Account({ userID }) {
     const userToken = JSON.parse(tokenString);
 
 
-    const [userMeals, setUserMeals] = useState([]);
-
-    //Used to get the date for which we want to view exercises and meals
-    const [date, setDate] = useState(new Date());
-
-
-
-
-
-
-
+    //Fetch a list of all the exercises on the current date
     const getExercise = (date) => {
         fetch("http://localhost:3001/api/getUserExercises", {
             method: "POST",
@@ -54,7 +48,7 @@ export default function Account({ userID }) {
             
         }
 
-
+    
         const getMeals = (date) => {
             fetch("http://localhost:3001/api/getUserMeals", {
                 method: "POST",
@@ -114,6 +108,10 @@ export default function Account({ userID }) {
 
 
 
+
+
+
+
     return (
         <div id="pageContainer">
             <h1> ACCOUNT PAGE </h1>
@@ -126,6 +124,7 @@ export default function Account({ userID }) {
             <br/><br/>
 
 
+
             <div>
             <button onClick={goToPrevDay}> Previous </button>
                 <p>Date: {date.toLocaleDateString("en-GB")}</p>    
@@ -135,23 +134,25 @@ export default function Account({ userID }) {
             <br/><br/>
 
 
+
             <div>
                 <h2>Exercise History:</h2>
 
-                {/*Gets ALL the exercises and maps them in divs*/}
+                {/*Gets the exercises and maps them in divs*/}
                 {userExercises.map(userExercise=> (
                     <div key={userExercise.id}>
+                        <br/>
                         <p>{userExercise.name}</p>
                         <p>{userExercise.activity_name}: {userExercise.quantity} {userExercise.measurement}</p>
-                        <p>Date: {userExercise.date}</p>
-                        <br/>
+                        
                     </div>
-                     ))}
+                ))}
                 
             </div>
 
 
             <br/><br/>
+
             <div>
                 <h2>Meal History: </h2>
                 
@@ -171,12 +172,13 @@ export default function Account({ userID }) {
 
 
                     {userMeals.reduce((total, userMeal) => total + ((userMeal.foodAmount / 100 * userMeal.food_calories) + (userMeal.drinkAmount / 100 * userMeal.drink_calories)), "") && 
+
                         <div> 
                             <br/>
                             <p>Total: {userMeals.reduce((total, userMeal) => total + ((userMeal.foodAmount / 100 * userMeal.food_calories) + (userMeal.drinkAmount / 100 * userMeal.drink_calories)), 0)} kcals</p> 
-                        </div>    }
 
-        </div>
+                        </div> }
+             </div>
         </div>
     );
 }
