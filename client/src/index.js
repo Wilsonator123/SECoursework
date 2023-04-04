@@ -14,6 +14,8 @@ import Group from "./Group";
 import History from "./History";
 import Navbar from "./Navbar";
 
+
+
 //------------------------REFERENCE-----------------------------//
 //Login authentication and storing user ID tokens adapted from tutorial:
 // https://www.digitalocean.com/community/tutorials/how-to-add-login-authentication-to-react-applications
@@ -24,10 +26,17 @@ function Index() {
     //Gets the token (i.e. the userID from the session storage)
     const getToken = () => {
         const tokenString = localStorage.getItem('token');
+        console.log("tokenString");
+        console.log(tokenString);
+        console.log(typeof tokenString);
+        if (typeof tokenString === undefined){
+            console.log("falsy");
+            return null;
+        }
+        console.log(tokenString);
+        console.log("hello! tokenString is truthy");
         const userToken = JSON.parse(tokenString);
         console.log("userToken: ");
-        console.log(userToken);
-        console.log("getting token: ")
         console.log(userToken);
         return userToken;
       };
@@ -40,7 +49,7 @@ function Index() {
     //saves the token (userID) to session storage
     const saveToken = (userToken) => {
         localStorage.setItem("token", JSON.stringify(userToken));
-        setToken(userToken.token);
+        setToken(userToken);
         console.log(userToken.token);
         //We need to refresh as otherwise it stays on the login page?
         //And cause the App component isnt in a browser router with the
@@ -90,5 +99,3 @@ function Index() {
 //all other pages there
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<Index />);
-
- 
