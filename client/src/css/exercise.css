@@ -1,0 +1,15 @@
+.grid-container-exercise {
+    display: grid;
+    grid: 100px / auto auto;
+}
+.exerciseBox {
+    grid-column: 1 / span 2;
+	margin:10px;
+	padding:10px;
+    background:#7FACBF;
+    border-radius: 25px;
+}
+
+
+
+
