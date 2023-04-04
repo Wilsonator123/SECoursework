@@ -118,6 +118,11 @@ app.post("/api/getUserExercises", (req, res) => {
     res.send(interface.getUserExercises(req.body));
 });
 
+app.post("/api/getUserMeals", (req, res) => {
+    console.log(req.body);
+    res.send(interface.getUserMeals(req.body));
+});
+
 
 
 /*********************RECORD MEAL PAGE**********************/
