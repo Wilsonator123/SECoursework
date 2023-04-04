@@ -84,10 +84,10 @@ app.post("/api/login", (req, res) => {
 app.post("/api/createUser", upload.single("file"), (req, res) => {
     var img;
     if (req.body.file === undefined) img = "default.png";
+
     else img = body.username + "pp.png";
     
     const isValidAccountCreation = interface.createUser(req.body, img);
-
     //Return data on a successful login including their user id, a
     // BMI, and a target goal if applicable
     if (isValidAccountCreation){
@@ -98,6 +98,7 @@ app.post("/api/createUser", upload.single("file"), (req, res) => {
     else {
         res.send(false);
     }
+
 });
 
 
