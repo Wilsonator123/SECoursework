@@ -193,10 +193,10 @@ class Interface {
         
         //Get all exercises and their names for the given user (based on their token)
         const stmt = this.database.prepare(
-            'SELECT exercise.id, exercise.user_id, exercise.name, exercise.quantity, exercise.measurement, exercise.date, activity.name AS activity_name FROM exercise INNER JOIN activity ON exercise.type = activity.id WHERE exercise.user_id = ? ORDER BY exercise.date DESC'
+            'SELECT exercise.id, exercise.user_id, exercise.name, exercise.quantity, exercise.measurement, exercise.date, activity.name AS activity_name FROM exercise INNER JOIN activity ON exercise.type = activity.id WHERE exercise.user_id = ? AND exercise.date = ?'
         );
 
-        const info = stmt.all(body.userToken);
+        const info = stmt.all(body.id, body.date);
         console.log(info);
         return info;
     }

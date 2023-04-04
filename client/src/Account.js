@@ -9,6 +9,8 @@ export default function Account({ userID }) {
     //Used to get all exercises a user has done
     const [userExercises, setUserExercises] = useState([]);
 
+    //Used to get the date for which we want to view exercises and meals
+    const [date, setDate] = useState(new Date());
 
     //Used to get users id from session storage
     const tokenString = localStorage.getItem('token');
@@ -16,11 +18,11 @@ export default function Account({ userID }) {
     const userToken = JSON.parse(tokenString);
 
 
-    //Fetch a list of all the exercises
-    useEffect(() => {
+    //Fetch a list of all the exercises on the current date
+    const getExercise = () => {
         fetch("http://localhost:3001/api/getUserExercises", {
             method: "POST",
-            body: JSON.stringify({userToken}),
+            body: JSON.stringify({id: userToken, date: date.toLocaleDateString("en-GB")}),
             headers: {
                 "Content-Type": "application/json",
             },
@@ -43,7 +45,31 @@ export default function Account({ userID }) {
                 console.error("Error:", error);
             })
             
+        }
+
+    
+
+
+    useEffect(() => {
+        getExercise();
+            
         }, []);
+
+
+        //Change the date for which we get exercises and meals when
+        //arrow buttons are pressed
+        //Keep it in the lovely DD-MM-YYYY format
+        const goToPrevDay = () => {
+            const prevDay = new Date(date.getTime() - (24 * 60 * 60 * 1000));
+            setDate(prevDay);
+            getExercise();
+          };
+        
+        const goToNextDay = () => {
+            const nextDay = new Date(date.getTime() + (24 * 60 * 60 * 1000));
+            setDate(nextDay);
+            getExercise();
+        };
 
 
 
@@ -67,6 +93,14 @@ export default function Account({ userID }) {
             <br/><br/>
 
 
+
+            <div>
+            <button onClick={goToPrevDay}> Previous </button>
+                <p>Date: {date.toLocaleDateString("en-GB")}</p>    
+            <button onClick={goToNextDay}> Next </button>
+            </div>
+
+            <br/><br/>
 
 
 
