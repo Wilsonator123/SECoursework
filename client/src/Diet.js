@@ -159,124 +159,113 @@ export default function Diet() {
             <h1> DIET PAGE </h1>
             <div class="grid-container-diet">
             <div class="dietBox1">
-                <h2>Breakfast</h2>
+                <h2>Record Meal</h2>
+                <form class="meal-form" onSubmit={handleSubmit}>
+
+
+<label htmlFor="name">Name:</label>
+<input
+    type="text"
+    id="name"
+    name="name"
+    value={form.name}
+    onChange={handleChange}
+/>
+
+<br />
+
+<label htmlFor="mealType">Meal Type: </label>
+<select name="mealType" value={form.mealType} onChange={handleChange}>
+    <option disabled value="">
+        Select
+    </option>
+    <option value="breakfast">Breakfast</option>
+    <option value="lunch">Lunch</option>
+    <option value="dinner">Dinner</option>
+    <option value="snack">Snack</option>
+</select>
+
+<br/>
+
+<label htmlFor="food">Food:</label>
+<select name="food" type="number" value={form.food} onChange={(event) =>
+        setForm({ ...form, food: parseInt(event.target.value) })
+    }>
+        
+        <option disabled value="">Select</option>
+
+        {/*Gets ALL the activities and maps them in a list*/}
+        {food.map(food => (
+            <option key={food.id} value={food.id}>
+            {food.name}
+        </option>
+         ))}
+</select>
+
+<br/>
+
+<label htmlFor="quantity">Quantity (grams):</label>
+<input
+    type="number"
+    id="quantity"
+    name="quantity"
+    value={form.foodAmount}
+    min="0"
+    onChange={(event) =>
+        setForm({ ...form, foodAmount: parseInt(event.target.value) })
+    }
+/>
+
+<br/>
+
+<label htmlFor="drink">Drink:</label>
+<select name="drink" type="number" value={form.drink} onChange={(event) =>
+        setForm({ ...form, drink: parseInt(event.target.value) })
+    }>
+        
+        <option disabled value="">Select</option>
+
+        {/*Gets ALL the activities and maps them in a list*/}
+        {drink.map(drink => (
+            <option key={drink.id} value={drink.id}>
+            {drink.name}
+        </option>
+         ))}
+</select> 
+
+
+<br/>
+
+<label htmlFor="quantity">Quantity (ml):</label>
+<input
+    type="number"
+    id="quantity"
+    name="quantity"
+    value={form.drinkAmount}
+    min="0"
+    onChange={(event) =>
+        setForm({ ...form, drinkAmount: parseInt(event.target.value) })
+    }
+/> 
+
+
+<br/>
+
+
+<button class="meal-btn" type="submit">Record Meal</button>
+
+</form>
+                
             </div>
             <div class="dietBox2">
-                <h2>Lunch</h2>
+                <NewFood getFood={getFood} />   
             </div>
             <div class="dietBox3">
-                <h2>Dinner</h2>
+                <NewDrink getDrink={getDrink} />
             </div>
             </div>
-            <div class="dietBox4">
-                <h2>Snack</h2>
-            </div>
-            <h1> RECORD MEAL </h1>
-
-            <br/>
-        <form onSubmit={handleSubmit}>
 
 
-            <label htmlFor="name">Name:</label>
-            <input
-                type="text"
-                id="name"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-            />
-        
-            <br />
-
-            <label htmlFor="mealType">Meal Type: </label>
-            <select name="mealType" value={form.mealType} onChange={handleChange}>
-                <option disabled value="">
-                    Select
-                </option>
-                <option value="breakfast">Breakfast</option>
-                <option value="lunch">Lunch</option>
-                <option value="dinner">Dinner</option>
-                <option value="snack">Snack</option>
-            </select>
-
-            <br/>
-
-            <label htmlFor="food">Food:</label>
-            <select name="food" type="number" value={form.food} onChange={(event) =>
-                    setForm({ ...form, food: parseInt(event.target.value) })
-                }>
-                    
-                    <option disabled value="">Select</option>
-
-                    {/*Gets ALL the activities and maps them in a list*/}
-                    {food.map(food => (
-                        <option key={food.id} value={food.id}>
-                        {food.name}
-                    </option>
-                     ))}
-            </select>
-
-            <br/>
-
-            <label htmlFor="quantity">Quantity (grams):</label>
-            <input
-                type="number"
-                id="quantity"
-                name="quantity"
-                value={form.foodAmount}
-                min="0"
-                onChange={(event) =>
-                    setForm({ ...form, foodAmount: parseInt(event.target.value) })
-                }
-            />
-
-            <br/>
-
-            <label htmlFor="drink">Drink:</label>
-            <select name="drink" type="number" value={form.drink} onChange={(event) =>
-                    setForm({ ...form, drink: parseInt(event.target.value) })
-                }>
-                    
-                    <option disabled value="">Select</option>
-
-                    {/*Gets ALL the activities and maps them in a list*/}
-                    {drink.map(drink => (
-                        <option key={drink.id} value={drink.id}>
-                        {drink.name}
-                    </option>
-                     ))}
-            </select> 
-
-
-            <br/>
-
-            <label htmlFor="quantity">Quantity (ml):</label>
-            <input
-                type="number"
-                id="quantity"
-                name="quantity"
-                value={form.drinkAmount}
-                min="0"
-                onChange={(event) =>
-                    setForm({ ...form, drinkAmount: parseInt(event.target.value) })
-                }
-            /> 
-
-
-            <br/>
-
-
-            <button type="submit">Record Meal</button>
-
-        </form>
-
-        <br/>
-            <NewFood getFood={getFood} />
-        <br/>
-
-        <br/>
-            <NewDrink getDrink={getDrink} />
-        <br/>
             
         </div>
     );

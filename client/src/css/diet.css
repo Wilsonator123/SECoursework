@@ -1,8 +1,8 @@
 .grid-container-diet {
     display: grid;
-    grid: 100px / auto auto auto;
+    grid: 400px / auto auto;
 }
-.dietBox1, .dietBox2, .dietBox3, .dietBox4 {
+.dietBox1, .dietBox2, .dietBox3{
 	margin:10px;
 	padding:10px;
     background:#7EBB94;
@@ -10,14 +10,34 @@
 }
 
 .dietBox1 {
-    grid-column: 1;
+    grid-column: 1 / span 2;
+
 }
 .dietBox2 {
-    grid-column: 2;
+    grid-column: 1;
 }
 .dietBox3 {
-    grid-column: 3;
+    grid-column: 2;
 }
-.dietBox4 {
-    grid-column: 1 / span 3;
+.meal-form{
+    font-size: 16px;
+}
+
+.meal-form input, select{ 
+    font-size: 16px;
+    background-color:#e8e7ed;
+    border-radius: 8px;
+    border-color:  #444444;
+    border: 1px solid;
+
+}
+
+
+.meal-btn, .drink-btn, .food-btn{
+    font-size: 16px;
+    background-color: #EBBB52;
+    border-color: #f5bb40; 
+    border-radius: 8px;
+    color:#444444;
+    margin-top: 10px;
 }

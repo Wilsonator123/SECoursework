@@ -65,6 +65,9 @@
     justify-content: center;
     align-items: center;
     /* margin-top: 2em; added margin top */
+    border-radius: 8px;
+    border-color:  #444444;
+    border: 1px solid;
 
 }
 
@@ -91,6 +94,7 @@
     position: absolute;
     float: right;
     /* top:450px;  */
+    color:#444444;
 
 }
 
