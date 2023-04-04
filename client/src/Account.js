@@ -4,6 +4,7 @@ import HealthDetails from "./components/HealthDetails";
 
 import React, { useState, useEffect } from "react";
 
+
 export default function Account({ userID }) {
 
     //Used to get all exercises a user has done
@@ -146,7 +147,7 @@ export default function Account({ userID }) {
                         <p>{userExercise.activity_name}: {userExercise.quantity} {userExercise.measurement}</p>
                         
                     </div>
-                     ))}
+                ))}
                 
             </div>
 
