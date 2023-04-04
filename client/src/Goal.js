@@ -1,5 +1,6 @@
 import "./css/goal.css";
 
+
 export default function Home() {
     return (
         <div id="pageContainer">
@@ -13,5 +14,6 @@ export default function Home() {
             </div>
             </div>
         </div>
+        
     );
 }

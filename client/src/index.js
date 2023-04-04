@@ -10,7 +10,9 @@ import Goal from "./Goal";
 import Group from "./Group";
 import History from "./History";
 import Navbar from "./Navbar";
+import Footer from "./Footer";
 import "./css/index.css";
+
 
 // const root = ReactDOM.createRoot(document.getElementById("root"));
 // root.render(<App />);
@@ -29,6 +31,7 @@ root.render(
                 <Route path="History" element={<History />} />
             </Route>
         </Routes>
+        <Footer />
     </BrowserRouter>
 );
 
