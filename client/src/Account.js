@@ -1,6 +1,6 @@
 
 import HealthDetails from "./components/HealthDetails";
-import MealHistory from "./components/MealHistory";
+
 
 import React, { useState, useEffect } from "react";
 
@@ -8,6 +8,7 @@ export default function Account({ userID }) {
 
     //Used to get all exercises a user has done
     const [userExercises, setUserExercises] = useState([]);
+    const [userMeals, setUserMeals] = useState([]);
 
     //Used to get the date for which we want to view exercises and meals
     const [date, setDate] = useState(new Date());
@@ -19,7 +20,7 @@ export default function Account({ userID }) {
 
 
     //Fetch a list of all the exercises on the current date
-    const getExercise = () => {
+    const getExercise = (date) => {
         fetch("http://localhost:3001/api/getUserExercises", {
             method: "POST",
             body: JSON.stringify({id: userToken, date: date.toLocaleDateString("en-GB")}),
@@ -48,11 +49,39 @@ export default function Account({ userID }) {
         }
 
     
+        const getMeals = (date) => {
+            fetch("http://localhost:3001/api/getUserMeals", {
+                method: "POST",
+                body: JSON.stringify({id: userToken, date: date.toLocaleDateString("en-GB")}),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+    
+            })
+    
+            .then((response) => response.json())
+    
+            .then((data) => {
+    
+            if (data) {
+                console.log(data);
+                setUserMeals(data); 
+                } else {
+                        alert("Could not find meals for this user.")
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                })
+                
+            }
+
+    
 
 
     useEffect(() => {
-        getExercise();
-            
+        getExercise(date);
+        getMeals(date);    
         }, []);
 
 
@@ -62,13 +91,15 @@ export default function Account({ userID }) {
         const goToPrevDay = () => {
             const prevDay = new Date(date.getTime() - (24 * 60 * 60 * 1000));
             setDate(prevDay);
-            getExercise();
+            getExercise(prevDay);
+            getMeals(prevDay);
           };
         
         const goToNextDay = () => {
             const nextDay = new Date(date.getTime() + (24 * 60 * 60 * 1000));
             setDate(nextDay);
-            getExercise();
+            getExercise(nextDay);
+            getMeals(nextDay);
         };
 
 
@@ -107,13 +138,13 @@ export default function Account({ userID }) {
             <div>
                 <h2>Exercise History:</h2>
 
-                {/*Gets ALL the exercises and maps them in divs*/}
+                {/*Gets the exercises and maps them in divs*/}
                 {userExercises.map(userExercise=> (
                     <div key={userExercise.id}>
+                        <br/>
                         <p>{userExercise.name}</p>
                         <p>{userExercise.activity_name}: {userExercise.quantity} {userExercise.measurement}</p>
-                        <p>Date: {userExercise.date}</p>
-                        <br/>
+                        
                     </div>
                      ))}
                 
@@ -123,11 +154,31 @@ export default function Account({ userID }) {
             <br/><br/>
 
             <div>
-                <h2>Meal History</h2>
-                {/*<MealHistory />*/}
+                <h2>Meal History: </h2>
+                
+                {userMeals.map(userMeal=> (
+                    <div key={userMeal.id}>
+                        <br/>
+                        <p style={{display: 'inline'}}>{userMeal.mealType}: {userMeal.name}</p>
+                        <br/>
+                        <p style={{display: 'inline'}}>{userMeal.food_name}: {userMeal.foodAmount / 100 * userMeal.food_calories} kcals</p>
+                        <br/>
+                        <p style={{display: 'inline'}}>{userMeal.drink_name}: {userMeal.drinkAmount / 100 * userMeal.drink_calories} kcals</p>
+                        <br/>
+                    </div>
 
-            </div>   
+                    
+                     ))}
 
+
+                    {userMeals.reduce((total, userMeal) => total + ((userMeal.foodAmount / 100 * userMeal.food_calories) + (userMeal.drinkAmount / 100 * userMeal.drink_calories)), "") && 
+
+                        <div> 
+                            <br/>
+                            <p>Total: {userMeals.reduce((total, userMeal) => total + ((userMeal.foodAmount / 100 * userMeal.food_calories) + (userMeal.drinkAmount / 100 * userMeal.drink_calories)), 0)} kcals</p> 
+
+                        </div> }
+             </div>
         </div>
     );
 }
