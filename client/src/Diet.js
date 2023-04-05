@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import NewFood from "./components/NewFood";
 import NewDrink from "./components/NewDrink";
-
+import "./css/Diet.css";
 
 export default function Diet() {
 
@@ -155,10 +155,12 @@ export default function Diet() {
 
     return (
         <div id="pageContainer">
-            <h1> RECORD MEAL </h1>
+                    <h1> RECORD MEAL </h1>
+            <div class="grid-container-diet">
+            <div class="dietBox1">
 
             <br/>
-        <form onSubmit={handleSubmit}>
+        <form class="meal-form" onSubmit={handleSubmit}>
 
 
             <label htmlFor="name">Name:</label>
@@ -250,18 +252,20 @@ export default function Diet() {
             <br/>
 
 
-            <button type="submit">Record Meal</button>
+            <button class="meal-btn" type="submit">Record Meal</button>
 
         </form>
+        </div>
 
         <br/>
-            <NewFood getFood={getFood} />
-        <br/>
-
-        <br/>
-            <NewDrink getDrink={getDrink} />
-        <br/>
+        <div class="dietBox2">
+            <NewFood getFood={getFood} /> 
+        </div>
+        <div class="dietBox3">
+            <NewDrink getDrink={getDrink} /> 
+        </div>
             
+        </div>
         </div>
     );
 

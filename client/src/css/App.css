@@ -1,9 +1,12 @@
-@import "tailwindcss/base";
+/* @import "tailwindcss/base";
 @import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import "tailwindcss/utilities"; */
+@import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
 
 /* Path: client\src\index.css */
-
+*{
+    font-family: 'Cabin', sans-serif;
+}
 .container {
     display: flex;
     flex-direction: column;
@@ -11,7 +14,8 @@
     justify-content: center;
     height: 100%;
     width: 100%;
-    max-width: 100%;
+    max-width: 100%; 
+    
 }
 
 .App {

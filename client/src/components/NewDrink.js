@@ -104,7 +104,7 @@ export default function NewFood({getDrink}) {
 
             <br/>
 
-            <button type="submit">Add Drink</button>
+            <button class="drink-btn"type="submit">Add Drink</button>
 
             <p>{drinkMessage}</p>
 
