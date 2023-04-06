@@ -1,5 +1,5 @@
 import HealthDetails from "./components/HealthDetails";
-
+import "./css/Account.css";
 
 import React, { useState, useEffect } from "react";
 
@@ -114,28 +114,28 @@ export default function Account({ userID }) {
 
     return (
         <div id="pageContainer">
-            <h1> ACCOUNT PAGE </h1>
+            <h1> ACCOUNT PAGE </h1>  
+            <div class="grid-container-accountpage">
+            <div class="profile-box"> 
+                <h2>NAME AND AGE</h2>
+            </div>
 
-            <div>
+            <div class="bmi-box">
                 <h2>Health Details</h2>
                 <HealthDetails userID={userID}/>
             </div>
 
-            <br/><br/>
-
-
-
-            <div>
-            <button onClick={goToPrevDay}> Previous </button>
-                <p>Date: {date.toLocaleDateString("en-GB")}</p>    
-            <button onClick={goToNextDay}> Next </button>
+            <div class="group-box">
+                <h2>Group Details</h2>
             </div>
 
-            <br/><br/>
+            <div class="date-box">
+            <button class="arrow left" onClick={goToPrevDay}></button>
+                <p class="date-text" >Date: {date.toLocaleDateString("en-GB")}</p>    
+            <button class="arrow right" onClick={goToNextDay}> </button>
+            </div>
 
-
-
-            <div>
+            <div class="exerciseHistory-box">
                 <h2>Exercise History:</h2>
 
                 {/*Gets the exercises and maps them in divs*/}
@@ -150,10 +150,7 @@ export default function Account({ userID }) {
                 
             </div>
 
-
-            <br/><br/>
-
-            <div>
+            <div class="mealHistory-box">
                 <h2>Meal History: </h2>
                 
                 {userMeals.map(userMeal=> (
@@ -178,6 +175,7 @@ export default function Account({ userID }) {
                             <p>Total: {userMeals.reduce((total, userMeal) => total + ((userMeal.foodAmount / 100 * userMeal.food_calories) + (userMeal.drinkAmount / 100 * userMeal.drink_calories)), 0)} kcals</p> 
 
                         </div> }
+             </div>
              </div>
         </div>
     );

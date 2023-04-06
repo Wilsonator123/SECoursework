@@ -76,7 +76,7 @@ export default function RecordExercise() {
 
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form class="exercise-form" onSubmit={handleSubmit}>
 
 
             <label htmlFor="name">Name:</label>
@@ -135,7 +135,7 @@ export default function RecordExercise() {
 
 
             <br/>
-            <button type="submit">Record Exercise</button>
+            <button class="exercise-btn" type="submit">Record Exercise</button>
 
         </form>
             )

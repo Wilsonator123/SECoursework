@@ -66,7 +66,7 @@ export default function Login({ setToken }) {
 
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form class="account-form" onSubmit={handleSubmit}>
 
 
             <label htmlFor="username">Username:</label>
@@ -92,7 +92,7 @@ export default function Login({ setToken }) {
             />
 
             <br/>
-            <button type="submit">Log In</button>
+            <button class="create-account-btn" type="submit">Log In</button>
 
         </form>
             )
