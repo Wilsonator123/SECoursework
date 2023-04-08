@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-
+import { useNavigate } from "react-router-dom"; 
 
 
 //Create a general form CSS file!
 
-function AccountCreation({ setToken }) {
+function AccountCreation() {
     //Used to push the user to the home page on a valid account creation
-
+    const navigate = useNavigate();
 
     //All data needed for account creation (could be split up?)
     const [form, setForm] = useState({
@@ -45,11 +45,10 @@ function AccountCreation({ setToken }) {
 
             .then((data) => {
                 
+
                 //May need to be updated to another page
                 if (data) {
-                    
-                    setToken(data.id);
-                    
+                    navigate("/account");
                 } else {
                     alert("Invalid account creation details.")
                 }
@@ -135,8 +134,8 @@ function AccountCreation({ setToken }) {
     };
 
     //Returns the account creation form that we need
-    return (
-        <form onSubmit={handleSubmit}>
+    return ( 
+        <form class="app-form" onSubmit={handleSubmit}> 
             <label htmlFor="username">Username:</label>
             <input
                 type="text"
@@ -278,11 +277,9 @@ function AccountCreation({ setToken }) {
             <br />
             <br />
 
-            <button type="submit">Create Account</button>
+            <button class="submit-btn" type="submit">Create Account</button>
         </form>
     );
 }
-
-
 
 export default AccountCreation;

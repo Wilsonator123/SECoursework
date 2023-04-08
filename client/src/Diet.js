@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import NewFood from "./components/NewFood";
+import NewDrink from "./components/NewDrink";
+import "./css/diet.css";
 
 
 export default function Diet() {
@@ -31,6 +34,7 @@ export default function Diet() {
     //And also the list of drinks
     const [food, setFood] = useState([]);
     const [drink, setDrink] = useState([]);
+
 
     //Update the foods when food changes (will be used when a new one added)
     useEffect(() => {
@@ -147,108 +151,121 @@ export default function Diet() {
 
 
 
+
+
+
     return (
         <div id="pageContainer">
-            <h1> RECORD MEAL </h1>
+            <h1> DIET PAGE </h1>
+            <div class="grid-container-diet">
+            <div class="dietBox1">
+                <h2>Record Meal</h2>
+                <form class="meal-form" onSubmit={handleSubmit}>
 
 
-        <form onSubmit={handleSubmit}>
+<label htmlFor="name">Name:</label>
+<input
+    type="text"
+    id="name"
+    name="name"
+    value={form.name}
+    onChange={handleChange}
+/>
 
+<br />
 
-            <label htmlFor="name">Name:</label>
-            <input
-                type="text"
-                id="name"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-            />
+<label htmlFor="mealType">Meal Type: </label>
+<select name="mealType" value={form.mealType} onChange={handleChange}>
+    <option disabled value="">
+        Select
+    </option>
+    <option value="breakfast">Breakfast</option>
+    <option value="lunch">Lunch</option>
+    <option value="dinner">Dinner</option>
+    <option value="snack">Snack</option>
+</select>
+
+<br/>
+
+<label htmlFor="food">Food:</label>
+<select name="food" type="number" value={form.food} onChange={(event) =>
+        setForm({ ...form, food: parseInt(event.target.value) })
+    }>
         
-            <br />
+        <option disabled value="">Select</option>
 
-            <label htmlFor="mealType">Meal Type: </label>
-            <select name="mealType" value={form.mealType} onChange={handleChange}>
-                <option disabled value="">
-                    Select
-                </option>
-                <option value="breakfast">Breakfast</option>
-                <option value="lunch">Lunch</option>
-                <option value="dinner">Dinner</option>
-                <option value="snack">Snack</option>
-            </select>
+        {/*Gets ALL the activities and maps them in a list*/}
+        {food.map(food => (
+            <option key={food.id} value={food.id}>
+            {food.name}
+        </option>
+         ))}
+</select>
 
-            <br/>
+<br/>
 
+<label htmlFor="quantity">Quantity (grams):</label>
+<input
+    type="number"
+    id="quantity"
+    name="quantity"
+    value={form.foodAmount}
+    min="0"
+    onChange={(event) =>
+        setForm({ ...form, foodAmount: parseInt(event.target.value) })
+    }
+/>
 
+<br/>
 
-            <label htmlFor="food">Food:</label>
-            <select name="food" type="number" value={form.food} onChange={(event) =>
-                    setForm({ ...form, food: parseInt(event.target.value) })
-                }>
-                    
-                    <option disabled value="">Select</option>
+<label htmlFor="drink">Drink:</label>
+<select name="drink" type="number" value={form.drink} onChange={(event) =>
+        setForm({ ...form, drink: parseInt(event.target.value) })
+    }>
+        
+        <option disabled value="">Select</option>
 
-                    {/*Gets ALL the activities and maps them in a list*/}
-                    {food.map(food => (
-                        <option key={food.id} value={food.id}>
-                        {food.name}
-                    </option>
-                     ))}
-            </select>
-
-            <br/>
-
-            <label htmlFor="quantity">Quantity (grams):</label>
-            <input
-                type="number"
-                id="quantity"
-                name="quantity"
-                value={form.foodAmount}
-                min="0"
-                onChange={(event) =>
-                    setForm({ ...form, foodAmount: parseInt(event.target.value) })
-                }
-            />
-
-            <br/>
-
-            <label htmlFor="drink">Drink:</label>
-            <select name="drink" type="number" value={form.drink} onChange={(event) =>
-                    setForm({ ...form, drink: parseInt(event.target.value) })
-                }>
-                    
-                    <option disabled value="">Select</option>
-
-                    {/*Gets ALL the activities and maps them in a list*/}
-                    {drink.map(drink => (
-                        <option key={drink.id} value={drink.id}>
-                        {drink.name}
-                    </option>
-                     ))}
-            </select> 
+        {/*Gets ALL the activities and maps them in a list*/}
+        {drink.map(drink => (
+            <option key={drink.id} value={drink.id}>
+            {drink.name}
+        </option>
+         ))}
+</select> 
 
 
-            <br/>
+<br/>
 
-            <label htmlFor="quantity">Quantity (ml):</label>
-            <input
-                type="number"
-                id="quantity"
-                name="quantity"
-                value={form.drinkAmount}
-                min="0"
-                onChange={(event) =>
-                    setForm({ ...form, drinkAmount: parseInt(event.target.value) })
-                }
-            /> 
-
-
-            <br/>
+<label htmlFor="quantity">Quantity (ml):</label>
+<input
+    type="number"
+    id="quantity"
+    name="quantity"
+    value={form.drinkAmount}
+    min="0"
+    onChange={(event) =>
+        setForm({ ...form, drinkAmount: parseInt(event.target.value) })
+    }
+/> 
 
 
-            <button type="submit">Record Meal</button>
+<br/>
 
-        </form>
+
+<button class="meal-btn" type="submit">Record Meal</button>
+
+</form>
+                
+            </div>
+            <div class="dietBox2">
+                <NewFood getFood={getFood} />   
+            </div>
+            <div class="dietBox3">
+                <NewDrink getDrink={getDrink} />
+            </div>
+            </div>
+
+
             
         </div>
     );

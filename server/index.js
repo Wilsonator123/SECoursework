@@ -84,10 +84,10 @@ app.post("/api/login", (req, res) => {
 app.post("/api/createUser", upload.single("file"), (req, res) => {
     var img;
     if (req.body.file === undefined) img = "default.png";
+
     else img = body.username + "pp.png";
     
     const isValidAccountCreation = interface.createUser(req.body, img);
-
     //Return data on a successful login including their user id, a
     // BMI, and a target goal if applicable
     if (isValidAccountCreation){
@@ -98,6 +98,7 @@ app.post("/api/createUser", upload.single("file"), (req, res) => {
     else {
         res.send(false);
     }
+
 });
 
 
@@ -117,6 +118,11 @@ app.post("/api/getUserExercises", (req, res) => {
     res.send(interface.getUserExercises(req.body));
 });
 
+app.post("/api/getUserMeals", (req, res) => {
+    console.log(req.body);
+    res.send(interface.getUserMeals(req.body));
+});
+
 
 
 /*********************RECORD MEAL PAGE**********************/
@@ -131,6 +137,17 @@ app.post("/api/getDrink", (req, res) => {
     console.log(req.body);
     res.send(interface.getDrink(req.body));
 });
+
+app.post("/api/recordNewFood", (req, res) => {
+    console.log(req.body);
+    res.send(interface.recordNewFood(req.body));
+});
+
+app.post("/api/recordNewDrink", (req, res) => {
+    console.log(req.body);
+    res.send(interface.recordNewDrink(req.body));
+});
+
 
 
 app.post("/api/recordMeal", (req, res) => {
