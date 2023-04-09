@@ -14,6 +14,12 @@ class Interface {
     }
 
     /*********************************USER**********************************/
+    getUser(id) {
+        //Returns the user's data
+        const stmt = this.database.prepare("SELECT * FROM user WHERE id = ?");
+        const info = stmt.all(id);
+        return info[0];
+    }
 
     checkEmailFormat(email) {
         //Returns true if email is in correct format, false if it is not
@@ -193,13 +199,13 @@ class Interface {
     }
 
     //Gets exercises for a specific date to display on the homepage
-    getUserExercises(body){
+    getUserExercises(body) {
         console.log("Trying to get exercises");
         console.log(body);
-        
+
         //Get all exercises and their names for the given user (based on their token)
         const stmt = this.database.prepare(
-            'SELECT exercise.id, exercise.name, exercise.quantity, exercise.measurement, exercise.date, activity.name AS activity_name FROM exercise INNER JOIN activity ON exercise.type = activity.id WHERE exercise.user_id = ? AND exercise.date = ?'
+            "SELECT exercise.id, exercise.name, exercise.quantity, exercise.measurement, exercise.date, activity.name AS activity_name FROM exercise INNER JOIN activity ON exercise.type = activity.id WHERE exercise.user_id = ? AND exercise.date = ?"
         );
 
         const info = stmt.all(body.id, body.date);
@@ -207,14 +213,13 @@ class Interface {
         return info;
     }
 
-
     //Gets all meals for a specific date for a user to display on the homepage
-    getUserMeals(body){
+    getUserMeals(body) {
         console.log(body);
-        
+
         //Get all exercises and their names for the given user (based on their token)
         const stmt = this.database.prepare(
-            'SELECT meal.id, meal.name, meal.mealType, meal.date, food.name AS food_name, food.calories AS food_calories, meal.foodAmount, drink.name AS drink_name, drink.calories AS drink_calories, meal.drinkAmount FROM meal INNER JOIN food ON meal.food = food.id INNER JOIN drink ON meal.drink = drink.id WHERE meal.user_id = ? AND meal.date = ?'
+            "SELECT meal.id, meal.name, meal.mealType, meal.date, food.name AS food_name, food.calories AS food_calories, meal.foodAmount, drink.name AS drink_name, drink.calories AS drink_calories, meal.drinkAmount FROM meal INNER JOIN food ON meal.food = food.id INNER JOIN drink ON meal.drink = drink.id WHERE meal.user_id = ? AND meal.date = ?"
         );
 
         const info = stmt.all(body.id, body.date);
