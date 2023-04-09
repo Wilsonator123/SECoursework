@@ -11,12 +11,9 @@ class Interface {
         );
 
         //this.database.exec("DROP TABLE MEAL");
-        
     }
 
     /*********************************USER**********************************/
-
-
 
     checkEmailFormat(email) {
         //Returns true if email is in correct format, false if it is not
@@ -24,7 +21,6 @@ class Interface {
         const re = /\S+@\S+\.\S+/; //Regex for email format
         return re.test(email);
     }
-
 
     checkEmail(email) {
         //Returns true if email is not in this.database, false if it is
@@ -102,7 +98,7 @@ class Interface {
             );
             const info = stmt.all(username);
             const user = info[0].id;
-            return (user);
+            return user;
         } else return false;
     }
 
@@ -120,7 +116,6 @@ class Interface {
             if (info.length === 0)
                 return false; //If email and password do not match
             else return info[0].id; //If email and password match
-
         } else {
             //If its a username
             if (this.checkUsername(login)) return false; //If username is not in this.database
@@ -130,10 +125,8 @@ class Interface {
 
             const info = stmt.all(login, password);
             if (info.length === 0)
-
                 return false; //If username and password do not match
             else return info[0].id; //If username and password match
-
         }
         body = { id: status };
     }
@@ -166,49 +159,43 @@ class Interface {
         const stmt = this.database.prepare("SELECT * FROM user WHERE id = ?");
         const info = stmt.all(id);
         const weight = info[0].weight;
-        const height = info[0].height/100;
+        const height = info[0].height / 100;
         //Gotta have it to 2dp or it gets UGLY
         return (weight / (height * height)).toFixed(2);
     }
 
-
-
     /********************************EXERCISE********************************/
 
     //Gets all activities a user can do when recording an exercise
-    getActivities(){
+    getActivities() {
         console.log("Trying to get activities");
-        const stmt = this.database.prepare(
-            "SELECT * FROM activity"
-        );
+        const stmt = this.database.prepare("SELECT * FROM activity");
         const info = stmt.all();
         return info;
     }
 
-
     //Gets exercises for a specific date to display on the homepage
-    getUserExercises(body){
+    getUserExercises(body) {
         console.log("Trying to get exercises");
         console.log(body);
-        
+
         //Get all exercises and their names for the given user (based on their token)
         const stmt = this.database.prepare(
-            'SELECT exercise.id, exercise.name, exercise.quantity, exercise.measurement, exercise.date, activity.name AS activity_name FROM exercise INNER JOIN activity ON exercise.type = activity.id WHERE exercise.user_id = ? AND exercise.date = ?'
+            "SELECT exercise.id, exercise.name, exercise.quantity, exercise.measurement, exercise.date, activity.name AS activity_name FROM exercise INNER JOIN activity ON exercise.type = activity.id WHERE exercise.user_id = ? AND exercise.date = ?"
         );
 
         const info = stmt.all(body.id, body.date);
         console.log(info);
         return info;
     }
-
 
     //Gets all meals for a specific date for a user to display on the homepage
-    getUserMeals(body){
+    getUserMeals(body) {
         console.log(body);
-        
+
         //Get all exercises and their names for the given user (based on their token)
         const stmt = this.database.prepare(
-            'SELECT meal.id, meal.name, meal.mealType, meal.date, food.name AS food_name, food.calories AS food_calories, meal.foodAmount, drink.name AS drink_name, drink.calories AS drink_calories, meal.drinkAmount FROM meal INNER JOIN food ON meal.food = food.id INNER JOIN drink ON meal.drink = drink.id WHERE meal.user_id = ? AND meal.date = ?'
+            "SELECT meal.id, meal.name, meal.mealType, meal.date, food.name AS food_name, food.calories AS food_calories, meal.foodAmount, drink.name AS drink_name, drink.calories AS drink_calories, meal.drinkAmount FROM meal INNER JOIN food ON meal.food = food.id INNER JOIN drink ON meal.drink = drink.id WHERE meal.user_id = ? AND meal.date = ?"
         );
 
         const info = stmt.all(body.id, body.date);
@@ -216,19 +203,10 @@ class Interface {
         return info;
     }
 
-
-
     //All details about an exercise given, checks if valid, then inserts into array
-    recordExercise(body){
-       //ID here refers to USER ID, NOT ACTIVITY ID OR EXERCISE ID
-        const {
-            id,
-            name,
-            activity,
-            quantity,
-            measurement,
-            
-        } = body;
+    recordExercise(body) {
+        //ID here refers to USER ID, NOT ACTIVITY ID OR EXERCISE ID
+        const { id, name, activity, quantity, measurement } = body;
         if (
             id === "" ||
             name === "" ||
@@ -244,115 +222,86 @@ class Interface {
         console.log(activity);
         //We need to put ALL dates in the better format, not
         //the... weird and wrong US one
-        const date = new Date().toLocaleDateString('en-GB');
-
+        const date = new Date().getTime();
 
         const stmt = this.database.prepare(
-            'INSERT INTO exercise (user_id, name, quantity, measurement, date, type) VALUES (?, ?, ?, ?, ?, ?)'
+            "INSERT INTO exercise (user_id, name, quantity, measurement, date, type) VALUES (?, ?, ?, ?, ?, ?)"
         );
 
-        const result = stmt.run(id, name, quantity, measurement, date, activity);
+        const result = stmt.run(
+            id,
+            name,
+            quantity,
+            measurement,
+            date,
+            activity
+        );
         return result;
-
-
-
-
     }
-
 
     /********************************MEALS********************************/
 
-    getFood(body){
-
+    getFood(body) {
         console.log("Trying to get food");
         const stmt = this.database.prepare(
-            "SELECT * FROM food WHERE createdBy = ? OR createdBy = 0"
+            "SELECT * FROM food WHERE createdBy = ? OR createdBy = 0 ORDER BY name ASC"
         );
         const info = stmt.all(body.userToken);
         console.log(info);
         return info;
     }
 
-
-    recordNewFood(body){
+    recordNewFood(body) {
         //ID here refers to USER ID
-         const {
-             id,
-             name,
-             calories
-         } = body;
+        const { id, name, calories } = body;
 
+        if (id === "" || name === "" || calories === "") {
+            return false;
+        }
 
-         if (
-             id === "" ||
-             name === "" ||
-             calories === ""
-         ) {
-             return false;
-         }
+        console.log(body);
 
-         console.log(body);
+        const stmt = this.database.prepare(
+            "INSERT INTO food (name, calories, createdBy) VALUES (?, ?, ?)"
+        );
 
-         const stmt = this.database.prepare(
-             'INSERT INTO food (name, calories, createdBy) VALUES (?, ?, ?)'
-         );
- 
-         const result = stmt.run(name, calories, id);
-         return result;
- 
-     }
+        const result = stmt.run(name, calories, id);
+        return result;
+    }
 
-
-
-
-     recordNewDrink(body){
+    recordNewDrink(body) {
         //ID here refers to USER ID
-         const {
-             id,
-             name,
-             calories
-         } = body;
+        const { id, name, calories } = body;
 
+        if (id === "" || name === "" || calories === "") {
+            return false;
+        }
 
-         if (
-             id === "" ||
-             name === "" ||
-             calories === ""
-         ) {
-             return false;
-         }
+        console.log(body);
 
-         console.log(body);
+        const stmt = this.database.prepare(
+            "INSERT INTO drink (name, calories, createdBy) VALUES (?, ?, ?)"
+        );
 
-         const stmt = this.database.prepare(
-             'INSERT INTO drink (name, calories, createdBy) VALUES (?, ?, ?)'
-         );
- 
-         const result = stmt.run(name, calories, id);
-         return result;
- 
+        const result = stmt.run(name, calories, id);
+        return result;
+    }
 
-     }
-
-
-
-    getDrink(body){
-
+    getDrink(body) {
         console.log("Trying to get drink");
         const stmt = this.database.prepare(
-            "SELECT * FROM drink WHERE createdBy = ? OR createdBy = 0"
+            "SELECT * FROM drink WHERE createdBy = ? OR createdBy = 0 ORDER BY name ASC"
         );
         const info = stmt.all(body.userToken);
         console.log(info);
         return info;
     }
 
+    //All details about an exercise given, checks if valid, then inserts into array
+    recordMeal(body) {
+        //ID here refers to USER ID, NOT ACTIVITY ID OR EXERCISE ID
 
-        //All details about an exercise given, checks if valid, then inserts into array
-    recordMeal(body){
-       //ID here refers to USER ID, NOT ACTIVITY ID OR EXERCISE ID
-
-       console.log(body);
+        console.log(body);
 
         const {
             user_id,
@@ -361,9 +310,8 @@ class Interface {
             food,
             foodAmount,
             drink,
-            drinkAmount
+            drinkAmount,
         } = body;
-
 
         if (
             user_id === "" ||
@@ -381,21 +329,24 @@ class Interface {
         console.log(name);
         console.log(typeof user_id);
 
-
-        const date = new Date().toLocaleDateString('en-GB');
+        const date = new Date().getTime();
 
         const stmt = this.database.prepare(
-            'INSERT INTO meal (user_id, name, mealType, food, foodAmount, drink, drinkAmount, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+            "INSERT INTO meal (user_id, name, mealType, food, foodAmount, drink, drinkAmount, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?"
         );
 
-        const result = stmt.run(user_id, name, mealType, food, foodAmount, drink, drinkAmount, date);
+        const result = stmt.run(
+            user_id,
+            name,
+            mealType,
+            food,
+            foodAmount,
+            drink,
+            drinkAmount,
+            date
+        );
         return true;
     }
-
-
-
-
-
 
     /*********************************GOALS**********************************/
 
@@ -405,6 +356,29 @@ class Interface {
             "SELECT * FROM goals WHERE id = ? AND status NOT IN ('inactive')"
         );
         const info = stmt.all(id);
+        return info;
+    }
+
+    checkGoals(id) {
+        const date = new Date().getTime();
+        //Returns all active goals for a user
+        const stmt = this.database.prepare(
+            "UPDATE goals set status = inactive WHERE id = ? AND status IS ('active') AND date<" +
+                date
+        );
+        const info = stmt.all(id);
+        return info;
+    }
+
+    reActivateGoal(id, goalID) {
+        const now = new Date();
+        const futureDate = new Date();
+        futureDate.setDate(now.getDate() + 7);
+        //Returns all active goals for a user
+        const stmt = this.database.prepare(
+            "UPDATE goals set status = active AND set date = ? WHERE id = ? AND goalID = ?"
+        );
+        const info = stmt.all(futureDate.getTime(), id, goalID);
         return info;
     }
 
@@ -446,7 +420,8 @@ class Interface {
     createUnderweightGoal(id, weight, tweight) {
         //We need to estimate the date of the goal
         const now = new Date();
-        const futureDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+        const futureDate = new Date();
+        futureDate.setDate(now.getDate() + 7);
         var goal;
         //Creates a goal for underweight people
         if (tweight <= weight) {
@@ -473,7 +448,8 @@ class Interface {
     createNormalGoal(id) {
         //Creates a goal for normal people
         const now = new Date();
-        const futureDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+        const futureDate = new Date();
+        futureDate.setDate(now.getDate() + 7);
         //Creates a goal for underweight people
 
         return (goal = {
@@ -489,7 +465,8 @@ class Interface {
     createOverweightGoal(id, weight, tweight) {
         //Creates a goal for overweight people
         const now = new Date();
-        const futureDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+        const futureDate = new Date();
+        futureDate.setDate(now.getDate() + 7);
         //Creates a goal for underweight people
         if (tweight <= weight) {
             return (goal = {
@@ -514,7 +491,8 @@ class Interface {
 
     createObeseGoal(id, weight, tweight) {
         const now = new Date();
-        const futureDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+        const futureDate = new Date();
+        futureDate.setDate(now.getDate() + 7);
         //Creates a goal for underweight people
         if (tweight < weight) {
             return (goal = {
@@ -534,6 +512,14 @@ class Interface {
                 date: futureDate,
                 notes: "Walk 5 miles this week!",
             });
+        }
+    }
+
+    dietFilter(id, body) {
+        //Date / Period of time -> 7 days
+        var line = "SELECT * FROM diet WHERE user_id = " + id;
+        if (body.date != null) {
+            line += " AND date = " + body.date;
         }
     }
 }

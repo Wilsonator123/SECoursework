@@ -4,19 +4,13 @@ import NewFood from "./components/NewFood";
 import NewDrink from "./components/NewDrink";
 import "./css/diet.css";
 
-
 export default function Diet() {
-
-
     const navigate = useNavigate();
 
-
     //Get the user's id stored in session storage
-    const tokenString = localStorage.getItem('token');
+    const tokenString = localStorage.getItem("token");
     const userToken = JSON.parse(tokenString);
     console.log(tokenString);
-
-
 
     //Form for submitting a meal
     const [form, setForm] = useState({
@@ -26,42 +20,33 @@ export default function Diet() {
         food: "",
         foodAmount: "",
         drink: "",
-        drinkAmount: ""
+        drinkAmount: "",
     });
-
 
     //Gonna get a list of foods from DB
     //And also the list of drinks
     const [food, setFood] = useState([]);
     const [drink, setDrink] = useState([]);
 
-
     //Update the foods when food changes (will be used when a new one added)
     useEffect(() => {
         getFood();
         getDrink();
-      }, []);
-
-
+    }, []);
 
     const getFood = () => {
         fetch("http://localhost:3001/api/getFood", {
             method: "POST",
-            body: JSON.stringify({userToken}),
+            body: JSON.stringify({ userToken }),
             headers: {
                 "Content-Type": "application/json",
             },
-
         })
             .then((response) => response.json())
 
             .then((data) => {
-                 
-               
                 if (data) {
-                    
                     setFood(data);
-                    
                 } else {
                     alert("Cannot get food");
                 }
@@ -71,28 +56,19 @@ export default function Diet() {
             });
     };
 
-
-
-
-
     const getDrink = () => {
         fetch("http://localhost:3001/api/getDrink", {
             method: "POST",
-            body: JSON.stringify({userToken}),
+            body: JSON.stringify({ userToken }),
             headers: {
                 "Content-Type": "application/json",
             },
-
         })
             .then((response) => response.json())
 
             .then((data) => {
-                 
-            
                 if (data) {
-                    
                     setDrink(data);
-                    
                 } else {
                     alert("Cannot get drink");
                 }
@@ -101,11 +77,6 @@ export default function Diet() {
                 console.error("Error:", error);
             });
     };
-
-
-
-
-
 
     //Used to record a new meal
     const handleSubmit = (event) => {
@@ -117,7 +88,6 @@ export default function Diet() {
             headers: {
                 "Content-Type": "application/json",
             },
-
         })
             .then((response) => response.json())
 
@@ -126,7 +96,6 @@ export default function Diet() {
                 if (data) {
                     alert("Recorded successfully!");
                     navigate("/Account");
-                    
                 } else {
                     alert("Failed to record.");
                 }
@@ -137,9 +106,6 @@ export default function Diet() {
             });
     };
 
-
-
-    
     //Handles updates to all of the data in the form
     const handleChange = (event) => {
         setForm({
@@ -147,132 +113,125 @@ export default function Diet() {
             [event.target.name]: event.target.value,
         });
     };
-
-
-
-
-
-
+    const handleFoodChange = (event) => {};
 
     return (
         <div id="pageContainer">
             <h1> DIET PAGE </h1>
             <div class="grid-container-diet">
-            <div class="dietBox1">
-                <h2>Record Meal</h2>
-                <form class="meal-form" onSubmit={handleSubmit}>
+                <div class="dietBox1">
+                    <h2>Record Meal</h2>
+                    <form class="meal-form" onSubmit={handleSubmit}>
+                        <label htmlFor="name">Name:</label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={form.name}
+                            onChange={handleChange}
+                        />
 
+                        <br />
 
-<label htmlFor="name">Name:</label>
-<input
-    type="text"
-    id="name"
-    name="name"
-    value={form.name}
-    onChange={handleChange}
-/>
+                        <label htmlFor="mealType">Meal Type: </label>
+                        <select
+                            name="mealType"
+                            value={form.mealType}
+                            onChange={handleChange}
+                        >
+                            <option disabled value="">
+                                Select
+                            </option>
+                            <option value="breakfast">Breakfast</option>
+                            <option value="lunch">Lunch</option>
+                            <option value="dinner">Dinner</option>
+                            <option value="snack">Snack</option>
+                        </select>
 
-<br />
+                        <br />
 
-<label htmlFor="mealType">Meal Type: </label>
-<select name="mealType" value={form.mealType} onChange={handleChange}>
-    <option disabled value="">
-        Select
-    </option>
-    <option value="breakfast">Breakfast</option>
-    <option value="lunch">Lunch</option>
-    <option value="dinner">Dinner</option>
-    <option value="snack">Snack</option>
-</select>
+                        <label htmlFor="food">Food:</label>
+                        <input
+                            name="food"
+                            type="text"
+                            value={form.food}
+                            onChange={handleFoodChange}
+                        ></input>
 
-<br/>
+                        <br />
 
-<label htmlFor="food">Food:</label>
-<select name="food" type="number" value={form.food} onChange={(event) =>
-        setForm({ ...form, food: parseInt(event.target.value) })
-    }>
-        
-        <option disabled value="">Select</option>
+                        <label htmlFor="quantity">Quantity (grams):</label>
+                        <input
+                            type="number"
+                            id="quantity"
+                            name="quantity"
+                            value={form.foodAmount}
+                            min="0"
+                            onChange={(event) =>
+                                setForm({
+                                    ...form,
+                                    foodAmount: parseInt(event.target.value),
+                                })
+                            }
+                        />
 
-        {/*Gets ALL the activities and maps them in a list*/}
-        {food.map(food => (
-            <option key={food.id} value={food.id}>
-            {food.name}
-        </option>
-         ))}
-</select>
+                        <br />
 
-<br/>
+                        <label htmlFor="drink">Drink:</label>
+                        <select
+                            name="drink"
+                            type="number"
+                            value={form.drink}
+                            onChange={(event) =>
+                                setForm({
+                                    ...form,
+                                    drink: parseInt(event.target.value),
+                                })
+                            }
+                        >
+                            <option disabled value="">
+                                Select
+                            </option>
 
-<label htmlFor="quantity">Quantity (grams):</label>
-<input
-    type="number"
-    id="quantity"
-    name="quantity"
-    value={form.foodAmount}
-    min="0"
-    onChange={(event) =>
-        setForm({ ...form, foodAmount: parseInt(event.target.value) })
-    }
-/>
+                            {/*Gets ALL the activities and maps them in a list*/}
+                            {drink.map((drink) => (
+                                <option key={drink.id} value={drink.id}>
+                                    {drink.name}
+                                </option>
+                            ))}
+                        </select>
 
-<br/>
+                        <br />
 
-<label htmlFor="drink">Drink:</label>
-<select name="drink" type="number" value={form.drink} onChange={(event) =>
-        setForm({ ...form, drink: parseInt(event.target.value) })
-    }>
-        
-        <option disabled value="">Select</option>
+                        <label htmlFor="quantity">Quantity (ml):</label>
+                        <input
+                            type="number"
+                            id="quantity"
+                            name="quantity"
+                            value={form.drinkAmount}
+                            min="0"
+                            onChange={(event) =>
+                                setForm({
+                                    ...form,
+                                    drinkAmount: parseInt(event.target.value),
+                                })
+                            }
+                        />
 
-        {/*Gets ALL the activities and maps them in a list*/}
-        {drink.map(drink => (
-            <option key={drink.id} value={drink.id}>
-            {drink.name}
-        </option>
-         ))}
-</select> 
+                        <br />
 
-
-<br/>
-
-<label htmlFor="quantity">Quantity (ml):</label>
-<input
-    type="number"
-    id="quantity"
-    name="quantity"
-    value={form.drinkAmount}
-    min="0"
-    onChange={(event) =>
-        setForm({ ...form, drinkAmount: parseInt(event.target.value) })
-    }
-/> 
-
-
-<br/>
-
-
-<button class="meal-btn" type="submit">Record Meal</button>
-
-</form>
-                
+                        <button class="meal-btn" type="submit">
+                            Record Meal
+                        </button>
+                    </form>
+                </div>
+                <div class="dietBox2">
+                    <NewFood getFood={getFood} />
+                </div>
+                <div class="dietBox3">
+                    <NewDrink getDrink={getDrink} />
+                </div>
             </div>
-            <div class="dietBox2">
-                <NewFood getFood={getFood} />   
-            </div>
-            <div class="dietBox3">
-                <NewDrink getDrink={getDrink} />
-            </div>
-            </div>
-
-
-            
         </div>
     );
-
-
-
-
-
-    
 }

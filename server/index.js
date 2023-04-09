@@ -17,7 +17,11 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-
+// const now = new Date();
+// const futureDate = new Date();
+// futureDate.setDate(now.getDate() + 7);
+// const time = now.getTime();
+// if (now.getTime() < futureDate.getTime()) console.log("true");
 const { Interface } = require("./interface.js");
 
 /*************************MIDDLEWARE******************************/
@@ -67,40 +71,37 @@ app.get("/api/checkPassword", (req, res) => {
 
 app.post("/api/login", (req, res) => {
     //Returns the user's id, or a a false error status otherwise
-    const isValidLogin = interface.checkLogin(req.body.username, req.body.password);
+    const isValidLogin = interface.checkLogin(
+        req.body.username,
+        req.body.password
+    );
 
     //returns the user's ID if successful
-    if (isValidLogin){
-        res.send({ id: isValidLogin })
+    if (isValidLogin) {
+        res.send({ id: isValidLogin });
     }
 
     //returns an error message if unsuccessful
     else {
         res.send(false);
     }
-
 });
 
 app.post("/api/createUser", upload.single("file"), (req, res) => {
     var img;
     if (req.body.file === undefined) img = "default.png";
-
     else img = body.username + "pp.png";
-    
+
     const isValidAccountCreation = interface.createUser(req.body, img);
     //Return data on a successful login including their user id, a
     // BMI, and a target goal if applicable
-    if (isValidAccountCreation){
+    if (isValidAccountCreation) {
         console.log(isValidAccountCreation);
-        res.send({id: isValidAccountCreation})
-    }    
-    
-    else {
+        res.send({ id: isValidAccountCreation });
+    } else {
         res.send(false);
     }
-
 });
-
 
 /*********************RECORD EXERCISE PAGE**********************/
 
@@ -122,8 +123,6 @@ app.post("/api/getUserMeals", (req, res) => {
     console.log(req.body);
     res.send(interface.getUserMeals(req.body));
 });
-
-
 
 /*********************RECORD MEAL PAGE**********************/
 
@@ -148,17 +147,10 @@ app.post("/api/recordNewDrink", (req, res) => {
     res.send(interface.recordNewDrink(req.body));
 });
 
-
-
 app.post("/api/recordMeal", (req, res) => {
     console.log(req.body);
     res.send(interface.recordMeal(req.body));
 });
-
-
-
-
-
 
 /*************************HOME PAGE******************************/
 
@@ -179,7 +171,3 @@ app.post("/api/getBMI", (req, res) => {
 app.listen(3001, () => {
     console.log("Server running on port 3001");
 });
-
-
-
-
