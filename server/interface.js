@@ -242,11 +242,11 @@ class Interface {
     /********************************MEALS********************************/
 
     getFood(body) {
-        console.log("Trying to get food");
+        console.log(body);
         const stmt = this.database.prepare(
-            "SELECT * FROM food WHERE createdBy = ? OR createdBy = 0 ORDER BY name ASC"
+            "SELECT * FROM food WHERE (createdBy = ? OR createdBy = 0) AND LOWER(name) LIKE ? ORDER BY name ASC LIMIT 6"
         );
-        const info = stmt.all(body.userToken);
+        const info = stmt.all(body.id, `%${body.food}%`);
         console.log(info);
         return info;
     }
@@ -258,13 +258,9 @@ class Interface {
         if (id === "" || name === "" || calories === "") {
             return false;
         }
-
-        console.log(body);
-
         const stmt = this.database.prepare(
             "INSERT INTO food (name, calories, createdBy) VALUES (?, ?, ?)"
         );
-
         const result = stmt.run(name, calories, id);
         return result;
     }
@@ -272,27 +268,22 @@ class Interface {
     recordNewDrink(body) {
         //ID here refers to USER ID
         const { id, name, calories } = body;
-
         if (id === "" || name === "" || calories === "") {
             return false;
         }
-
-        console.log(body);
-
         const stmt = this.database.prepare(
             "INSERT INTO drink (name, calories, createdBy) VALUES (?, ?, ?)"
         );
-
         const result = stmt.run(name, calories, id);
         return result;
     }
 
     getDrink(body) {
-        console.log("Trying to get drink");
+        console.log(body);
         const stmt = this.database.prepare(
-            "SELECT * FROM drink WHERE createdBy = ? OR createdBy = 0 ORDER BY name ASC"
+            "SELECT * FROM drink WHERE (createdBy = ? OR createdBy = 0) AND LOWER(name) LIKE ? ORDER BY name ASC LIMIT 6"
         );
-        const info = stmt.all(body.userToken);
+        const info = stmt.all(body.id, `%${body.drink}%`);
         console.log(info);
         return info;
     }
@@ -300,8 +291,6 @@ class Interface {
     //All details about an exercise given, checks if valid, then inserts into array
     recordMeal(body) {
         //ID here refers to USER ID, NOT ACTIVITY ID OR EXERCISE ID
-
-        console.log(body);
 
         const {
             user_id,

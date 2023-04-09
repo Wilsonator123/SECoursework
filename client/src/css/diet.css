@@ -2,16 +2,17 @@
     display: grid;
     grid: 400px / auto auto;
 }
-.dietBox1, .dietBox2, .dietBox3{
-	margin:10px;
-	padding:10px;
-    background:#7EBB94;
+.dietBox1,
+.dietBox2,
+.dietBox3 {
+    margin: 10px;
+    padding: 10px;
+    background: #7ebb94;
     border-radius: 25px;
 }
 
 .dietBox1 {
     grid-column: 1 / span 2;
-
 }
 .dietBox2 {
     grid-column: 1;
@@ -19,25 +20,45 @@
 .dietBox3 {
     grid-column: 2;
 }
-.meal-form{
+.meal-form {
     font-size: 16px;
 }
 
-.meal-form input, select{ 
+.meal-form input,
+select {
     font-size: 16px;
-    background-color:#e8e7ed;
+    background-color: #e8e7ed;
     border-radius: 8px;
-    border-color:  #444444;
+    border-color: #444444;
     border: 1px solid;
-
 }
 
-
-.meal-btn, .drink-btn, .food-btn{
+.meal-btn,
+.drink-btn,
+.food-btn {
     font-size: 16px;
-    background-color: #EBBB52;
-    border-color: #f5bb40; 
+    background-color: #ebbb52;
+    border-color: #f5bb40;
     border-radius: 8px;
-    color:#444444;
+    color: #444444;
     margin-top: 10px;
+}
+
+.mealType {
+    display: inline-block;
+}
+
+.fdResults {
+    position: absolute;
+    display: flex;
+    width: 10rem;
+    flex-direction: column;
+    margin-left: 2.3rem;
+    font-size: 16px;
+    background-color: #e8e7ed;
+    border-color: #e8e7ed;
+}
+
+.fdResult:hover {
+    background-color: #b3b3b6;
 }

@@ -10,7 +10,6 @@ export default function Diet() {
     //Get the user's id stored in session storage
     const tokenString = localStorage.getItem("token");
     const userToken = JSON.parse(tokenString);
-    console.log(tokenString);
 
     //Form for submitting a meal
     const [form, setForm] = useState({
@@ -113,10 +112,67 @@ export default function Diet() {
             [event.target.name]: event.target.value,
         });
     };
-    const handleFoodChange = (event) => {};
+    const handleFoodChange = (event) => {
+        event.preventDefault();
+        setForm({
+            ...form,
+            [event.target.name]: event.target.value,
+        });
+        fetch("http://localhost:3001/api/getFood", {
+            method: "POST",
+            body: JSON.stringify({ id: userToken, food: event.target.value }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((response) => response.json())
+
+            .then((data) => {
+                if (data) {
+                    setFood(data);
+                } else {
+                    alert("Cannot get food");
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    };
+    const handleDrinkChange = (event) => {
+        event.preventDefault();
+        setForm({
+            ...form,
+            [event.target.name]: event.target.value,
+        });
+        fetch("http://localhost:3001/api/getDrink", {
+            method: "POST",
+            body: JSON.stringify({ id: userToken, drink: event.target.value }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((response) => response.json())
+
+            .then((data) => {
+                if (data) {
+                    setDrink(data);
+                } else {
+                    alert("Cannot get drink");
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    };
 
     return (
-        <div id="pageContainer">
+        <div
+            id="pageContainer"
+            onClick={() => {
+                setFood([]);
+                setDrink([]);
+            }}
+        >
             <h1> DIET PAGE </h1>
             <div class="grid-container-diet">
                 <div class="dietBox1">
@@ -136,6 +192,7 @@ export default function Diet() {
                         <label htmlFor="mealType">Meal Type: </label>
                         <select
                             name="mealType"
+                            class="mealType"
                             value={form.mealType}
                             onChange={handleChange}
                         >
@@ -152,12 +209,30 @@ export default function Diet() {
 
                         <label htmlFor="food">Food:</label>
                         <input
-                            name="food"
                             type="text"
+                            id="food"
+                            name="food"
                             value={form.food}
                             onChange={handleFoodChange}
                         ></input>
-
+                        <div class="fdResults">
+                            {food.map((value, key) => {
+                                return (
+                                    <a
+                                        class="fdResult"
+                                        onClick={() => {
+                                            setForm({
+                                                ...form,
+                                                food: value.name,
+                                            });
+                                            setFood([]);
+                                        }}
+                                    >
+                                        {value.name}
+                                    </a>
+                                );
+                            })}
+                        </div>
                         <br />
 
                         <label htmlFor="quantity">Quantity (grams):</label>
@@ -178,28 +253,31 @@ export default function Diet() {
                         <br />
 
                         <label htmlFor="drink">Drink:</label>
-                        <select
+                        <input
+                            type="text"
+                            id="drink"
                             name="drink"
-                            type="number"
                             value={form.drink}
-                            onChange={(event) =>
-                                setForm({
-                                    ...form,
-                                    drink: parseInt(event.target.value),
-                                })
-                            }
-                        >
-                            <option disabled value="">
-                                Select
-                            </option>
-
-                            {/*Gets ALL the activities and maps them in a list*/}
-                            {drink.map((drink) => (
-                                <option key={drink.id} value={drink.id}>
-                                    {drink.name}
-                                </option>
-                            ))}
-                        </select>
+                            onChange={handleDrinkChange}
+                        ></input>
+                        <div class="fdResults">
+                            {drink.map((value, key) => {
+                                return (
+                                    <a
+                                        class="fdResult"
+                                        onClick={() => {
+                                            setForm({
+                                                ...form,
+                                                drink: value.name,
+                                            });
+                                            setDrink([]);
+                                        }}
+                                    >
+                                        {value.name}
+                                    </a>
+                                );
+                            })}
+                        </div>
 
                         <br />
 
