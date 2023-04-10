@@ -62,3 +62,11 @@ select {
 .fdResult:hover {
     background-color: #b3b3b6;
 }
+
+.dietHeader {
+    display: flex;
+    justify-content: space-between;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}

@@ -17,7 +17,7 @@ export default function Navbar() {
                     </li>
 
                     <li>
-                        <Link to="/Meal">Record Meal</Link>
+                        <Link to="/Diet">Record Meal</Link>
                     </li>
 
                     <li>
