@@ -1,7 +1,3 @@
-/* @import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities"; */
-
 /* Path: client\src\index.css */
 
 .container {
@@ -11,7 +7,7 @@
     justify-content: center;
     height: 100%;
     width: 100%;
-    max-width: 100%; 
+    max-width: 100%;
 }
 
 .App {
@@ -40,25 +36,24 @@
 }
 .app-box {
     grid-column: 1 / span 2;
-	margin:10px;
-	padding:10px;
-    background:#7FACBF;
+    margin: 10px;
+    padding: 10px;
+    background: #7facbf;
     border-radius: 25px;
-} 
+}
 
-.app-form{ 
+.app-form {
     font-size: 25px;
     position: relative;
     width: 100%;
     height: 10em;
+}
 
-    
-} 
-
-.app-form input, select{
-    font-size: 25px; 
+.app-form input,
+select {
+    font-size: 25px;
     color: #444444;
-    background-color: #e8e7ed; 
+    background-color: #e8e7ed;
     /* display: inline-block; */
     display: flex;
     flex-wrap: wrap;
@@ -66,47 +61,45 @@
     align-items: center;
     /* margin-top: 2em; added margin top */
     border-radius: 8px;
-    border-color:  #444444;
+    border-color: #444444;
     border: 1px solid;
-
 }
 
-.app-form label{
+.app-form label {
     text-align: left;
     flex-flow: row wrap;
 }
 
-
-.form-box-app{ 
+.form-box-app {
     width: fit-content;
-    position:absolute;
-    top:35%;
+    position: absolute;
+    top: 35%;
     margin-top: 10px;
     left: 50%;
     transform: translate(-50%, -50%);
-} 
+}
 
-.submit-btn{ 
+.submit-btn {
     font-size: 25px;
-    background-color: #EBBB52;
-    border-color: #f5bb40; 
+    background-color: #ebbb52;
+    border-color: #f5bb40;
     border-radius: 8px;
     position: absolute;
     float: right;
     /* top:450px;  */
-    color:#444444;
-
+    color: #444444;
 }
 
 @media screen and (max-width: 750px) {
-    .app-form{
+    .app-form {
         font-size: 16px;
     }
 
-    .app-form input, select{
+    .app-form input,
+    select {
         font-size: 16px;
     }
-    .submit-btn{ 
+    .submit-btn {
         font-size: 16px;
     }
 
@@ -114,8 +107,4 @@
         display: grid;
         grid: 1000px / auto auto;
     }
-
-    
 }
-
-
