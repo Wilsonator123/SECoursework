@@ -9,14 +9,23 @@ import "./css/diet.css";
  * Change length to see meals for that length of time
  *
  */
+
 export default function Diet() {
+    const [showForm, setShowForm] = useState(false);
+
+    const renderForm = () => {
+        setShowForm(!showForm);
+    };
+
     return (
         <div>
             <h1>Diet</h1>
             <div className="dietHeader">
                 <h2>Record Meal</h2>
-                <button>Click me</button>
+                <button onClick={renderForm}>Click me</button>
+                {showForm ? <DietForm /> : null}
             </div>
+            <div id="dietForm" />
         </div>
     );
 }

@@ -98,6 +98,7 @@ class Interface {
             );
             const info = stmt.all(username);
             const user = info[0].id;
+            this.estimateGoal(user);
             return user;
         } else return false;
     }
@@ -128,19 +129,16 @@ class Interface {
                 return false; //If username and password do not match
             else return info[0].id; //If username and password match
         }
-        body = { id: status };
     }
 
     checkWeight(weight, tweight, height) {
         const bmi = this.calculateBmi(weight, height);
         if (bmi < 18.5) {
             if (weight > tweight) {
-                console.log("UNDERWEIGHT");
                 return false;
             }
         } else if (bmi > 25) {
             if (weight < tweight) {
-                console.log("OVERWEIGHT");
                 return false;
             }
         }
@@ -338,6 +336,44 @@ class Interface {
     }
 
     /*********************************GOALS**********************************/
+    createGoal(body) {
+        const { id, name, groupID, goalType, target, date, notes } = body;
+        if (
+            id === "" ||
+            name === "" ||
+            goalType === "" ||
+            target === "" ||
+            measurement === "" ||
+            date === ""
+        ) {
+            return false;
+        }
+        if (!dateCheck(date)) return false;
+        const stmt = this.database.prepare(
+            "INSERT INTO goals (user_id, name, groupID, goalType, target, date, notes) VALUES (?, ?, ?, ?, ?, ?)"
+        );
+        const result = stmt.run(
+            id,
+            user_id,
+            name,
+            groupID,
+            goalType,
+            target,
+            date,
+            notes
+        );
+        return result;
+    }
+
+    dateCheck(date) {
+        try {
+            const date = new Date(date);
+            if (date < new Date()) return false;
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
 
     getActiveGoals(id) {
         //Returns all active goals for a user
@@ -397,13 +433,12 @@ class Interface {
         const height = info[0].height;
         const tweight = info[0].tweight;
         const bmi = this.bmi(info[0].id);
+        const goal = null;
         if (bmi < 18.5)
-            return this.createUnderweightGoal(id, weight, height, tweight, bmi);
-        else if (bmi >= 18.5 && bmi < 25)
-            return this.createNormalGoal(id, weight, height, tweight, bmi);
+            goal = this.createUnderweightGoal(id, weight, height, tweight, bmi);
         else if (bmi >= 25 && bmi < 30)
-            return this.createOverweightGoal(id, weight, height, tweight, bmi);
-        else return this.createObeseGoal(id, weight, height, tweight, bmi);
+            goal = this.createOverweightGoal(id, weight, height, tweight, bmi);
+        else goal = this.createObeseGoal(id, weight, height, tweight, bmi);
     }
 
     createUnderweightGoal(id, weight, tweight) {
@@ -411,7 +446,6 @@ class Interface {
         const now = new Date();
         const futureDate = new Date();
         futureDate.setDate(now.getDate() + 7);
-        var goal;
         //Creates a goal for underweight people
         if (tweight <= weight) {
             return (goal = {

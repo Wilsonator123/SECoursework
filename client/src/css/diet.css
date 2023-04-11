@@ -1,3 +1,15 @@
+#dietPageContainer {
+    position: fixed;
+    top: 10%;
+    left: 10%;
+    height: 100%;
+    width: 80%;
+    overflow: hidden;
+    background-color: #b7b7b7;
+    justify-content: center;
+    display: flex;
+}
+
 .grid-container-diet {
     display: grid;
     grid: 400px / auto auto;

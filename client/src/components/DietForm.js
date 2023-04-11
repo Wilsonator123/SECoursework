@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import ReactDom from "react-dom";
 import NewFood from "./NewFood";
 import NewDrink from "./NewDrink";
 import "../css/diet.css";
@@ -165,15 +166,14 @@ function DietForm() {
             });
     };
 
-    return (
+    return ReactDom.createPortal(
         <div
-            id="pageContainer"
+            id="dietPageContainer"
             onClick={() => {
                 setFood([]);
                 setDrink([]);
             }}
         >
-            <h1> DIET PAGE </h1>
             <div class="grid-container-diet">
                 <div class="dietBox1">
                     <h2>Record Meal</h2>
@@ -310,7 +310,8 @@ function DietForm() {
                     <NewDrink getDrink={getDrink} />
                 </div>
             </div>
-        </div>
+        </div>,
+        document.getElementById("dietForm")
     );
 }
 
