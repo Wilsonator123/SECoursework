@@ -84,7 +84,7 @@ export default function Account({ userID }) {
 
             .then((data) => {
                 if (data) {
-                    console.log(data);
+                    console.log(data[0].username);
                     setUser(data);
                 } else {
                     alert("Could not find user.");
@@ -123,7 +123,7 @@ export default function Account({ userID }) {
             <h1> ACCOUNT PAGE </h1>
             <div class="grid-container-accountpage">
                 <div class="profile-box">
-                    <h2>Welcome user: {user.username} </h2>
+                    <h2>Welcome user: {user[0].username} </h2>
                 </div>
 
                 <div>
