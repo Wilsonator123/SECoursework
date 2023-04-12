@@ -7,7 +7,7 @@ export default function Account({ userID }) {
     //Used to get all exercises a user has done
     const [userExercises, setUserExercises] = useState([]);
     const [userMeals, setUserMeals] = useState([]);
-    const [user, setUser] = useState([]);
+    const [user, setUser] = useState([[]]);
 
     //Used to get the date for which we want to view exercises and meals
     const [date, setDate] = useState(new Date());
@@ -123,7 +123,7 @@ export default function Account({ userID }) {
             <h1> ACCOUNT PAGE </h1>
             <div class="grid-container-accountpage">
                 <div class="profile-box">
-                    <h2>Welcome user: {user[0].username} </h2>
+                    <h2>Welcome user: {user[0].username}</h2>
                 </div>
 
                 <div>
