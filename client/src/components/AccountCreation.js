@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
-
 
 //Create a general form CSS file!
 
-function AccountCreation() {
+function AccountCreation({ setToken }) {
     //Used to push the user to the home page on a valid account creation
-    const navigate = useNavigate();
 
     //All data needed for account creation (could be split up?)
     const [form, setForm] = useState({
@@ -44,13 +41,11 @@ function AccountCreation() {
             .then((response) => response.json())
 
             .then((data) => {
-                
-
                 //May need to be updated to another page
                 if (data) {
-                    navigate("/account");
+                    setToken(data.id);
                 } else {
-                    alert("Invalid account creation details.")
+                    alert("Invalid account creation details.");
                 }
             })
             .catch((error) => {
@@ -87,11 +82,11 @@ function AccountCreation() {
             .then((data) => {
                 if (data) {
                     console.log("Unique and valid email:", form.email);
-                    setEmailError('');
+                    setEmailError("");
                 } else {
-                    setEmailError('Invalid email, please enter another');
+                    setEmailError("Invalid email, please enter another");
                     console.log("Invalid email:", form.email);
-                    
+
                     setForm({ ...form, email: "" });
                 }
             })
@@ -99,10 +94,6 @@ function AccountCreation() {
             .catch((error) => {
                 console.error("Error:", error);
             });
-
-
-
-
     };
     const checkUsername = (event) => {
         event.preventDefault();
@@ -121,9 +112,11 @@ function AccountCreation() {
             .then((data) => {
                 if (data) {
                     console.log("Unique username:", form.username);
-                    setUsernameError('');
+                    setUsernameError("");
                 } else {
-                    setUsernameError('Username already taken, please enter another');
+                    setUsernameError(
+                        "Username already taken, please enter another"
+                    );
                     console.log("Invalid username:", form.username);
                     setForm({ ...form, username: "" });
                 }
@@ -134,8 +127,8 @@ function AccountCreation() {
     };
 
     //Returns the account creation form that we need
-    return ( 
-        <form class="app-form" onSubmit={handleSubmit}> 
+    return (
+        <form onSubmit={handleSubmit}>
             <label htmlFor="username">Username:</label>
             <input
                 type="text"
@@ -147,7 +140,7 @@ function AccountCreation() {
             />
 
             {usernameError && <p>{usernameError}</p>}
-            
+
             <br />
 
             <label htmlFor="firstname">First Name:</label>
@@ -277,7 +270,7 @@ function AccountCreation() {
             <br />
             <br />
 
-            <button class="submit-btn" type="submit">Create Account</button>
+            <button type="submit">Create Account</button>
         </form>
     );
 }
