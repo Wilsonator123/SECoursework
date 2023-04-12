@@ -49,6 +49,7 @@ export default function Account({ userID }) {
             body: JSON.stringify({
                 id: userToken,
                 date: date.toISOString().slice(0, 10),
+                size: 1,
             }),
             headers: {
                 "Content-Type": "application/json",
