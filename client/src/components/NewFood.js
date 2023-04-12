@@ -74,7 +74,7 @@ export default function NewFood({getFood}) {
         <div>
             <br/>
             <h2>Add New Food:</h2>
-        <form onSubmit={handleSubmit}>
+        <form class="meal-form" onSubmit={handleSubmit}>
 
 
             <label htmlFor="name">Name:</label>
@@ -106,7 +106,7 @@ export default function NewFood({getFood}) {
 
             <button class="food-btn" type="submit">Add Food</button>
 
-            <p>{foodMessage}</p>
+            <p class="message">{foodMessage}</p>
 
         </form>
         </div>

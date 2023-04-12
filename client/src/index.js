@@ -14,6 +14,7 @@ import Goal from "./Goal";
 import Group from "./Group";
 import History from "./History";
 import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 //------------------------REFERENCE-----------------------------//
 //Login authentication and storing user ID tokens adapted from tutorial:
@@ -84,6 +85,7 @@ function Index() {
                         />
                     </Route>
                 </Routes>
+                <Footer />
             </BrowserRouter>
         );
     }

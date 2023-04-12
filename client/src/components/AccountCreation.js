@@ -128,7 +128,7 @@ function AccountCreation({ setToken }) {
 
     //Returns the account creation form that we need
     return (
-        <form onSubmit={handleSubmit}>
+        <form class="account-form" onSubmit={handleSubmit}>
             <label htmlFor="username">Username:</label>
             <input
                 type="text"
@@ -270,7 +270,7 @@ function AccountCreation({ setToken }) {
             <br />
             <br />
 
-            <button type="submit">Create Account</button>
+            <button class="create-account-btn" type="submit">Create Account</button>
         </form>
     );
 }

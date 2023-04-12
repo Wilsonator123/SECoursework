@@ -142,5 +142,6 @@ export default function Diet() {
                 </div>
             </div>
         </div>
+        </div>
     );
 }

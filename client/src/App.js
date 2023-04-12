@@ -24,25 +24,28 @@ export default function App({ setToken }) {
             {/*Header dependent on which form you are on */}
             <h1>{currentForm ? "CREATE ACCOUNT" : "LOG IN"}</h1>
             <br />
+            <div class="grid-container-account">
+                <div class="account-box">
+                    <div class="form-box">
+                        {currentForm ? (
+                            <AccountCreation setToken={setToken} />
+                        ) : (
+                            <Login setToken={setToken} />
+                        )}
+                    </div>
+                    <div class="kms">
+                        <p class="create-para">
+                            {currentForm
+                                ? "Already have an account?"
+                                : "Don't have an account yet?"}
+                        </p>
 
-            {currentForm ? (
-                <AccountCreation setToken={setToken} />
-            ) : (
-                <Login setToken={setToken} />
-            )}
-
-            <br />
-            <br />
-
-            <p>
-                {currentForm
-                    ? "Already have an account?"
-                    : "Don't have an account yet?"}
-            </p>
-
-            <button onClick={toggleForm}>
-                {currentForm ? "Login" : "Sign Up"}
-            </button>
+                        <button class="login-btn" onClick={toggleForm}>
+                            {currentForm ? "Login" : "Sign Up"}
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
