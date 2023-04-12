@@ -14,6 +14,12 @@ class Interface {
     }
 
     /*********************************USER**********************************/
+    getUser(id) {
+        //Returns the user with the given id
+        const stmt = this.database.prepare("SELECT * FROM user WHERE id = ?");
+        const info = stmt.all(id);
+        return info;
+    }
 
     checkEmailFormat(email) {
         //Returns true if email is in correct format, false if it is not

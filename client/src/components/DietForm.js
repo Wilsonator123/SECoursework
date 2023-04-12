@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ReactDom from "react-dom";
 import NewFood from "./NewFood";
 import NewDrink from "./NewDrink";
-import "../css/diet.css";
+import "../css/Diet.css";
 
 function DietForm(props) {
     const navigate = useNavigate();

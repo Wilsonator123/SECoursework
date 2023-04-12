@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import DietForm from "./components/DietForm";
-import "./css/diet.css";
+import "./css/Diet.css";
 
 /**
  *
@@ -141,7 +141,6 @@ export default function Diet() {
                     </table>
                 </div>
             </div>
-        </div>
         </div>
     );
 }

@@ -72,6 +72,29 @@ export default function Account({ userID }) {
             });
     };
 
+    const getUser = () => {
+        fetch("http://localhost:3001/api/getUser", {
+            method: "POST",
+            body: JSON.stringify({ id: userToken }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((response) => response.json())
+
+            .then((data) => {
+                if (data) {
+                    console.log(data);
+                    setUser(data);
+                } else {
+                    alert("Could not find user.");
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    };
+
     useEffect(() => {
         getUser();
         getExercise(date);
@@ -103,94 +126,97 @@ export default function Account({ userID }) {
                     <h2>Welcome user: {user.username} </h2>
                 </div>
 
-            <div>
-                <h2>Health Details</h2>
-                <HealthDetails userID={userID} />
-            </div>
+                <div>
+                    <h2>Health Details</h2>
+                    <HealthDetails userID={userID} />
+                </div>
 
-            <br />
-            <br />
+                <br />
+                <br />
 
-            <div>
-                <button onClick={goToPrevDay}> Previous </button>
-                <p>Date: {date.toLocaleDateString("en-GB")}</p>
-                <button onClick={goToNextDay}> Next </button>
-            </div>
+                <div>
+                    <button onClick={goToPrevDay}> Previous </button>
+                    <p>Date: {date.toLocaleDateString("en-GB")}</p>
+                    <button onClick={goToNextDay}> Next </button>
+                </div>
 
-            <br />
-            <br />
+                <br />
+                <br />
 
-            <div>
-                <h2>Exercise History:</h2>
+                <div>
+                    <h2>Exercise History:</h2>
 
-                {/*Gets the exercises and maps them in divs*/}
-                {userExercises.map((userExercise) => (
-                    <div key={userExercise.id}>
-                        <br />
-                        <p>{userExercise.name}</p>
-                        <p>
-                            {userExercise.activity_name}:{" "}
-                            {userExercise.quantity} {userExercise.measurement}
-                        </p>
-                    </div>
-                ))}
-            </div>
+                    {/*Gets the exercises and maps them in divs*/}
+                    {userExercises.map((userExercise) => (
+                        <div key={userExercise.id}>
+                            <br />
+                            <p>{userExercise.name}</p>
+                            <p>
+                                {userExercise.activity_name}:{" "}
+                                {userExercise.quantity}{" "}
+                                {userExercise.measurement}
+                            </p>
+                        </div>
+                    ))}
+                </div>
 
-            <br />
-            <br />
+                <br />
+                <br />
 
-            <div>
-                <h2>Meal History: </h2>
+                <div>
+                    <h2>Meal History: </h2>
 
-                {userMeals.map((userMeal) => (
-                    <div key={userMeal.id}>
-                        <br />
-                        <p style={{ display: "inline" }}>
-                            {userMeal.mealType}: {userMeal.name}
-                        </p>
-                        <br />
-                        <p style={{ display: "inline" }}>
-                            {userMeal.food_name}:{" "}
-                            {(userMeal.foodAmount / 100) *
-                                userMeal.food_calories}{" "}
-                            kcals
-                        </p>
-                        <br />
-                        <p style={{ display: "inline" }}>
-                            {userMeal.drink_name}:{" "}
-                            {(userMeal.drinkAmount / 100) *
-                                userMeal.drink_calories}{" "}
-                            kcals
-                        </p>
-                        <br />
-                    </div>
-                ))}
+                    {userMeals.map((userMeal) => (
+                        <div key={userMeal.id}>
+                            <br />
+                            <p style={{ display: "inline" }}>
+                                {userMeal.mealType}: {userMeal.name}
+                            </p>
+                            <br />
+                            <p style={{ display: "inline" }}>
+                                {userMeal.food_name}:{" "}
+                                {(userMeal.foodAmount / 100) *
+                                    userMeal.food_calories}{" "}
+                                kcals
+                            </p>
+                            <br />
+                            <p style={{ display: "inline" }}>
+                                {userMeal.drink_name}:{" "}
+                                {(userMeal.drinkAmount / 100) *
+                                    userMeal.drink_calories}{" "}
+                                kcals
+                            </p>
+                            <br />
+                        </div>
+                    ))}
 
-                {userMeals.reduce(
-                    (total, userMeal) =>
-                        total +
-                        ((userMeal.foodAmount / 100) * userMeal.food_calories +
-                            (userMeal.drinkAmount / 100) *
-                                userMeal.drink_calories),
-                    ""
-                ) && (
-                    <div>
-                        <br />
-                        <p>
-                            Total:{" "}
-                            {userMeals.reduce(
-                                (total, userMeal) =>
-                                    total +
-                                    ((userMeal.foodAmount / 100) *
-                                        userMeal.food_calories +
-                                        (userMeal.drinkAmount / 100) *
-                                            userMeal.drink_calories),
-                                0
-                            )}{" "}
-                            kcals
-                        </p>
-                    </div>
-                )}
+                    {userMeals.reduce(
+                        (total, userMeal) =>
+                            total +
+                            ((userMeal.foodAmount / 100) *
+                                userMeal.food_calories +
+                                (userMeal.drinkAmount / 100) *
+                                    userMeal.drink_calories),
+                        ""
+                    ) && (
+                        <div>
+                            <br />
+                            <p>
+                                Total:{" "}
+                                {userMeals.reduce(
+                                    (total, userMeal) =>
+                                        total +
+                                        ((userMeal.foodAmount / 100) *
+                                            userMeal.food_calories +
+                                            (userMeal.drinkAmount / 100) *
+                                                userMeal.drink_calories),
+                                    0
+                                )}{" "}
+                                kcals
+                            </p>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

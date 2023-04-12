@@ -1,29 +1,28 @@
-#dietPageContainer {
-    position: fixed;
-    top: 10%;
-    left: 10%;
-    height: 100%;
-    width: 80%;
-    overflow: hidden;
-    background-color: #b7b7b7;
-    justify-content: center;
-    display: flex;
-}
-
 .grid-container-diet {
     display: grid;
-    grid: 400px / auto auto;
+    grid: 500px / auto auto;    
 }
-.dietBox1,
-.dietBox2,
-.dietBox3 {
-    margin: 10px;
-    padding: 10px;
-    background: #7ebb94;
+
+h1{ 
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: #444444;
+    text-transform: uppercase;
+    text-align: center;
+}
+.dietBox1, .dietBox2, .dietBox3{
+	margin:10px;
+	padding:10px;
+    background:#7EBB94;
     border-radius: 25px;
 }
+
 .dietBox1 {
     grid-column: 1 / span 2;
+    display: flex;
+    justify-content: center;
+
 }
 .dietBox2 {
     grid-column: 1;
@@ -32,146 +31,50 @@
     grid-column: 2;
 }
 
-.meal-form {
-    font-size: 16px;
-}
-.meal-form input,
-select {
-    font-size: 16px;
-    background-color: #e8e7ed;
-    border-radius: 8px;
-    border-color: #444444;
-    border: 1px solid;
-}
 
-.meal-btn,
-.drink-btn,
-.food-btn {
-    font-size: 16px;
-    background-color: #ebbb52;
-    border-color: #f5bb40;
-    border-radius: 8px;
-    color: #444444;
-    margin-top: 10px;
-}
-
-.mealType {
+.meal-form{
+    font-size: 25px;
     display: inline-block;
 }
 
-.fdResults {
-    position: absolute;
-    display: flex;
-    width: 10rem;
-    flex-direction: column;
-    margin-left: 2.3rem;
+
+.meal-form input, select{  
+    font-size: 25px;
+    background-color:#e8e7ed;
+    border-radius: 8px;
+    border-color:  #444444;
+    border: 1px solid; 
+    margin-top: 25px; 
+    margin-left: 36px; 
+} 
+.meal-form label{
+    display: inline-block;
+    width: 200px;
+}
+
+
+
+.meal-btn, .drink-btn, .food-btn{
     font-size: 16px;
-    background-color: #e8e7ed;
-    border-color: #e8e7ed;
+    background-color: #EBBB52;
+    border-radius: 8px; 
+    border: 2px solid #edbc52;
+    color:#444444;
+    /* margin-top: 10px;  */
+    padding: 15px 15px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
-.fdResult:hover {
-    background-color: #b3b3b6;
-    cursor: pointer;
+.drink-btn, .food-btn{ 
+    float:right;
+
+} 
+
+.meal-btn{ 
+    margin-left: 45%;
 }
 
-.dietHeader {
-    display: flex;
-    justify-content: space-between;
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 10px;
-}
-
-#meals {
-    display: flex;
-    flex-direction: column;
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 10px;
-    justify-content: center;
-    align-items: center;
-}
-.dietFilter {
-    display: flex;
-    justify-content: space-between;
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 10px;
-}
-
-#dietTable {
-    display: flex;
-    flex-direction: column;
-    font-size: 16px;
-    font-weight: 600;
-    width: 80rem;
-}
-
-#dietTable thead,
-tbody {
-    border: 1px solid;
-}
-
-#dietTable th {
-    text-align: left;
-    padding: 10px;
-    font-size: 22px;
-    width: 100%;
-    border-right: 1px solid;
-}
-
-#dietTable th:last-child {
-    border-right: none;
-}
-
-#dietTable td {
-    text-align: left;
-    padding: 10px;
-    font-size: 18px;
-    width: 100%;
-}
-
-#dietTable th:nth-child(1) {
-    width: 30rem;
-}
-#dietTable th:nth-child(2) {
-    width: 15rem;
-}
-#dietTable th:nth-child(3) {
-    width: 15rem;
-}
-#dietTable th:nth-child(4) {
-    width: 15rem;
-}
-#dietTable th:nth-child(5) {
-    width: 10rem;
-}
-#dietTable td:nth-child(1) {
-    width: 30rem;
-}
-#dietTable td:nth-child(2) {
-    width: 15rem;
-}
-#dietTable td:nth-child(3) {
-    width: 15rem;
-}
-#dietTable td:nth-child(4) {
-    width: 15rem;
-}
-#dietTable td:nth-child(5) {
-    width: 10rem;
-}
-
-.breakfast {
-    color: red;
-}
-.lunch {
-    color: green;
-}
-.dinner {
-    color: blue;
-}
-.snack {
-    color: purple;
+.message{
+    color: #b44a4c;
 }
