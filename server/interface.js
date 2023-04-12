@@ -1,16 +1,16 @@
 const dB = require("better-sqlite3");
 const fs = require("fs");
 const path = require("path");
+const { start } = require("repl");
 class Interface {
     constructor() {
         this.database = new dB("database.db", {
             verbose: console.log,
         });
+
         this.database.exec(
             fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8")
         );
-
-        //this.database.exec("DROP TABLE MEAL");
     }
 
     /*********************************USER**********************************/
@@ -189,16 +189,59 @@ class Interface {
 
     //Gets all meals for a specific date for a user to display on the homepage
     getUserMeals(body) {
-        console.log(body);
-
+        let first =
+            "SELECT meal.id, meal.name, meal.mealType, meal.date, meal.calories, food.name AS food_name, food.calories AS food_calories, meal.foodAmount, drink.name AS drink_name, drink.calories AS drink_calories, meal.drinkAmount FROM meal INNER JOIN food ON meal.food = food.name INNER JOIN drink ON meal.drink = drink.name ";
+        let second = "";
+        let third =
+            "ORDER BY meal.date, CASE WHEN mealType='breakfast' THEN 1 WHEN mealType= 'lunch' THEN 2 WHEN mealType= 'dinner' THEN 3 WHEN mealType= 'snack' THEN 4 END";
         //Get all exercises and their names for the given user (based on their token)
-        const stmt = this.database.prepare(
-            "SELECT meal.id, meal.name, meal.mealType, meal.date, food.name AS food_name, food.calories AS food_calories, meal.foodAmount, drink.name AS drink_name, drink.calories AS drink_calories, meal.drinkAmount FROM meal INNER JOIN food ON meal.food = food.id INNER JOIN drink ON meal.drink = drink.id WHERE meal.user_id = ? AND meal.date = ?"
-        );
-
-        const info = stmt.all(body.id, body.date);
-        console.log(info);
-        return info;
+        let stmt;
+        if (body.size == 1) {
+            second = "WHERE meal.user_id = ? AND meal.date = ? ";
+            stmt = this.database.prepare(first + second + third);
+            const info = stmt.all(body.id, body.date);
+            console.log(info);
+            return info;
+        }
+        if (body.size == 7) {
+            let today = new Date(body.date);
+            let startOfWeek = new Date(
+                today.getTime() - today.getDay() * 24 * 60 * 60 * 1000
+            );
+            let endOfWeek = new Date(today.setDate(startOfWeek.getDate() + 6));
+            console.log(startOfWeek, endOfWeek);
+            second = "WHERE meal.user_id = ? AND meal.date BETWEEN ? AND ? ";
+            stmt = this.database.prepare(first + second + third);
+            const info = stmt.all(
+                body.id,
+                startOfWeek.toISOString().slice(0, 10),
+                endOfWeek.toISOString().slice(0, 10)
+            );
+            console.log(info);
+            return info;
+        }
+        if (body.size == 30) {
+            let today = new Date(body.date);
+            let startOfMonth = new Date(
+                today.getFullYear(),
+                today.getMonth(),
+                1
+            );
+            let endOfMonth = new Date(
+                today.getFullYear(),
+                today.getMonth() + 1,
+                0
+            );
+            second = "WHERE meal.user_id = ? AND meal.date BETWEEN ? AND ? ";
+            stmt = this.database.prepare(first + second + third);
+            const info = stmt.all(
+                body.id,
+                startOfMonth.toISOString().slice(0, 10),
+                endOfMonth.toISOString().slice(0, 10)
+            );
+            console.log(info);
+            return info;
+        }
     }
 
     //All details about an exercise given, checks if valid, then inserts into array
@@ -220,7 +263,7 @@ class Interface {
         console.log(activity);
         //We need to put ALL dates in the better format, not
         //the... weird and wrong US one
-        const date = new Date().getTime();
+        const date = new Date().toISOString().slice(0, 10);
 
         const stmt = this.database.prepare(
             "INSERT INTO exercise (user_id, name, quantity, measurement, date, type) VALUES (?, ?, ?, ?, ?, ?)"
@@ -286,6 +329,50 @@ class Interface {
         return info;
     }
 
+    getCalories(food, foodAmount, drink, drinkAmount) {
+        console.log(food, foodAmount, drink, drinkAmount);
+        var foodCalories = 0;
+        var drinkCalories = 0;
+        console.log("in getCalories");
+        if (food !== "") {
+            const stmt = this.database.prepare(
+                "SELECT calories FROM food WHERE name = ?"
+            );
+            let data = stmt.get(food);
+            foodCalories = (data.calories * foodAmount) / 100;
+        }
+        if (drink !== "") {
+            const stmt = this.database.prepare(
+                "SELECT calories FROM drink WHERE name = ?"
+            );
+            let data = stmt.get(drink);
+            drinkCalories = (data.calories * drinkAmount) / 100;
+        }
+        return foodCalories + drinkCalories;
+    }
+
+    checkFood(body) {
+        const { food } = body;
+        const stmt = this.database.prepare("SELECT * FROM food WHERE name = ?");
+        const info = stmt.get(food);
+        if (info.length === 0) {
+            return false;
+        }
+        return true;
+    }
+
+    checkDrink(body) {
+        const { drink } = body;
+        const stmt = this.database.prepare(
+            "SELECT * FROM drink WHERE name = ?"
+        );
+        const info = stmt.get(drink);
+        if (info.length === 0) {
+            return false;
+        }
+        return true;
+    }
+
     //All details about an exercise given, checks if valid, then inserts into array
     recordMeal(body) {
         //ID here refers to USER ID, NOT ACTIVITY ID OR EXERCISE ID
@@ -304,33 +391,33 @@ class Interface {
             user_id === "" ||
             name === "" ||
             mealType === "" ||
-            food === "" ||
-            foodAmount === "" ||
-            drink === "" ||
-            drinkAmount === ""
+            (food !== "" && foodAmount === "") ||
+            (drink !== "" && drinkAmount === "")
         ) {
             return false;
         }
 
+        var calories = this.getCalories(food, foodAmount, drink, drinkAmount);
         console.log(user_id);
         console.log(name);
         console.log(typeof user_id);
 
-        const date = new Date().getTime();
+        const date = new Date().toISOString().slice(0, 10);
 
         const stmt = this.database.prepare(
-            "INSERT INTO meal (user_id, name, mealType, food, foodAmount, drink, drinkAmount, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?"
+            "INSERT INTO meal (name, mealType, date, user_id, food, foodAmount, drink, drinkAmount, calories) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
         );
 
         const result = stmt.run(
-            user_id,
             name,
             mealType,
+            date,
+            user_id,
             food,
             foodAmount,
             drink,
             drinkAmount,
-            date
+            calories
         );
         return true;
     }
@@ -385,7 +472,7 @@ class Interface {
     }
 
     checkGoals(id) {
-        const date = new Date().getTime();
+        const date = new Date().toISOString().slice(0, 10);
         //Returns all active goals for a user
         const stmt = this.database.prepare(
             "UPDATE goals set status = inactive WHERE id = ? AND status IS ('active') AND date<" +
@@ -403,7 +490,11 @@ class Interface {
         const stmt = this.database.prepare(
             "UPDATE goals set status = active AND set date = ? WHERE id = ? AND goalID = ?"
         );
-        const info = stmt.all(futureDate.getTime(), id, goalID);
+        const info = stmt.all(
+            futureDate.toISOString().slice(0, 10),
+            id,
+            goalID
+        );
         return info;
     }
 
@@ -453,7 +544,7 @@ class Interface {
                 goalType: "weight",
                 current: weight,
                 target: weight + 1,
-                date: futureDate,
+                date: futureDate.toISOString().slice(0, 10),
                 notes: "Gain 1kg this week! Get some protein!",
             });
         } else {
@@ -462,7 +553,7 @@ class Interface {
                 goalType: "distance",
                 current: 0,
                 target: 5,
-                date: futureDate,
+                date: futureDate.toISOString().slice(0, 10),
                 notes: "Walk or run 5 miles this week!",
             });
         }
@@ -480,7 +571,7 @@ class Interface {
             goalType: "distance",
             current: 0,
             target: 10,
-            date: futureDate,
+            date: futureDate.toISOString().slice(0, 10),
             notes: "Run 10 miles this week! TIP: Split it up into multiple runs",
         });
     }
@@ -497,7 +588,7 @@ class Interface {
                 goalType: "weight",
                 current: weight,
                 target: weight - 1,
-                date: futureDate,
+                date: futureDate.toISOString().slice(0, 10),
                 notes: "Lose 1kg this week! Get moving!",
             });
         } else {
@@ -506,7 +597,7 @@ class Interface {
                 goalType: "distance",
                 current: 0,
                 target: 5,
-                date: futureDate,
+                date: futureDate.toISOString().slice(0, 10),
                 notes: "Walk 5 miles this week!",
             });
         }
@@ -523,7 +614,7 @@ class Interface {
                 goalType: "weight",
                 current: weight,
                 target: weight - 1,
-                date: futureDate,
+                date: futureDate.toISOString().slice(0, 10),
                 notes: "Lose 1kg this week! Get moving!",
             });
         } else {
@@ -532,7 +623,7 @@ class Interface {
                 goalType: "distance",
                 current: 0,
                 target: 5,
-                date: futureDate,
+                date: futureDate.toISOString().slice(0, 10),
                 notes: "Walk 5 miles this week!",
             });
         }

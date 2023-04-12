@@ -5,7 +5,7 @@ import NewFood from "./NewFood";
 import NewDrink from "./NewDrink";
 import "../css/diet.css";
 
-function DietForm() {
+function DietForm(props) {
     const navigate = useNavigate();
 
     //Get the user's id stored in session storage
@@ -27,12 +27,10 @@ function DietForm() {
     //And also the list of drinks
     const [food, setFood] = useState([]);
     const [drink, setDrink] = useState([]);
+    const [foodError, setFoodError] = useState("");
+    const [drinkError, setDrinkError] = useState("");
 
     //Update the foods when food changes (will be used when a new one added)
-    useEffect(() => {
-        getFood();
-        getDrink();
-    }, []);
 
     const getFood = () => {
         fetch("http://localhost:3001/api/getFood", {
@@ -45,7 +43,7 @@ function DietForm() {
             .then((response) => response.json())
 
             .then((data) => {
-                if (data) {
+                if (data.length) {
                     setFood(data);
                 } else {
                     alert("Cannot get food");
@@ -67,7 +65,7 @@ function DietForm() {
             .then((response) => response.json())
 
             .then((data) => {
-                if (data) {
+                if (data.length) {
                     setDrink(data);
                 } else {
                     alert("Cannot get drink");
@@ -95,7 +93,7 @@ function DietForm() {
                 //May need to be updated to another page
                 if (data) {
                     alert("Recorded successfully!");
-                    navigate("/Account");
+                    props.onClose();
                 } else {
                     alert("Failed to record.");
                 }
@@ -129,10 +127,13 @@ function DietForm() {
             .then((response) => response.json())
 
             .then((data) => {
-                if (data) {
+                if (data.length != 0) {
+                    console.log(data);
                     setFood(data);
+                    setFoodError("");
                 } else {
-                    alert("Cannot get food");
+                    setFoodError("Select Valid Food");
+                    setFood([]);
                 }
             })
             .catch((error) => {
@@ -155,10 +156,12 @@ function DietForm() {
             .then((response) => response.json())
 
             .then((data) => {
-                if (data) {
+                if (data.length != 0) {
                     setDrink(data);
+                    setDrinkError("");
                 } else {
-                    alert("Cannot get drink");
+                    setDrinkError("Select Valid Drink");
+                    setDrink([]);
                 }
             })
             .catch((error) => {
@@ -215,10 +218,12 @@ function DietForm() {
                             value={form.food}
                             onChange={handleFoodChange}
                         ></input>
+                        {foodError && <p id="foodError">{foodError}</p>}
                         <div class="fdResults">
                             {food.map((value, key) => {
                                 return (
                                     <a
+                                        key={key}
                                         class="fdResult"
                                         onClick={() => {
                                             setForm({
@@ -260,6 +265,9 @@ function DietForm() {
                             value={form.drink}
                             onChange={handleDrinkChange}
                         ></input>
+
+                        {drinkError && <p id="drinkError">{drinkError}</p>}
+
                         <div class="fdResults">
                             {drink.map((value, key) => {
                                 return (
