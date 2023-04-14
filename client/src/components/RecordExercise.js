@@ -15,12 +15,14 @@ export default function RecordExercise() {
         id: tokenString,
         name: "",
         activity: "",
-        quantity: "",
+        time: "",
+        distance: "",
         measurement: "",
     });
 
     //Gonna get a list of activities from DB to put in form
     const [activities, setActivities] = useState([]);
+    const [showDistance, setShowDistance] = useState(false);
 
     //At creatiom of form, get all activities in here!
     useEffect(() => {
@@ -28,6 +30,37 @@ export default function RecordExercise() {
             .then((response) => response.json())
             .then((data) => setActivities(data));
     }, []);
+
+    const getActivity = (event) => {
+        setForm({
+            ...form,
+            [event.target.name]: event.target.value,
+        });
+        fetch("http://localhost:3001/api/getActivity", {
+            method: "POST",
+            body: JSON.stringify({ name: event.target.value }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data) {
+                    console.log("Here" + data.type);
+                    if (data[0].type == 1) {
+                        setShowDistance(true);
+                    } else {
+                        setShowDistance(false);
+                    }
+                } else {
+                    alert("Failed to get activity.");
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("ERROR");
+            });
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -82,9 +115,7 @@ export default function RecordExercise() {
                 name="activity"
                 type="number"
                 value={form.activity}
-                onChange={(event) =>
-                    setForm({ ...form, activity: parseInt(event.target.value) })
-                }
+                onChange={getActivity}
             >
                 <option disabled value="">
                     Select
@@ -99,12 +130,12 @@ export default function RecordExercise() {
             </select>
 
             <br />
-            <label htmlFor="quantity">Quantity:</label>
+            <label htmlFor="time">Time (m):</label>
             <input
                 type="number"
-                id="quantity"
-                name="quantity"
-                value={form.quantity}
+                id="time"
+                name="time"
+                value={form.time}
                 min="0"
                 onChange={(event) =>
                     setForm({ ...form, quantity: parseInt(event.target.value) })
@@ -112,18 +143,24 @@ export default function RecordExercise() {
             />
 
             <br />
-            <label htmlFor="measurement">Measurement:</label>
-            <select
-                name="measurement"
-                value={form.measurement}
-                onChange={handleChange}
-            >
-                <option disabled value="">
-                    Select
-                </option>
-                <option value="m">Metres</option>
-                <option value="mins">Minutes</option>
-            </select>
+            {showDistance && (
+                <div>
+                    <label htmlFor="distance">Distance (km):</label>
+                    <input
+                        type="number"
+                        id="distance"
+                        name="distance"
+                        value={form.distance}
+                        min="0"
+                        onChange={(event) =>
+                            setForm({
+                                ...form,
+                                quantity: parseInt(event.target.value),
+                            })
+                        }
+                    />
+                </div>
+            )}
 
             <br />
             <button class="exercise-btn" type="submit">

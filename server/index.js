@@ -124,6 +124,11 @@ app.post("/api/getUserMeals", (req, res) => {
     res.send(interface.getUserMeals(req.body));
 });
 
+app.post("/api/getActivity", (req, res) => {
+    console.log(req.body);
+    res.send(interface.getActivity(req.body));
+});
+
 /*********************RECORD MEAL PAGE**********************/
 
 app.post("/api/getFood", (req, res) => {

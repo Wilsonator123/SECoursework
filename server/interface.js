@@ -7,7 +7,6 @@ class Interface {
         this.database = new dB("database.db", {
             verbose: console.log,
         });
-
         this.database.exec(
             fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8")
         );
@@ -641,6 +640,17 @@ class Interface {
         if (body.date != null) {
             line += " AND date = " + body.date;
         }
+    }
+
+    /*********************************Activity**********************************/
+
+    getActivity(name) {
+        //Returns all activity for a user
+        const stmt = this.database.prepare(
+            "SELECT * FROM activity WHERE id = ?"
+        );
+        const info = stmt.all(name.name);
+        return info;
     }
 }
 
