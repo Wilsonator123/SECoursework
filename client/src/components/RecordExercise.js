@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import ReactDom from "react-dom";
+import "../css/Exercise.css";
 
 //Used on the Exercise page to record a new exercise
-export default function RecordExercise() {
+function RecordExercise() {
     const navigate = useNavigate();
 
     //Get the user's id stored in session storage
@@ -97,75 +99,84 @@ export default function RecordExercise() {
         });
     };
 
-    return (
-        <form class="exercise-form" onSubmit={handleSubmit}>
-            <label htmlFor="name">Name:</label>
-            <input
-                type="text"
-                id="name"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-            />
+    return ReactDom.createPortal(
+        <div className="exercise-box">
+            <form class="exercise-form" onSubmit={handleSubmit}>
+                <label htmlFor="name">Name:</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange}
+                />
 
-            <br />
+                <br />
 
-            <label htmlFor="activity">Activity:</label>
-            <select
-                name="activity"
-                type="number"
-                value={form.activity}
-                onChange={getActivity}
-            >
-                <option disabled value="">
-                    Select
-                </option>
-
-                {/*Gets ALL the activities and maps them in a list*/}
-                {activities.map((activity) => (
-                    <option key={activity.id} value={activity.id}>
-                        {activity.name}
+                <label htmlFor="activity">Activity:</label>
+                <select
+                    name="activity"
+                    type="number"
+                    value={form.activity}
+                    onChange={getActivity}
+                >
+                    <option disabled value="">
+                        Select
                     </option>
-                ))}
-            </select>
 
-            <br />
-            <label htmlFor="time">Time (m):</label>
-            <input
-                type="number"
-                id="time"
-                name="time"
-                value={form.time}
-                min="0"
-                onChange={(event) =>
-                    setForm({ ...form, quantity: parseInt(event.target.value) })
-                }
-            />
+                    {/*Gets ALL the activities and maps them in a list*/}
+                    {activities.map((activity) => (
+                        <option key={activity.id} value={activity.id}>
+                            {activity.name}
+                        </option>
+                    ))}
+                </select>
 
-            <br />
-            {showDistance && (
-                <div>
-                    <label htmlFor="distance">Distance (km):</label>
-                    <input
-                        type="number"
-                        id="distance"
-                        name="distance"
-                        value={form.distance}
-                        min="0"
-                        onChange={(event) =>
-                            setForm({
-                                ...form,
-                                quantity: parseInt(event.target.value),
-                            })
-                        }
-                    />
-                </div>
-            )}
+                <br />
+                <label htmlFor="time">Time (m):</label>
+                <input
+                    type="number"
+                    id="time"
+                    name="time"
+                    value={form.time}
+                    min="0"
+                    onChange={(event) =>
+                        setForm({
+                            ...form,
+                            quantity: parseInt(event.target.value),
+                        })
+                    }
+                />
 
-            <br />
-            <button class="exercise-btn" type="submit">
-                Record Exercise
-            </button>
-        </form>
+                <br />
+                {showDistance && (
+                    <div>
+                        <label htmlFor="distance">Distance (km):</label>
+                        <input
+                            type="number"
+                            id="distance"
+                            name="distance"
+                            value={form.distance}
+                            min="0"
+                            onChange={(event) =>
+                                setForm({
+                                    ...form,
+                                    quantity: parseInt(event.target.value),
+                                })
+                            }
+                        />
+                    </div>
+                )}
+
+                <br />
+                <button class="exercise-btn" type="submit">
+                    Record Exercise
+                </button>
+            </form>
+        </div>,
+
+        document.getElementById("exerciseForm")
     );
 }
+
+export default RecordExercise;
