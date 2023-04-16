@@ -1,19 +1,109 @@
-@import "tailwindcss/base";
+/* @import "tailwindcss/base";
 @import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import "tailwindcss/utilities"; */
+@import url("https://fonts.googleapis.com/css2?family=Cabin&display=swap");
 
 /* Path: client\src\index.css */
+* {
+    font-family: "Cabin", sans-serif;
+}
+#pageContainer {
+    height: 1500px;
+    margin-top: 30px;
+    padding: 20px;
+    color: #444444;
+}
+.grid-container-account {
+    display: grid;
+    grid: 1000px / auto auto;
+}
 
-.container {
+.account-box {
+    margin: 10px;
+    padding: 10px;
+    background: #7ebb94;
+    border-radius: 25px;
+    grid-column: 1 / span 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.account-form {
+    font-size: 25px;
+    display: inline-block;
+}
+
+.form-box {
+    grid-row: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.account-form input,
+select {
+    font-size: 25px;
+    background-color: #e8e7ed;
+    border-radius: 8px;
+    border-color: #444444;
+    border: 1px solid;
+    margin-top: 25px;
+    margin-left: 36px;
+}
+.account-form label {
+    display: inline-block;
+    width: 200px;
+}
+
+.kms {
+    grid-row: 2;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.create-account-btn {
+    font-size: 25px;
+    background-color: #ebbb52;
+    border-radius: 8px;
+    border: 2px solid #edbc52;
+    color: #444444;
+    padding: 15px 15px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 35%;
+}
+
+.login-btn {
+    font-size: 25px;
+    background-color: #ebbb52;
+    border-radius: 8px;
+    border: 2px solid #edbc52;
+    color: #444444;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    align-items: flex-end;
+    width: fit-content;
+}
+
+.create-para {
+    margin-top: 20px;
+    margin-left: 35%;
+}
+
+/* .container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100%;
     width: 100%;
-    max-width: 100%;
+    max-width: 100%; 
+    
 }
-
+*/
+/* 
 .App {
     display: flex;
     flex-direction: column;
@@ -25,11 +115,90 @@
     background-color: #e8e7ed;
     padding-top: 5rem;
     padding-bottom: 5rem;
-}
+}  */
 
 #pageContainer {
     height: 1500px;
     margin-top: 30px;
     padding: 20px;
     color: #444444;
+}
+
+.grid-container-app {
+    display: grid;
+    grid: 1300px / auto auto;
+}
+.app-box {
+    grid-column: 1 / span 2;
+    margin: 10px;
+    padding: 10px;
+    background: #7facbf;
+    border-radius: 25px;
+}
+
+.app-form {
+    font-size: 25px;
+    position: relative;
+    width: 100%;
+    height: 10em;
+}
+
+.app-form input,
+select {
+    font-size: 25px;
+    color: #444444;
+    background-color: #e8e7ed;
+    /* display: inline-block; */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    /* margin-top: 2em; added margin top */
+    border-radius: 8px;
+    border-color: #444444;
+    border: 1px solid;
+}
+
+.app-form label {
+    text-align: left;
+    flex-flow: row wrap;
+}
+
+.form-box-app {
+    width: fit-content;
+    position: absolute;
+    top: 35%;
+    margin-top: 10px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.submit-btn {
+    font-size: 25px;
+    background-color: #ebbb52;
+    border-color: #f5bb40;
+    border-radius: 8px;
+    position: absolute;
+    float: right;
+    /* top:450px;  */
+    color: #444444;
+}
+
+@media screen and (max-width: 750px) {
+    .app-form {
+        font-size: 16px;
+    }
+
+    .app-form input,
+    select {
+        font-size: 16px;
+    }
+    .submit-btn {
+        font-size: 16px;
+    }
+
+    .grid-container-app {
+        display: grid;
+        grid: 1000px / auto auto;
+    }
 }

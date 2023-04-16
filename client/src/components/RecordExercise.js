@@ -3,12 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 //Used on the Exercise page to record a new exercise
 export default function RecordExercise() {
-
     const navigate = useNavigate();
 
     //Get the user's id stored in session storage
-    const tokenString = localStorage.getItem('token');
-    
+    const tokenString = localStorage.getItem("token");
+
     const userToken = JSON.parse(tokenString);
     console.log(tokenString);
 
@@ -17,7 +16,7 @@ export default function RecordExercise() {
         name: "",
         activity: "",
         quantity: "",
-        measurement: ""
+        measurement: "",
     });
 
     //Gonna get a list of activities from DB to put in form
@@ -26,11 +25,9 @@ export default function RecordExercise() {
     //At creatiom of form, get all activities in here!
     useEffect(() => {
         fetch("http://localhost:3001/api/getActivities")
-          .then(response => response.json())
-          .then(data => setActivities(data));
-      }, []);
-
-
+            .then((response) => response.json())
+            .then((data) => setActivities(data));
+    }, []);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -41,17 +38,14 @@ export default function RecordExercise() {
             headers: {
                 "Content-Type": "application/json",
             },
-
         })
             .then((response) => response.json())
 
             .then((data) => {
-        
                 //May need to be updated to another page
                 if (data) {
                     alert("Recorded successfully!");
                     navigate("/Account");
-                    
                 } else {
                     alert("Failed to record.");
                 }
@@ -62,9 +56,6 @@ export default function RecordExercise() {
             });
     };
 
-
-
-    
     //Handles updates to all of the data in the form
     const handleChange = (event) => {
         setForm({
@@ -73,12 +64,8 @@ export default function RecordExercise() {
         });
     };
 
-
-
     return (
-        <form onSubmit={handleSubmit}>
-
-
+        <form class="exercise-form" onSubmit={handleSubmit}>
             <label htmlFor="name">Name:</label>
             <input
                 type="text"
@@ -87,28 +74,29 @@ export default function RecordExercise() {
                 value={form.name}
                 onChange={handleChange}
             />
-            
+
             <br />
 
-
-
             <label htmlFor="activity">Activity:</label>
-            <select name="activity" type="number" value={form.activity} onChange={(event) =>
+            <select
+                name="activity"
+                type="number"
+                value={form.activity}
+                onChange={(event) =>
                     setForm({ ...form, activity: parseInt(event.target.value) })
-                }>
-                    
-                    <option disabled value="">Select</option>
+                }
+            >
+                <option disabled value="">
+                    Select
+                </option>
 
-                    {/*Gets ALL the activities and maps them in a list*/}
-                    {activities.map(activity => (
-                        <option key={activity.id} value={activity.id}>
+                {/*Gets ALL the activities and maps them in a list*/}
+                {activities.map((activity) => (
+                    <option key={activity.id} value={activity.id}>
                         {activity.name}
                     </option>
-                     ))}
-
-
-            </select>        
-
+                ))}
+            </select>
 
             <br />
             <label htmlFor="quantity">Quantity:</label>
@@ -123,9 +111,13 @@ export default function RecordExercise() {
                 }
             />
 
-            <br/>
+            <br />
             <label htmlFor="measurement">Measurement:</label>
-            <select name="measurement" value={form.measurement} onChange={handleChange}>
+            <select
+                name="measurement"
+                value={form.measurement}
+                onChange={handleChange}
+            >
                 <option disabled value="">
                     Select
                 </option>
@@ -133,10 +125,10 @@ export default function RecordExercise() {
                 <option value="mins">Minutes</option>
             </select>
 
-
-            <br/>
-            <button type="submit">Record Exercise</button>
-
+            <br />
+            <button class="exercise-btn" type="submit">
+                Record Exercise
+            </button>
         </form>
-            )
+    );
 }

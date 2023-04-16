@@ -1,273 +1,146 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import NewFood from "./components/NewFood";
-import NewDrink from "./components/NewDrink";
+import { useState, useEffect } from "react";
+import DietForm from "./components/DietForm";
+import "./css/Diet.css";
 
+/**
+ *
+ * Show all meals stored
+ * Change date to show meals for that day
+ * Change length to see meals for that length of time
+ *
+ */
 
 export default function Diet() {
-
-
-    const navigate = useNavigate();
-
-
-    //Get the user's id stored in session storage
-    const tokenString = localStorage.getItem('token');
+    const tokenString = localStorage.getItem("token");
     const userToken = JSON.parse(tokenString);
-    console.log(tokenString);
 
+    const [showForm, setShowForm] = useState(false);
+    const [meals, setMeals] = useState([
+        {
+            user_id: tokenString,
+            name: "",
+            mealType: "",
+            calories: "",
+            date: "",
+        },
+    ]);
+    const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+    const [size, setSize] = useState(1);
 
-
-    //Form for submitting a meal
-    const [form, setForm] = useState({
-        user_id: tokenString,
-        name: "",
-        mealType: "",
-        food: "",
-        foodAmount: "",
-        drink: "",
-        drinkAmount: ""
-    });
-
-
-    //Gonna get a list of foods from DB
-    //And also the list of drinks
-    const [food, setFood] = useState([]);
-    const [drink, setDrink] = useState([]);
-
-
-    //Update the foods when food changes (will be used when a new one added)
     useEffect(() => {
-        getFood();
-        getDrink();
-      }, []);
+        getMeals();
+    }, [date, size]);
 
-
-
-    const getFood = () => {
-        fetch("http://localhost:3001/api/getFood", {
+    const getMeals = () => {
+        fetch("http://localhost:3001/api/getUserMeals", {
             method: "POST",
-            body: JSON.stringify({userToken}),
             headers: {
                 "Content-Type": "application/json",
             },
-
+            body: JSON.stringify({ id: tokenString, date: date, size: size }),
         })
-            .then((response) => response.json())
-
+            .then((res) => res.json())
             .then((data) => {
-                 
-               
-                if (data) {
-                    
-                    setFood(data);
-                    
-                } else {
-                    alert("Cannot get food");
-                }
-            })
-            .catch((error) => {
-                console.error("Error:", error);
+                console.log(data);
+                setMeals(data);
             });
     };
 
+    const renderForm = () => {
+        setShowForm(!showForm);
+        getMeals();
+    };
 
-
-
-
-    const getDrink = () => {
-        fetch("http://localhost:3001/api/getDrink", {
-            method: "POST",
-            body: JSON.stringify({userToken}),
-            headers: {
-                "Content-Type": "application/json",
-            },
-
-        })
-            .then((response) => response.json())
-
-            .then((data) => {
-                 
-            
-                if (data) {
-                    
-                    setDrink(data);
-                    
-                } else {
-                    alert("Cannot get drink");
-                }
-            })
-            .catch((error) => {
-                console.error("Error:", error);
+    const handleChange = (e) => {
+        if (e.target.name === "date")
+            setDate(e.target.value, () => {
+                getMeals();
+            });
+        else
+            setSize(e.target.value, () => {
+                getMeals();
             });
     };
-
-
-
-
-
-
-    //Used to record a new meal
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        console.log(form);
-        fetch("http://localhost:3001/api/recordMeal", {
-            method: "POST",
-            body: JSON.stringify(form),
-            headers: {
-                "Content-Type": "application/json",
-            },
-
-        })
-            .then((response) => response.json())
-
-            .then((data) => {
-                //May need to be updated to another page
-                if (data) {
-                    alert("Recorded successfully!");
-                    navigate("/Account");
-                    
-                } else {
-                    alert("Failed to record.");
-                }
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-                alert("ERROR");
-            });
-    };
-
-
-
-    
-    //Handles updates to all of the data in the form
-    const handleChange = (event) => {
-        setForm({
-            ...form,
-            [event.target.name]: event.target.value,
-        });
-    };
-
-
-
-
-
-
 
     return (
-        <div id="pageContainer">
-            <h1> RECORD MEAL </h1>
+        <div>
+            {showForm ? <DietForm onClose={renderForm} /> : null}
+            <div>
+                <h1>Diet</h1>
+                <div className="dietHeader">
+                    <h2>Record Meal</h2>
+                    <button onClick={renderForm}>Click me</button>
+                </div>
+                <div id="dietForm" />
 
-            <br/>
-        <form onSubmit={handleSubmit}>
-
-
-            <label htmlFor="name">Name:</label>
-            <input
-                type="text"
-                id="name"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-            />
-        
-            <br />
-
-            <label htmlFor="mealType">Meal Type: </label>
-            <select name="mealType" value={form.mealType} onChange={handleChange}>
-                <option disabled value="">
-                    Select
-                </option>
-                <option value="Breakfast">Breakfast</option>
-                <option value="Lunch">Lunch</option>
-                <option value="Dinner">Dinner</option>
-                <option value="Snack">Snack</option>
-            </select>
-
-            <br/>
-
-            <label htmlFor="food">Food:</label>
-            <select name="food" type="number" value={form.food} onChange={(event) =>
-                    setForm({ ...form, food: parseInt(event.target.value) })
-                }>
-                    
-                    <option disabled value="">Select</option>
-
-                    {/*Gets ALL the activities and maps them in a list*/}
-                    {food.map(food => (
-                        <option key={food.id} value={food.id}>
-                        {food.name}
-                    </option>
-                     ))}
-            </select>
-
-            <br/>
-
-            <label htmlFor="quantity">Quantity (grams):</label>
-            <input
-                type="number"
-                id="quantity"
-                name="quantity"
-                value={form.foodAmount}
-                min="0"
-                onChange={(event) =>
-                    setForm({ ...form, foodAmount: parseInt(event.target.value) })
-                }
-            />
-
-            <br/>
-
-            <label htmlFor="drink">Drink:</label>
-            <select name="drink" type="number" value={form.drink} onChange={(event) =>
-                    setForm({ ...form, drink: parseInt(event.target.value) })
-                }>
-                    
-                    <option disabled value="">Select</option>
-
-                    {/*Gets ALL the activities and maps them in a list*/}
-                    {drink.map(drink => (
-                        <option key={drink.id} value={drink.id}>
-                        {drink.name}
-                    </option>
-                     ))}
-            </select> 
-
-
-            <br/>
-
-            <label htmlFor="quantity">Quantity (ml):</label>
-            <input
-                type="number"
-                id="quantity"
-                name="quantity"
-                value={form.drinkAmount}
-                min="0"
-                onChange={(event) =>
-                    setForm({ ...form, drinkAmount: parseInt(event.target.value) })
-                }
-            /> 
-
-
-            <br/>
-
-
-            <button type="submit">Record Meal</button>
-
-        </form>
-
-        <br/>
-            <NewFood getFood={getFood} />
-        <br/>
-
-        <br/>
-            <NewDrink getDrink={getDrink} />
-        <br/>
-            
+                <div id="meals">
+                    <form className="dietFilter">
+                        <label for="date">Date: </label>
+                        <input
+                            type="date"
+                            id="date"
+                            name="date"
+                            onChange={(e) => handleChange(e)}
+                            defaultValue={date}
+                        />
+                        <label for="size">Size</label>
+                        <select
+                            id="size"
+                            name="size"
+                            onChange={(e) => handleChange(e)}
+                            defaultValue={size}
+                        >
+                            <option value="1">1 Day</option>
+                            <option value="7">1 Week</option>
+                            <option value="30">1 Month</option>
+                        </select>
+                    </form>
+                    <table id="dietTable">
+                        <thead>
+                            <tr>
+                                <th>Meal</th>
+                                <th>Tag</th>
+                                <th>Calories</th>
+                                <th>Date</th>
+                                <th>View</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {meals.map((meal) => {
+                                return (
+                                    <tr id={meal.id}>
+                                        <td>{meal.name}</td>
+                                        <td className={meal.mealType}>
+                                            {meal.mealType}
+                                        </td>
+                                        <td>{meal.calories}</td>
+                                        <td>
+                                            {new Date(
+                                                meal.date
+                                            ).toLocaleDateString("en-GB")}
+                                        </td>
+                                        <td>
+                                            <button className="viewMeal">
+                                                View
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                            <tr>
+                                <td>Total</td>
+                                <td>{meals.length}</td>
+                                <td>
+                                    {meals.reduce((a, b) => {
+                                        return a + b.calories;
+                                    }, 0)}
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     );
-
-
-
-
-
-    
 }
