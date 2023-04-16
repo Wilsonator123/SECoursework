@@ -63,3 +63,13 @@ select {
 .exercise-btn {
     margin-left: 30%;
 }
+
+#exerciseGrid {
+    display: flex;
+    width: 70%;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    border: 1px solid #444444;
+    padding: 30px;
+    justify-content: center;
+}

@@ -129,6 +129,10 @@ app.post("/api/getActivity", (req, res) => {
     res.send(interface.getActivity(req.body));
 });
 
+app.post("/api/getWeeklyExercise", (req, res) => {
+    console.log(req.body);
+    res.send(interface.getWeeklyExercise(req.body.id));
+});
 /*********************RECORD MEAL PAGE**********************/
 
 app.post("/api/getFood", (req, res) => {

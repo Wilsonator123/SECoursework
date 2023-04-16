@@ -19,7 +19,6 @@ function RecordExercise() {
         activity: "",
         time: "",
         distance: "",
-        measurement: "",
     });
 
     //Gonna get a list of activities from DB to put in form
@@ -143,7 +142,7 @@ function RecordExercise() {
                     onChange={(event) =>
                         setForm({
                             ...form,
-                            quantity: parseInt(event.target.value),
+                            time: parseInt(event.target.value),
                         })
                     }
                 />
@@ -161,7 +160,7 @@ function RecordExercise() {
                             onChange={(event) =>
                                 setForm({
                                     ...form,
-                                    quantity: parseInt(event.target.value),
+                                    distance: parseInt(event.target.value),
                                 })
                             }
                         />
