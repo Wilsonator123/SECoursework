@@ -1,6 +1,6 @@
 import React from "react";
 import RecordExercise from "./components/RecordExercise";
-import "./css/Exercise.css";
+import "./css/exercise.css";
 
 export default function Home() {
     return (

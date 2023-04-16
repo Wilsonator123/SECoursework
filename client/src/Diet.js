@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import DietForm from "./components/DietForm";
-import "./css/Diet.css";
+import "./css/diet.css";
 
 /**
  *
