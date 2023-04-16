@@ -1,26 +1,20 @@
 import React, { useState, useEffect } from "react";
 
-
 //Used on the Record Meal page to add a new drink item
-export default function NewFood({getDrink}) {
-
+export default function NewFood({ getDrink }) {
     //Get the user's id stored in session storage
-    const tokenString = localStorage.getItem('token');
-    
+    const tokenString = localStorage.getItem("token");
+
     const userToken = JSON.parse(tokenString);
     console.log(tokenString);
-
 
     const [drinkMessage, setDrinkMessage] = useState();
 
     const [form, setForm] = useState({
         id: tokenString,
         name: "",
-        calories: ""
+        calories: "",
     });
-
-
-
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -31,22 +25,17 @@ export default function NewFood({getDrink}) {
             headers: {
                 "Content-Type": "application/json",
             },
-
         })
             .then((response) => response.json())
 
             .then((data) => {
-        
-                
                 if (data) {
                     setDrinkMessage("Added new food item!");
                     getDrink();
                     setForm({
                         name: "",
-                        calories: ""
+                        calories: "",
                     });
-                    
-                    
                 } else {
                     setDrinkMessage("Failed to add new food item.");
                 }
@@ -57,9 +46,6 @@ export default function NewFood({getDrink}) {
             });
     };
 
-
-
-    
     //Handles updates to all of the data in the form
     const handleChange = (event) => {
         setForm({
@@ -68,47 +54,45 @@ export default function NewFood({getDrink}) {
         });
     };
 
-
-
     return (
         <div>
-            <br/>
-            <h2>Add New Drink:</h2>
-        <form onSubmit={handleSubmit}>
-
-
-            <label htmlFor="name">Name:</label>
-            <input
-                type="text"
-                id="name"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-            />
-            
             <br />
-  
+            <h2>Add New Drink:</h2>
+            <form class="meal-form" onSubmit={handleSubmit}>
+                <label htmlFor="name">Name:</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange}
+                />
 
+                <br />
 
-            <label htmlFor="calories">Calories per 100ml:</label>
-            <input
-                type="number"
-                id="calories"
-                name="calories"
-                value={form.calories}
-                min="0"
-                onChange={(event) =>
-                    setForm({ ...form, calories: parseInt(event.target.value) })
-                }
-            />
+                <label htmlFor="calories">Calories per 100ml:</label>
+                <input
+                    type="number"
+                    id="calories"
+                    name="calories"
+                    value={form.calories}
+                    min="0"
+                    onChange={(event) =>
+                        setForm({
+                            ...form,
+                            calories: parseInt(event.target.value),
+                        })
+                    }
+                />
 
-            <br/>
+                <br />
 
-            <button type="submit">Add Drink</button>
+                <button class="drink-btn" type="submit">
+                    Add Drink
+                </button>
 
-            <p>{drinkMessage}</p>
-
-        </form>
+                <p class="message">{drinkMessage}</p>
+            </form>
         </div>
-            )
+    );
 }

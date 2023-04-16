@@ -1,20 +1,15 @@
 import React, { useState } from "react";
 
-
-
 export default function Login({ setToken }) {
     //Used to push the user to the home page on a valid login
-
 
     //All data needed for account creation (could be split up?)
     const [form, setForm] = useState({
         username: "",
-        password: ""
+        password: "",
     });
 
     const [usernameError, setUsernameError] = useState("");
-
-
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -25,23 +20,17 @@ export default function Login({ setToken }) {
             headers: {
                 "Content-Type": "application/json",
             },
-
         })
             .then((response) => response.json())
 
             .then((data) => {
-                
-
                 //May need to be updated to another page
                 if (data) {
-
                     setToken(data.id);
                     console.log(data.id);
                     console.log("We can set the token correctly!");
-                    
                 } else {
-                    
-                    alert("Incorrect Password. Please try again.")
+                    alert("Incorrect Password. Please try again.");
                 }
             })
             .catch((error) => {
@@ -50,9 +39,6 @@ export default function Login({ setToken }) {
             });
     };
 
-
-
-    
     //Handles updates to all of the data in the form
     const handleChange = (event) => {
         setForm({
@@ -61,14 +47,8 @@ export default function Login({ setToken }) {
         });
     };
 
-
-
-
-
     return (
-        <form onSubmit={handleSubmit}>
-
-
+        <form class="account-form" onSubmit={handleSubmit}>
             <label htmlFor="username">Username:</label>
             <input
                 type="text"
@@ -79,7 +59,7 @@ export default function Login({ setToken }) {
             />
 
             {usernameError && <p>{usernameError}</p>}
-            
+
             <br />
 
             <label htmlFor="password">Password:</label>
@@ -91,12 +71,10 @@ export default function Login({ setToken }) {
                 onChange={handleChange}
             />
 
-            <br/>
-            <button type="submit">Log In</button>
-
+            <br />
+            <button class="create-account-btn" type="submit">
+                Log In
+            </button>
         </form>
-            )
+    );
 }
-
-
-
