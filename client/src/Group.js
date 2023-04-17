@@ -1,31 +1,30 @@
 import "./css/group.css";
+import { useState, useEffect } from "react";
+import GroupCreationForm from "./components/GroupCreationForm";
+
+
 
 export default function Home() {
+
+    const [showGroupCreationForm, setShowGroupCreationForm] = useState(false);
+
+
+    const renderGroupCreationForm = () => {
+        setShowGroupCreationForm(!showGroupCreationForm);
+    };
+
     return (
-        <div id="pageContainer">
-            <h1> GROUP PAGE </h1>
-            <div class="grid-container-group">
-            <div class="groupBox1">
-                <h2>Achievements</h2>
+        <div>
+        {showGroupCreationForm ? <GroupCreationForm onClose={renderGroupCreationForm} /> : null}
+
+            <div id="pageContainer">
+                <h1> GROUP PAGE </h1>
+                <button onClick={renderGroupCreationForm}>Create Group</button>
+                <div id="groupCreationForm" />
+
+                <h2>Your Groups</h2>
+                
             </div>
-            <div class="groupBox2">
-                <h2>Achievements</h2>
-            </div>
-            <div class="groupBox3">
-                <h2>Achievements</h2>
-            </div>
-            <div class="groupBox4">
-                <h2>Achievements</h2>
-            </div>
-            <div class="groupBox5">
-                <h2>Group Name</h2>
-            </div>
-            <div class="groupBox6">
-                <h2>Group Name</h2>
-            </div>
-            </div>
-            <button class="createGroup">Create Group</button>
-            <button class="joinGroup">Join Group</button>
         </div>
     );
 }

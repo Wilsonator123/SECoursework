@@ -168,6 +168,27 @@ app.post("/api/getBMI", (req, res) => {
     res.send(JSON.stringify(interface.bmi(req.body.id)));
 });
 
+
+/*************************GROUP PAGE******************************/
+
+app.post("/api/checkGroupName", (req, res) => {
+    console.log(req.body);
+    res.send(interface.checkGroupName(req.body));
+});
+
+
+app.post("/api/createGroup", (req, res) => {
+    console.log("\n\nAAAAAAAAAAAAA\n\n");
+    console.log(req.body);
+    res.send(interface.createGroup(req.body));
+});
+
+
+
+
+
 app.listen(3001, () => {
     console.log("Server running on port 3001");
 });
+
+

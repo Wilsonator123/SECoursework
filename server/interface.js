@@ -11,11 +11,13 @@ class Interface {
 
         //IMPORTANT DATABASE STUFF WE MIGHT NEED AGAIN!
 
-        //this.database.exec("DROP TABLE EXERCISE");
+        
         //this.database.exec(fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8"));
         this.database.exec(
             fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8")
         );
+
+        //this.database.exec("DROP TABLE `group`");
     }
 
     /*********************************USER**********************************/
@@ -432,6 +434,102 @@ class Interface {
         );
         return true;
     }
+
+    /*********************************GROUPS**********************************/
+
+    //Return true only if group name hasnt been taken before
+    checkGroupName(body) {
+        const { name } = body;
+        console.log(name);
+        console.log(body);
+        const stmt = this.database.prepare(
+            "SELECT * FROM `group` WHERE name = ?"
+        );
+        const info = stmt.get(body);
+        console.log(info);
+        if(info === undefined){
+            return true;
+        }
+        if (info.length === 0) {
+            return true;
+        }
+        return false;
+    }
+
+
+    createGroup(body) {
+
+        const {
+            user_id,
+            name,
+
+        } = body;
+
+
+        if (
+            user_id === "" ||
+            name === "" 
+        ) {
+            return false;
+        }
+
+        //Checking the unique group name again
+        if(!this.checkGroupName(name)){
+            return false;
+        }
+
+
+        const stmt = this.database.prepare(
+            "INSERT INTO `group` (name, owner_id) VALUES (?, ?)"
+        );
+
+        const result = stmt.run(
+            name,
+            user_id,
+        );
+
+        
+        const getIDstmt = this.database.prepare(
+            "SELECT * from `group` WHERE name = ?"
+        );
+        const info = getIDstmt.all(name);
+        const idResult = info[0].id;
+
+        /*idResult = getIDstmt.run(name);
+        console.log(idResult);
+
+        const weight = info[0].weight;
+
+        const stmt = this.database.prepare(
+            "SELECT * FROM user WHERE username = ?"
+        );
+        const info = stmt.all(username);
+        const user = info[0].id;*/
+
+
+
+        const stmt2 = this.database.prepare(
+            "INSERT INTO group_user (group_id, user_id) VALUES (?, ?)"
+        );
+
+        const result2 = stmt2.run(
+            idResult,
+            user_id,
+        );
+
+
+        return true;
+    }
+
+
+
+
+
+
+
+
+
+
 
     /*********************************GOALS**********************************/
     createGoal(body) {

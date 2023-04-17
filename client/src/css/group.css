@@ -3,10 +3,12 @@
     grid: 100px / auto auto auto auto;
 }
 .groupBox1, .groupBox2, .groupBox3, .groupBox4, .groupBox5, .groupBox6 {
-	margin:10px;
-	padding:10px;
+    margin: 10px;
+    padding: 10px;
+    background: #7ebb94;
     border-radius: 25px;
 }
+
 
 .groupBox1 {
     grid-column: 1;
@@ -45,4 +47,21 @@
 
 .joinGroup {
     grid-column: 4;
+}
+
+#groupPageContainer {
+    position: fixed;
+    top: 10%;
+    left: 10%;
+    height: 80%;
+    width: 80%;
+    overflow: hidden;
+    background-color: #b7b7b7;
+    justify-content: center;
+    display: flex;
+}
+
+.grid-container-group {
+    display: grid;
+    grid: 500px / auto auto;
 }
