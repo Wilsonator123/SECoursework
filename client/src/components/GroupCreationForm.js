@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ReactDom from "react-dom";
 import "../css/group.css";
 
-function DietForm(props) {
+function GroupCreationForm(props) {
     
 
     //Get the user's id stored in session storage
@@ -65,7 +65,7 @@ function DietForm(props) {
         >
             <div class="grid-container-group">
                 <div class="groupBox1">
-
+                    <button onClick={props.onClose}>Close</button>
                     <h2>Create Group</h2>
                     <form class="group-form" onSubmit={handleSubmit}>
                         <label htmlFor="name">Name:</label>
@@ -94,4 +94,4 @@ function DietForm(props) {
     );
 }
 
-export default DietForm;
+export default GroupCreationForm;

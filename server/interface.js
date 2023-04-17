@@ -495,19 +495,6 @@ class Interface {
         const info = getIDstmt.all(name);
         const idResult = info[0].id;
 
-        /*idResult = getIDstmt.run(name);
-        console.log(idResult);
-
-        const weight = info[0].weight;
-
-        const stmt = this.database.prepare(
-            "SELECT * FROM user WHERE username = ?"
-        );
-        const info = stmt.all(username);
-        const user = info[0].id;*/
-
-
-
         const stmt2 = this.database.prepare(
             "INSERT INTO group_user (group_id, user_id) VALUES (?, ?)"
         );
@@ -519,6 +506,34 @@ class Interface {
 
 
         return true;
+    }
+
+
+
+    getUserGroups(body) {
+        //Returns the user with the given id
+        const {id} = body;
+        const stmt = this.database.prepare("SELECT `group`.id, `group`.name FROM `group` INNER JOIN group_user ON `group`.id = group_user.group_id WHERE group_user.user_id = ?");
+        const info = stmt.all(id);
+        return info;
+    }
+
+
+    getUserGroups(body) {
+        //Returns the user with the given id
+        const {id} = body;
+        const stmt = this.database.prepare("SELECT `group`.id, `group`.name FROM `group` INNER JOIN group_user ON `group`.id = group_user.group_id WHERE group_user.user_id = ?");
+        const info = stmt.all(id);
+        return info;
+    }
+
+
+    getGroupUsers(body) {
+        //Returns the user with the given id
+        const {id} = body;
+        const stmt = this.database.prepare("SELECT user.id, user.firstname, user.lastname, user.username FROM user INNER JOIN group_user ON user.id = group_user.user_id  WHERE group_user.group_id = ?");
+        const info = stmt.all(id);
+        return info;
     }
 
 

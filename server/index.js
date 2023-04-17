@@ -178,9 +178,19 @@ app.post("/api/checkGroupName", (req, res) => {
 
 
 app.post("/api/createGroup", (req, res) => {
-    console.log("\n\nAAAAAAAAAAAAA\n\n");
     console.log(req.body);
     res.send(interface.createGroup(req.body));
+});
+
+app.post("/api/getUserGroups", (req, res) => {
+    console.log(req.body);
+    res.send(interface.getUserGroups(req.body));
+});
+
+app.post("/api/getGroupUsers", (req, res) => {
+    console.log("TESTING THIS");
+    console.log(req.body);
+    res.send(interface.getGroupUsers(req.body));
 });
 
 
