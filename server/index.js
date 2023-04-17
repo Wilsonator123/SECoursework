@@ -188,12 +188,22 @@ app.post("/api/getUserGroups", (req, res) => {
 });
 
 app.post("/api/getGroupUsers", (req, res) => {
-    console.log("TESTING THIS");
     console.log(req.body);
     res.send(interface.getGroupUsers(req.body));
 });
 
+//Used when adding a user on frontend - will do the email send to them
+app.post("/api/addUserToGroup", (req, res) => {
+    console.log(req.body);
+    res.send(interface.sendGroupInvite(req.body));
+});
 
+
+//Adding a user to a group when they click the link on an email
+app.post("/api/addUserViaEmail", (req, res) => {
+    console.log(req.body);
+    res.send(interface.acceptGroupInvite(req.body));
+});
 
 
 

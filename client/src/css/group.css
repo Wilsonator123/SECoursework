@@ -59,6 +59,7 @@
     background-color: #b7b7b7;
     justify-content: center;
     display: flex;
+    overflow: auto;
 }
 
 .grid-container-group {
