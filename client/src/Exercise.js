@@ -95,6 +95,7 @@ export default function Home() {
                     </button>
                 </div>
                 <div id="exerciseForm" />
+                <div id="exerciseHistoryDisp" />
                 <h1>
                     <a id="prev" value="prev" onClick={getDays}>
                         <i value="prev" className="fa-light fa-less-than" />

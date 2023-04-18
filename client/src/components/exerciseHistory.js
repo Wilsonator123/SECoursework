@@ -1,7 +1,9 @@
-import react from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import ReactDom from "react-dom";
+import "../css/Exercise.css";
 
-function RecordExercise() {
+function RecordExercise({ onClose }) {
     const tokenString = localStorage.getItem("token");
     const userToken = JSON.parse(tokenString);
 
@@ -21,21 +23,27 @@ function RecordExercise() {
                 setExercise(data);
             });
     };
+    const handleClose = () => {
+        onClose();
+    };
 
     useEffect(() => {
         getExercise();
     }, []);
 
-    return (
-        <div>
-            <h1>Exercise</h1>
-            <table>
+    return ReactDom.createPortal(
+        <div id="exerciseHistory">
+            <table id="exerciseTable">
+                <button className="close-btn" onClick={handleClose}>
+                    <i class="fa-solid fa-xmark fa-xl"></i>
+                </button>
                 <thead>
                     <tr>
                         <th>Name</th>
                         <th>Activity</th>
                         <th>Time</th>
                         <th>Distance</th>
+                        <th>Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,11 +53,13 @@ function RecordExercise() {
                             <td>{exercise.type}</td>
                             <td>{exercise.time}</td>
                             <td>{exercise.distance}</td>
+                            <td>{exercise.date}</td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-        </div>
+        </div>,
+        document.getElementById("exerciseHistoryDisp")
     );
 }
 

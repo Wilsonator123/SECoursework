@@ -234,7 +234,7 @@ class Interface {
     getExercises(id) {
         //Returns all exercise for a user
         const stmt = this.database.prepare(
-            "SELECT exercise.name, activity.name AS type, time, distance FROM exercise LEFT JOIN activity on type WHERE user_id = ?"
+            "SELECT exercise.name, activity.name AS type, time, distance, date FROM exercise JOIN activity on exercise.type=activity.id WHERE user_id = ? ORDER BY date ASC, exercise.id ASC"
         );
         const info = stmt.all(id);
         return info;

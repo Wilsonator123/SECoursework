@@ -4,7 +4,7 @@ import ReactDom from "react-dom";
 import "../css/Exercise.css";
 
 //Used on the Exercise page to record a new exercise
-function RecordExercise() {
+function RecordExercise({ onClose }) {
     const navigate = useNavigate();
 
     //Get the user's id stored in session storage
@@ -98,8 +98,16 @@ function RecordExercise() {
         });
     };
 
+    //Handles the closing of the modal
+    const handleClose = () => {
+        onClose();
+    };
+
     return ReactDom.createPortal(
         <div className="exercise-box">
+            <button className="close-btn" onClick={handleClose}>
+                <i class="fa-solid fa-xmark fa-xl"></i>
+            </button>
             <form class="exercise-form" onSubmit={handleSubmit}>
                 <label htmlFor="name">Name:</label>
                 <input

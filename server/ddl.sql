@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS 'exercise'(
     user_id INTEGER NOT NULL,
     name VARCHAR(255) NOT NULL UNIQUE,
     time INT NOT NULL,
-    distance INT,
+    distance INT DEFAULT 0,
     date DATE,
     type VARCHAR(255) NOT NULL,
     FOREIGN KEY (type) REFERENCES activity(id) ON DELETE RESTRICT ON UPDATE RESTRICT
