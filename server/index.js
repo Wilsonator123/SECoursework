@@ -98,6 +98,11 @@ app.get("/api/getActivities", (req, res) => {
     res.send(interface.getActivities());
 });
 
+app.post("/api/getExercises", (req, res) => {
+    console.log(req.body);
+    res.send(interface.getExercises(req.body.id));
+});
+
 app.post("/api/recordExercise", (req, res) => {
     console.log(req.body);
     res.send(interface.recordExercise(req.body));
@@ -113,6 +118,15 @@ app.post("/api/getUserMeals", (req, res) => {
     res.send(interface.getUserMeals(req.body));
 });
 
+app.post("/api/getActivity", (req, res) => {
+    console.log(req.body);
+    res.send(interface.getActivity(req.body));
+});
+
+app.post("/api/getWeeklyExercise", (req, res) => {
+    console.log(req.body);
+    res.send(interface.getWeeklyExercise(req.body));
+});
 /*********************RECORD MEAL PAGE**********************/
 
 app.post("/api/getFood", (req, res) => {

@@ -5,7 +5,7 @@ import NewFood from "./NewFood";
 import NewDrink from "./NewDrink";
 import "../css/Diet.css";
 
-function DietForm(props) {
+function DietForm({ onClose }) {
     const navigate = useNavigate();
 
     //Get the user's id stored in session storage
@@ -93,7 +93,7 @@ function DietForm(props) {
                 //May need to be updated to another page
                 if (data) {
                     alert("Recorded successfully!");
-                    props.onClose();
+                    onClose();
                 } else {
                     alert("Failed to record.");
                 }
@@ -169,6 +169,10 @@ function DietForm(props) {
             });
     };
 
+    const handleClose = () => {
+        onClose();
+    };
+
     return ReactDom.createPortal(
         <div
             id="dietPageContainer"
@@ -179,6 +183,9 @@ function DietForm(props) {
         >
             <div class="grid-container-diet">
                 <div class="dietBox1">
+                    <button className="close-btn" onClick={handleClose}>
+                        <i class="fa-solid fa-xmark fa-xl"></i>
+                    </button>
                     <h2>Record Meal</h2>
                     <form class="meal-form" onSubmit={handleSubmit}>
                         <label htmlFor="name">Name:</label>
