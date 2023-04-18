@@ -11,13 +11,13 @@ export default function Navbar() {
             <nav>
                 <ul>
                     <li>
-                        <Link exac to="/">
+                        <Link exac to="/Account">
                             LOGO
                         </Link>
                     </li>
 
                     <li>
-                        <Link to="/Meal">Record Meal</Link>
+                        <Link to="/Diet">Record Meal</Link>
                     </li>
 
                     <li>

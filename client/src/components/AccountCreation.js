@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 
-
-
 //Create a general form CSS file!
 
-function AccountCreation({ setUserID }) {
+function AccountCreation({ setToken }) {
     //Used to push the user to the home page on a valid account creation
-
 
     //All data needed for account creation (could be split up?)
     const [form, setForm] = useState({
@@ -44,14 +41,11 @@ function AccountCreation({ setUserID }) {
             .then((response) => response.json())
 
             .then((data) => {
-                
-
                 //May need to be updated to another page
                 if (data) {
-                    setUserID(data.user);
-                    
+                    setToken(data.id);
                 } else {
-                    alert("Invalid account creation details.")
+                    alert("Invalid account creation details.");
                 }
             })
             .catch((error) => {
@@ -88,11 +82,11 @@ function AccountCreation({ setUserID }) {
             .then((data) => {
                 if (data) {
                     console.log("Unique and valid email:", form.email);
-                    setEmailError('');
+                    setEmailError("");
                 } else {
-                    setEmailError('Invalid email, please enter another');
+                    setEmailError("Invalid email, please enter another");
                     console.log("Invalid email:", form.email);
-                    
+
                     setForm({ ...form, email: "" });
                 }
             })
@@ -100,10 +94,6 @@ function AccountCreation({ setUserID }) {
             .catch((error) => {
                 console.error("Error:", error);
             });
-
-
-
-
     };
     const checkUsername = (event) => {
         event.preventDefault();
@@ -122,9 +112,11 @@ function AccountCreation({ setUserID }) {
             .then((data) => {
                 if (data) {
                     console.log("Unique username:", form.username);
-                    setUsernameError('');
+                    setUsernameError("");
                 } else {
-                    setUsernameError('Username already taken, please enter another');
+                    setUsernameError(
+                        "Username already taken, please enter another"
+                    );
                     console.log("Invalid username:", form.username);
                     setForm({ ...form, username: "" });
                 }
@@ -136,7 +128,7 @@ function AccountCreation({ setUserID }) {
 
     //Returns the account creation form that we need
     return (
-        <form onSubmit={handleSubmit}>
+        <form class="account-form" onSubmit={handleSubmit}>
             <label htmlFor="username">Username:</label>
             <input
                 type="text"
@@ -148,7 +140,7 @@ function AccountCreation({ setUserID }) {
             />
 
             {usernameError && <p>{usernameError}</p>}
-            
+
             <br />
 
             <label htmlFor="firstname">First Name:</label>
@@ -278,11 +270,9 @@ function AccountCreation({ setUserID }) {
             <br />
             <br />
 
-            <button type="submit">Create Account</button>
+            <button class="create-account-btn" type="submit">Create Account</button>
         </form>
     );
 }
-
-
 
 export default AccountCreation;
