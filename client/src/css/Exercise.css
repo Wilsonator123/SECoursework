@@ -60,16 +60,29 @@ select {
     float:right;
 }  */
 
-.exercise-btn {
-    margin-left: 30%;
-}
-
 #exerciseGrid {
     display: flex;
     width: 70%;
+    height: 25rem;
     margin: 0 auto;
     flex-wrap: wrap;
     border: 1px solid #444444;
     padding: 30px;
     justify-content: center;
+}
+
+#exerciseGrid canvas {
+    width: 100%;
+    height: 100%;
+}
+
+#chart {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.exerciseButtons {
+    display: flex;
+    justify-content: space-evenly;
+    margin: 0 auto;
 }

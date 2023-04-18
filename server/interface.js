@@ -189,26 +189,29 @@ class Interface {
         return info;
     }
 
-    getWeeklyExercise(id) {
-        const days = [0, 0, 0, 0, 0, 0, 0];
-        let today = new Date();
+    getWeeklyExercise(data) {
+        let body = {
+            SOW: 0,
+            days: [0, 0, 0, 0, 0, 0, 0],
+        };
+        let today = new Date(data.date);
         let startOfWeek = new Date(
             today.getTime() - today.getDay() * 24 * 60 * 60 * 1000
         );
+        body.SOW = startOfWeek.toISOString().slice(0, 10);
         let date = new Date(startOfWeek);
         for (let i = 0; i < 7; i++) {
             this.database
                 .prepare(
                     "SELECT * FROM exercise WHERE user_id = ? AND date = ?"
                 )
-                .all(id, date.toISOString().slice(0, 10))
+                .all(data.id, date.toISOString().slice(0, 10))
                 .forEach((row) => {
-                    days[i] += row.time / 60;
+                    body.days[i] += row.time / 60;
                 });
-            console.log(days[i]);
             date.setDate(date.getDate() + 1);
         }
-        const body = { days: days };
+        console.log(body);
 
         return body;
     }
@@ -228,6 +231,15 @@ class Interface {
         return info;
     }
 
+    getExercises(id) {
+        //Returns all exercise for a user
+        const stmt = this.database.prepare(
+            "SELECT exercise.name, activity.name AS type, time, distance FROM exercise LEFT JOIN activity on type WHERE user_id = ?"
+        );
+        const info = stmt.all(id);
+        return info;
+    }
+
     //All details about an exercise given, checks if valid, then inserts into array
     recordExercise(body) {
         //ID here refers to USER ID, NOT ACTIVITY ID OR EXERCISE ID
@@ -235,10 +247,6 @@ class Interface {
         if (id === "" || name === "" || time === "" || activity === "") {
             return false;
         }
-        console.log("in the interface");
-        console.log(body);
-        console.log(id);
-        console.log(activity);
         if (distance === undefined) {
             distance = 0;
         }
