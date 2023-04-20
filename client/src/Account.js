@@ -7,7 +7,7 @@ export default function Account({ userID }) {
     //Used to get all exercises a user has done
     const [userExercises, setUserExercises] = useState([]);
     const [userMeals, setUserMeals] = useState([]);
-    const [user, setUser] = useState([]);
+    const [user, setUser] = useState([[]]);
 
     //Used to get the date for which we want to view exercises and meals
     const [date, setDate] = useState(new Date());
@@ -23,7 +23,7 @@ export default function Account({ userID }) {
             method: "POST",
             body: JSON.stringify({
                 id: userToken,
-                date: date.toLocaleDateString("en-GB"),
+                date: date.toISOString().slice(0, 10),
             }),
             headers: {
                 "Content-Type": "application/json",
@@ -50,7 +50,8 @@ export default function Account({ userID }) {
             method: "POST",
             body: JSON.stringify({
                 id: userToken,
-                date: date.toLocaleDateString("en-GB"),
+                date: date.toISOString().slice(0, 10),
+                size: 1,
             }),
             headers: {
                 "Content-Type": "application/json",
@@ -70,10 +71,10 @@ export default function Account({ userID }) {
                 console.error("Error:", error);
             });
     };
+
     const getUser = () => {
         fetch("http://localhost:3001/api/getUser", {
             method: "POST",
-
             body: JSON.stringify({ id: userToken }),
             headers: {
                 "Content-Type": "application/json",
@@ -83,7 +84,7 @@ export default function Account({ userID }) {
 
             .then((data) => {
                 if (data) {
-                    console.log(data);
+                    console.log(data[0].username);
                     setUser(data);
                 } else {
                     alert("Could not find user.");
@@ -122,29 +123,27 @@ export default function Account({ userID }) {
             <h1> ACCOUNT PAGE </h1>
             <div class="grid-container-accountpage">
                 <div class="profile-box">
-                    <h2>Welcome user: {user.username} </h2>
+                    <h2>Welcome user: {user[0].username}</h2>
                 </div>
 
-                <div class="bmi-box">
+                <div>
                     <h2>Health Details</h2>
                     <HealthDetails userID={userID} />
                 </div>
 
-                <div class="group-box">
-                    <h2>Group Details</h2>
+                <br />
+                <br />
+
+                <div>
+                    <button onClick={goToPrevDay}> Previous </button>
+                    <p>Date: {date.toLocaleDateString("en-GB")}</p>
+                    <button onClick={goToNextDay}> Next </button>
                 </div>
 
-                <div class="date-box">
-                    <button class="arrow left" onClick={goToPrevDay}></button>
-                    <p class="date-text">
-                        Date: {date.toLocaleDateString("en-GB")}
-                    </p>
-                    <button class="arrow right" onClick={goToNextDay}>
-                        {" "}
-                    </button>
-                </div>
+                <br />
+                <br />
 
-                <div class="exerciseHistory-box">
+                <div>
                     <h2>Exercise History:</h2>
 
                     {/*Gets the exercises and maps them in divs*/}
@@ -161,7 +160,10 @@ export default function Account({ userID }) {
                     ))}
                 </div>
 
-                <div class="mealHistory-box">
+                <br />
+                <br />
+
+                <div>
                     <h2>Meal History: </h2>
 
                     {userMeals.map((userMeal) => (

@@ -1,0 +1,48 @@
+.grid-container-group {
+    display: grid;
+    grid: 100px / auto auto auto auto;
+}
+.groupBox1, .groupBox2, .groupBox3, .groupBox4, .groupBox5, .groupBox6 {
+	margin:10px;
+	padding:10px;
+    border-radius: 25px;
+}
+
+.groupBox1 {
+    grid-column: 1;
+    background:#7EBB94;
+}
+.groupBox2 {
+    grid-column: 2;
+    background:#7EBB94;
+}
+.groupBox3 {
+    grid-column: 3;
+    background:#7EBB94;
+}
+.groupBox4 {
+    grid-column: 4;
+    background:#7EBB94;
+}
+.groupBox5 {
+    grid-column: 1 / span 4;
+    background:#7FACBF;
+}
+.groupBox6 {
+    grid-column: 1 / span 4;
+    background:#7FACBF;
+}
+
+.createGroup, .joinGroup {
+    background-color: #EBBB52;
+    border-radius: 8px;
+    padding: 32px 16px;
+}
+
+.createGroup {
+    grid-column: 2;
+}
+
+.joinGroup {
+    grid-column: 4;
+}

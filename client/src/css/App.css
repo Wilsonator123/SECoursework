@@ -1,62 +1,59 @@
 /* @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities"; */
-@import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Cabin&display=swap");
 
 /* Path: client\src\index.css */
-*{
-    font-family: 'Cabin', sans-serif;
-
-} 
+* {
+    font-family: "Cabin", sans-serif;
+}
 #pageContainer {
     height: 1500px;
     margin-top: 30px;
-    padding: 20px;
     color: #444444;
 }
-.grid-container-account{
+.grid-container-account {
     display: grid;
-    grid: 1000px / auto auto;  
+    grid: 1000px / auto auto;
 }
 
-.account-box{
-    margin:10px;
-	padding:10px;
-    background:#7EBB94;
+.account-box {
+    margin: 10px;
+    padding: 10px;
+    background: #7ebb94;
     border-radius: 25px;
     grid-column: 1 / span 2;
     display: flex;
     justify-content: center;
     align-items: center;
-} 
+}
 
-.account-form{
+.account-form {
     font-size: 25px;
     display: inline-block;
 }
 
-.form-box{
-   
+.form-box {
     grid-row: 1;
     display: flex;
     justify-content: center;
     align-items: flex-end;
 }
 
-
-.account-form input, select{  
+.account-form input,
+select {
     font-size: 25px;
-    background-color:#e8e7ed;
+    background-color: #e8e7ed;
     border-radius: 8px;
-    border-color:  #444444;
-    border: 1px solid; 
-    margin-top: 25px; 
-    margin-left: 36px; 
-} 
-.account-form label{
+    border-color: #444444;
+    border: 1px solid;
+    margin-top: 25px;
+    margin-left: 36px;
+}
+.account-form label {
     display: inline-block;
     width: 200px;
-} 
+}
 
 .kms{
     display: inline-block;
@@ -76,10 +73,10 @@
 
 .create-account-btn{
     font-size: 25px;
-    background-color: #EBBB52;
-    border-radius: 8px; 
+    background-color: #ebbb52;
+    border-radius: 8px;
     border: 2px solid #edbc52;
-    color:#444444;
+    color: #444444;
     padding: 15px 15px;
     margin-top: 20px;
     margin-bottom: 20px;
@@ -91,7 +88,7 @@
     background-color: #EBBB52;
     border-radius: 8px; 
     border: 2px solid #edbc52;
-    color:#444444; 
+    color: #444444;
     margin-top: 20px;
     margin-bottom: 20px;
     align-items: flex-end;
