@@ -498,6 +498,8 @@ class Interface {
                 "UPDATE user SET weight = ?, tweight = ? WHERE id = ?"
             );
             const result = stmt.run(current, target, user_id);
+        } else {
+            current = 0;
         }
 
         const stmt = this.database.prepare(
