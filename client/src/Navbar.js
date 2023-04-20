@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import "./Navbar";
 import { Outlet, Link } from "react-router-dom";
-import "./css/header.css";
+import "./css/Header.css";
 
 export default function Navbar() { 
     useEffect(() => {
@@ -17,69 +17,41 @@ export default function Navbar() {
 
     return (
         <>
-            {/* <nav>
-                <ul>
-                    <li>
-                        <Link exac to="/Account">
-                            LOGO
-                        </Link> 
-                    </li>
-
-                    <li>
-                        <Link to="/Diet">Record Meal</Link>
-                    </li>
-
-                    <li>
-                        <Link to="/Exercise">Record Exercise</Link>
-                    </li>
-
-                    <li>
-                        <Link to="/Goal">Goals</Link>
-                    </li>
-
-                    <li>
-                        <Link to="/Group">Groups</Link>
-                    </li>
-                    <li>
-                        <Link to="/Account">Account</Link>
-                    </li>
-                </ul>
-            </nav> */}
             <header>
-        <div class="header-left">
-            <div class="logo">
-                {/* <img src="./logo.png" alt=""> */}
-                Logo
-            </div>
-            <nav>
-                <ul>
-                    <li>
-                    <Link to="/Meal">Record Meal</Link>
-                    </li>
-                    <li>
-                    <Link to="/Exercise">Record Exercise</Link>
-                    </li>
-                    <li>
-                    <Link to="/Goal">Goals</Link>
-                    </li>
-                    <li>
-                    <Link to="/Group">Groups</Link>
-                    </li>
-                    <li>
-                    <Link to="/Account">Account</Link>
-                    </li>
-                </ul>
-                
-            </nav>
-        </div>
-        <div class="header-right">
-            <div class="hamburger">
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
-        </div>
-    </header>
+                <div class="header-left">
+                    <div class="logo">
+                        {/* <img src="./logo.png" alt=""> */}
+                        Logo
+                    </div>
+                    <nav>
+                        <ul>
+                            <li>
+                            <Link to="/Diet">Record Meal</Link>
+                            </li>
+                            <li>
+                            <Link to="/Exercise">Record Exercise</Link>
+                            </li>
+                            <li>
+                            <Link to="/Goal">Goals</Link>
+                            </li>
+                            <li>
+                            <Link to="/Group">Groups</Link>
+                            </li>
+                            <li>
+                            <Link to="/Account">Account</Link>
+                            </li>
+                        </ul>
+                        
+                    </nav>
+                </div>
+                <div class="header-right">
+                    <div class="hamburger">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+            </header>
             
             <Outlet />
         </>

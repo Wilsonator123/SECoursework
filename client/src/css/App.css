@@ -19,8 +19,8 @@
 
 .account-box {
     margin: 10px;
-    padding: 10px;
-    background: #7ebb94;
+    background: #7ebb94; 
+    border: 3px solid #444444;
     border-radius: 25px;
     grid-column: 1 / span 2;
     display: flex;
@@ -75,7 +75,7 @@ select {
     font-size: 25px;
     background-color: #ebbb52;
     border-radius: 8px;
-    border: 2px solid #edbc52;
+    border: 2px solid #444444;
     color: #444444;
     padding: 15px 15px;
     margin-top: 20px;

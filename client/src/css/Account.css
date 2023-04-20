@@ -2,7 +2,7 @@
     display: grid;
     grid: 150px / auto auto;
 } 
-.profile-box, .bmi-box, .group-box, .date-box, 
+.profile-box, .bmi-box, .group-box, .date-box,  
 .exerciseHistory-box, .mealHistory-box{
     margin: 10px;
     padding: 10px;
@@ -17,15 +17,17 @@
 .bmi-box{ 
     background-color: #7EBB94;
     grid-column: 1;
+    border: 2px solid #444444;
 } 
 
 .group-box{
     background-color: #7FACBF;
     grid-column: 2;
+    border: 2px solid #444444;
 }
 
 .date-box{
-    border: 2px solid #FA8B8C;
+    border: 3px solid #FA8B8C;
     grid-column: 1 / span 2;
     text-align: center;
 }
@@ -33,10 +35,12 @@
 .exerciseHistory-box{
     background-color: #7FACBF;
     grid-column: 1;
+    border: 2px solid #444444;
 }
 .mealHistory-box{
     background-color: #7EBB94;
     grid-column: 2;
+    border: 2px solid #444444;
 
 }
 
