@@ -471,42 +471,58 @@ class Interface {
 
     /*********************************GOALS**********************************/
     createGoal(body) {
-        const { id, name, groupID, goalType, target, date, notes } = body;
+        const {
+            user_id,
+            name,
+            group_id,
+            goalType,
+            current,
+            target,
+            start,
+            end,
+            notes,
+        } = body;
         if (
-            id === "" ||
             name === "" ||
             goalType === "" ||
             target === "" ||
-            measurement === "" ||
-            date === ""
+            start === "" ||
+            end === ""
         ) {
             return false;
         }
-        if (!dateCheck(date)) return false;
+        if (!this.dateCheck(end)) return false;
+        //Update User Profile
+        if (goalType === "diet") {
+            const stmt = this.database.prepare(
+                "UPDATE user SET weight = ?, tweight = ? WHERE id = ?"
+            );
+            const result = stmt.run(current, target, user_id);
+        }
+
         const stmt = this.database.prepare(
-            "INSERT INTO goals (user_id, name, groupID, goalType, target, date, notes) VALUES (?, ?, ?, ?, ?, ?)"
+            "INSERT INTO goal (user_id, name, group_id, goalType, current, target, start, end, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
         );
         const result = stmt.run(
-            id,
             user_id,
             name,
-            groupID,
+            group_id,
             goalType,
+            current,
             target,
-            date,
+            start,
+            end,
             notes
         );
         return result;
     }
 
     dateCheck(date) {
-        try {
-            const date = new Date(date);
-            if (date < new Date()) return false;
-            return true;
-        } catch (error) {
+        const today = new Date().toISOString().slice(0, 10);
+        if (date < today) {
             return false;
         }
+        return true;
     }
 
     getActiveGoals(id) {

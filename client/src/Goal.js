@@ -2,53 +2,147 @@ import React, { useState } from "react";
 import "./css/goal.css";
 
 export default function Home() {
+    const tokenString = localStorage.getItem("token");
+    const userToken = JSON.parse(tokenString);
+
+    const [form, setForm] = useState({
+        user_id: tokenString,
+        name: "",
+        goalType: "",
+        current: "",
+        target: "",
+        start: new Date().toISOString().slice(0, 10),
+        end: "",
+        notes: "",
+    });
     const [showExerciseGoalForm, setShowExerciseGoalForm] = useState(false);
     const [showDietGoalForm, setShowDietGoalForm] = useState(false);
+    const [showWeight, setShowWeight] = useState(false);
 
     const handleExerciseGoalClick = () => {
+        setForm({ ...form, goalType: "exercise", target: "" });
+        setShowDietGoalForm(false);
         setShowExerciseGoalForm((prev) => !prev);
     };
 
     const handleDietGoalClick = () => {
+        setForm({ ...form, goalType: "diet", target: "" });
+        setShowExerciseGoalForm(false);
         setShowDietGoalForm((prev) => !prev);
     };
 
-    const handleExerciseFormSubmit = (event) => {
-        event.preventDefault();
-        // Handle exercise goal form submission
+    const handleChange = (event) => {
+        console.log(event.target.name);
+        setForm({
+            ...form,
+            [event.target.name]: event.target.value,
+        });
     };
 
-    const handleDietFormSubmit = (event) => {
-        event.preventDefault();
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (form.goalType === "diet") {
+            setShowWeight(true);
+            document.getElementById("weight-modal").style.display = "flex";
+        } else {
+            // Handle exercise goal form submission
+            fetch("http://localhost:3001/api/createGoal", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(form),
+            })
+                .then((res) => res.json())
+                .then((data) => console.log(data));
+        }
+    };
+
+    const handleDietSubmit = () => {
+        console.log(form);
         // Handle diet goal form submission
+        fetch("http://localhost:3001/api/createGoal", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(form),
+        })
+            .then((res) => res.json())
+            .then((data) => console.log(data))
+            .catch((err) => console.log(err));
+
+        setShowWeight(false);
+        document.getElementById("weight-modal").style.display = "none";
     };
 
     return (
         <div id="pageContainer">
             <h1> GOAL PAGE </h1>
             <div className="grid-container-goal">
+                <div id="weight-modal">
+                    {showWeight && (
+                        <form onSubmit={handleDietSubmit} id="weight-form">
+                            <label className="weight-modal">
+                                Enter current weight
+                            </label>
+                            <input
+                                type="number"
+                                id="current"
+                                name="current"
+                                value={form.current}
+                                onChange={handleChange}
+                            />
+                            <button type="submit">Submit</button>
+                        </form>
+                    )}
+                </div>
                 <div className="goalBox1">
                     <h2>Diet</h2>
                     <button onClick={handleDietGoalClick}>
                         {showDietGoalForm ? "-" : "+"}
                     </button>
                     {showDietGoalForm && (
-                        <form onSubmit={handleDietFormSubmit}>
+                        <form onSubmit={handleSubmit}>
                             <label>
                                 Goal Name:
-                                <input type="text" />
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    onChange={handleChange}
+                                    value={form.name}
+                                />
                             </label>
                             <label>
-                                Date Begun:
-                                <input type="date" />
+                                Start Date:
+                                <input
+                                    type="date"
+                                    id="start"
+                                    name="start"
+                                    onChange={handleChange}
+                                    value={form.start}
+                                />
                             </label>
                             <label>
-                                Date Due:
-                                <input type="date" />
+                                End Date:
+                                <input
+                                    type="date"
+                                    id="end"
+                                    name="end"
+                                    onChange={handleChange}
+                                    value={form.end}
+                                />
                             </label>
                             <label>
-                                Weight:
-                                <input type="number" />
+                                Target Weight (kg):
+                                <input
+                                    type="number"
+                                    id="target"
+                                    name="target"
+                                    value={form.target}
+                                    onChange={handleChange}
+                                />
                             </label>
                             <button type="submit">Submit goal</button>
                         </form>
@@ -60,26 +154,46 @@ export default function Home() {
                         {showExerciseGoalForm ? "-" : "+"}
                     </button>
                     {showExerciseGoalForm && (
-                        <form onSubmit={handleExerciseFormSubmit}>
+                        <form onSubmit={handleSubmit}>
                             <label>
                                 Goal Name:
-                                <input type="text" />
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    onChange={handleChange}
+                                    value={form.name}
+                                />
                             </label>
                             <label>
-                                Date Begun:
-                                <input type="date" />
+                                Start Date
+                                <input
+                                    type="date"
+                                    id="start"
+                                    name="start"
+                                    onChange={handleChange}
+                                    value={form.start}
+                                />
                             </label>
                             <label>
-                                Date Due:
-                                <input type="date" />
-                            </label>
-                            <label>
-                                Time:
-                                <input type="number" />
+                                End Date
+                                <input
+                                    type="date"
+                                    id="end"
+                                    name="end"
+                                    onChange={handleChange}
+                                    value={form.end}
+                                />
                             </label>
                             <label>
                                 Distance:
-                                <input type="number" />
+                                <input
+                                    type="number"
+                                    id="target"
+                                    name="target"
+                                    value={form.target}
+                                    onChange={handleChange}
+                                />
                             </label>
                             <button type="submit">Submit goal</button>
                         </form>

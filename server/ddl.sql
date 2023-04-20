@@ -21,15 +21,18 @@ CREATE TABLE IF NOT EXISTS 'group'(
 
 CREATE TABLE IF NOT EXISTS'goal'(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INT NOT NULL,
-    groupID TEXT,
+    user_id INT,
+    group_id TEXT,
+    name VARCHAR(255) NOT NULL,
     goalType VARCHAR(255) NOT NULL,
     current INT NOT NULL,
     target INT,
-    date DATE,
+    start DATE NOT NULL,
+    end DATA NOT NULL,
     notes TEXT,
     status VARCHAR(255) NOT NULL DEFAULT 'ACTIVE',
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (group_id) REFERENCES 'group'(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS 'group_user'(

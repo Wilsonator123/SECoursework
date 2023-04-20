@@ -182,6 +182,23 @@ app.post("/api/getBMI", (req, res) => {
     res.send(JSON.stringify(interface.bmi(req.body.id)));
 });
 
+/*************************Goal PAGE******************************/
+
+// app.post("/api/getGoal", (req, res) => {
+//     console.log(req.body);
+//     res.send(interface.getGoal(req.body));
+// });
+
+// app.post("/api/getGoalHistory", (req, res) => {
+//     console.log(req.body);
+//     res.send(interface.getGoalHistory(req.body));
+// });
+
+app.post("/api/createGoal", (req, res) => {
+    console.log(req.body);
+    res.send(interface.createGoal(req.body));
+});
+
 app.listen(3001, () => {
     console.log("Server running on port 3001");
 });
