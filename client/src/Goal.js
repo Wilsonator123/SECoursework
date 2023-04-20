@@ -1,4 +1,4 @@
-import "./css/goal.css";
+import "./css/Goal.css";
 
 
 export default function Home() {
