@@ -1,9 +1,9 @@
 /*************************IMPORTS******************************/
 const express = require("express");
-const path = require("path");
+
 const bodyParser = require("body-parser");
 const app = express();
-const fs = require("fs");
+
 const cors = require("cors");
 const multer = require("multer");
 
@@ -34,17 +34,6 @@ app.use(bodyParser.json());
 
 /*************************DATABASE TINGS******************************/
 
-/**
- * This will handle all requests from the server
- */
-// database.exec(fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8"));
-// database.exec(
-//     fs.readFileSync(path.join(__dirname, "data/activity.sql"), "utf8")
-// );
-// database.exec(
-//     fs.readFileSync(path.join(__dirname, "data/food_drink.sql"), "utf8")
-// );
-// database.exec("DELETE FROM user");
 
 app.get("/", (req, res) => {
     res.send("Hello World!");
@@ -109,6 +98,11 @@ app.get("/api/getActivities", (req, res) => {
     res.send(interface.getActivities());
 });
 
+app.post("/api/getExercises", (req, res) => {
+    console.log(req.body);
+    res.send(interface.getExercises(req.body.id));
+});
+
 app.post("/api/recordExercise", (req, res) => {
     console.log(req.body);
     res.send(interface.recordExercise(req.body));
@@ -124,6 +118,15 @@ app.post("/api/getUserMeals", (req, res) => {
     res.send(interface.getUserMeals(req.body));
 });
 
+app.post("/api/getActivity", (req, res) => {
+    console.log(req.body);
+    res.send(interface.getActivity(req.body));
+});
+
+app.post("/api/getWeeklyExercise", (req, res) => {
+    console.log(req.body);
+    res.send(interface.getWeeklyExercise(req.body));
+});
 /*********************RECORD MEAL PAGE**********************/
 
 app.post("/api/getFood", (req, res) => {
