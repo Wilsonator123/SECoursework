@@ -15,8 +15,9 @@ h1{
 	margin:10px;
 	padding:10px;
     background:#7facbf;
-    border-radius: 25px;
-}
+    border-radius: 25px; 
+    border: solid 3px #444444;
+} 
 
 .exercise-box{
     grid-column: 1 / span 2;
@@ -27,7 +28,8 @@ h1{
 
 .exercise-form{
     font-size: 25px;
-    display: inline-block;
+    display: inline-block; 
+    
 }
 
 
@@ -51,7 +53,8 @@ h1{
     font-size: 20px;
     background-color: #EBBB52;
     border-radius: 8px; 
-    border: 2px solid #edbc52;
+    /* border: 2px solid #edbc52;  */
+     border: 2px solid #444444; 
     color:#444444;
     /* margin-top: 10px;  */
     padding: 15px 15px;
@@ -65,4 +68,52 @@ h1{
 
 .exercise-btn{ 
     margin-left: 30%;
+}
+@media only screen and (max-width: 600px) {
+    .grid-container-exercise {
+        grid-template-columns: 1fr; 
+    }
+    .exercise-box {
+        grid-column: 1; 
+        align-items: center;
+    
+    }  
+    .exercise-form{
+        font-size: 25px;
+        display: inline-block;
+        display: flex;
+        flex-direction: column;
+    }
+    .exercise-form input, select{  
+        font-size: 25px;
+        background-color:#e8e7ed;
+        border-radius: 8px;
+        border-color:  #444444;
+        border: 1px solid; 
+        margin-left: -10px; 
+    
+    } 
+    .exercise-form label{ 
+        display: inline-block;
+        width: 200px;
+        margin-bottom: 5px; 
+    } 
+
+    .exercise-btn{  
+        font-size: 18px;
+        background-color: #EBBB52;
+        border-radius: 8px; 
+        /* border: 2px solid #edbc52;  */
+         border: 2px solid #444444; 
+        color:#444444;
+        /* margin-top: 10px;  */
+        padding: 20px 5px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        align-self: center; 
+        margin-left: 30px;
+    
+    }
+    
+
 }
