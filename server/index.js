@@ -166,9 +166,9 @@ app.post("/api/recordMeal", (req, res) => {
     res.send(interface.recordMeal(req.body));
 });
 
-/*************************HOME PAGE******************************/
+/*************************Goal PAGE******************************/
 
-app.get("/api/getActiveGoals", (req, res) => {
+app.post("/api/getActiveGoals", (req, res) => {
     res.send(interface.getActiveGoals(req.body.id));
 });
 
@@ -182,21 +182,18 @@ app.post("/api/getBMI", (req, res) => {
     res.send(JSON.stringify(interface.bmi(req.body.id)));
 });
 
-/*************************Goal PAGE******************************/
-
-// app.post("/api/getGoal", (req, res) => {
-//     console.log(req.body);
-//     res.send(interface.getGoal(req.body));
-// });
-
-// app.post("/api/getGoalHistory", (req, res) => {
-//     console.log(req.body);
-//     res.send(interface.getGoalHistory(req.body));
-// });
+app.post("/api/expiredGoals", (req, res) => {
+    res.send(interface.getGoalHistory(req.body));
+});
 
 app.post("/api/createGoal", (req, res) => {
     console.log(req.body);
     res.send(interface.createGoal(req.body));
+});
+
+app.post("/api/checkGoals", (req, res) => {
+    console.log(req.body);
+    res.send(interface.checkGoals(req.body.id));
 });
 
 app.listen(3001, () => {

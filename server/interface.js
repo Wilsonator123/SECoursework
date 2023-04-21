@@ -259,6 +259,8 @@ class Interface {
         );
 
         const result = stmt.run(id, name, time, distance, date, activity);
+        if (result.changes !== 0 && activity === 1)
+            this.updateGoal(id, distance);
         return result;
     }
     /************************************************************************/
@@ -471,17 +473,9 @@ class Interface {
 
     /*********************************GOALS**********************************/
     createGoal(body) {
-        const {
-            user_id,
-            name,
-            group_id,
-            goalType,
-            current,
-            target,
-            start,
-            end,
-            notes,
-        } = body;
+        const { user_id, name, group_id, goalType, target, start, end, notes } =
+            body;
+        let current = body.current;
         if (
             name === "" ||
             goalType === "" ||
@@ -494,10 +488,10 @@ class Interface {
         if (!this.dateCheck(end)) return false;
         //Update User Profile
         if (goalType === "diet") {
-            const stmt = this.database.prepare(
+            const stmt1 = this.database.prepare(
                 "UPDATE user SET weight = ?, tweight = ? WHERE id = ?"
             );
-            const result = stmt.run(current, target, user_id);
+            const result1 = stmt1.run(current, target, user_id);
         } else {
             current = 0;
         }
@@ -519,6 +513,20 @@ class Interface {
         return result;
     }
 
+    updateGoal(id, distance) {
+        //user_id
+
+        const stmt = this.database.prepare(
+            "SELECT * from goal WHERE user_id = ? AND goalType = 'exercise' AND status = 'active'"
+        );
+        const info = stmt.get(id).forEach((goal) => {
+            const stmt = this.database.prepare(
+                "UPDATE goal SET current = current + ? WHERE id = ?"
+            );
+            const result = stmt.run(distance, id);
+        });
+    }
+
     dateCheck(date) {
         const today = new Date().toISOString().slice(0, 10);
         if (date < today) {
@@ -530,7 +538,7 @@ class Interface {
     getActiveGoals(id) {
         //Returns all active goals for a user
         const stmt = this.database.prepare(
-            "SELECT * FROM goals WHERE id = ? AND status NOT IN ('inactive')"
+            "SELECT * FROM goal WHERE user_id = ? AND status NOT IN ('INACTIVE') ORDER BY CASE status WHEN 'EXPIRED' THEN 1 WHEN 'ACTIVE' THEN 2 END, end ASC"
         );
         const info = stmt.all(id);
         return info;
@@ -540,33 +548,58 @@ class Interface {
         const date = new Date().toISOString().slice(0, 10);
         //Returns all active goals for a user
         const stmt = this.database.prepare(
-            "UPDATE goals set status = inactive WHERE id = ? AND status IS ('active') AND date<" +
-                date
+            "UPDATE goals set status = 'inactive' WHERE id = ? AND status IS ('active') AND date<?"
         );
-        const info = stmt.all(id);
+        const info = stmt.all(id, date);
         return info;
     }
 
     reActivateGoal(id, goalID) {
-        const now = new Date();
-        const futureDate = new Date();
-        futureDate.setDate(now.getDate() + 7);
-        //Returns all active goals for a user
+        //We can actually change this to repeat the same duration as set
         const stmt = this.database.prepare(
-            "UPDATE goals set status = active AND set date = ? WHERE id = ? AND goalID = ?"
+            "SELECT * FROM goals WHERE id = ? AND goalID = ?"
         );
-        const info = stmt.all(
-            futureDate.toISOString().slice(0, 10),
-            id,
-            goalID
+        const info = stmt.get(id, goalID);
+        const oldStart = new Date(info.start);
+        const oldEnd = new Date(info.end);
+        const duration = oldEnd - oldStart;
+        const end = new Date();
+        end.setDate(end.getDate() + duration)
+            .toISOString()
+            .slice(0, 10);
+        const start = new Date().toISOString().slice(0, 10);
+
+        //Returns all active goals for a user
+        const stmt1 = this.database.prepare(
+            "UPDATE goals set status = 'active', set start = ?, end = ? WHERE id = ? AND goalID = ?"
         );
-        return info;
+        const info1 = stmt1.all(start, end, id, goalID);
+        return info1;
+    }
+
+    expiredGoal(body) {
+        if (body.reactivate) this.reActivateGoal(body.id, body.goalID);
+        else {
+            const stmt = this.database.prepare(
+                "UPDATE goal set status = 'complete' WHERE id = ? AND goalID = ?"
+            );
+            const info = stmt.all(body.id, body.goalID);
+            return info;
+        }
     }
 
     getGoalHistory(id) {
         //Returns all inactive goals for a user
         const stmt = this.database.prepare(
-            "SELECT * FROM goals WHERE id = ? AND status IN ('inactive')"
+            "SELECT * FROM goals WHERE id = ? AND status IN ('completed')"
+        );
+        const info = stmt.all(id);
+        return info;
+    }
+
+    finishGoal(id) {
+        const stmt = this.database.prepare(
+            "UPDATE goals set status = 'completed' WHERE user_id = ? AND target <= current"
         );
         const info = stmt.all(id);
         return info;

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import GoalView from "./components/goalView";
 import "./css/goal.css";
 
 export default function Home() {
@@ -41,6 +42,8 @@ export default function Home() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setShowDietGoalForm(false);
+        setShowExerciseGoalForm(false);
         if (form.goalType === "diet") {
             setShowWeight(true);
             document.getElementById("weight-modal").style.display = "flex";
@@ -98,12 +101,17 @@ export default function Home() {
                     )}
                 </div>
                 <div className="goalBox1">
-                    <h2>Diet</h2>
-                    <button onClick={handleDietGoalClick}>
-                        {showDietGoalForm ? "-" : "+"}
-                    </button>
+                    <div className="goalBox-header">
+                        <h2>Diet</h2>
+                        <button
+                            onClick={handleDietGoalClick}
+                            className="form-btn"
+                        >
+                            {showDietGoalForm ? "-" : "+"}
+                        </button>
+                    </div>
                     {showDietGoalForm && (
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={handleSubmit} className="goal-form">
                             <label>
                                 Goal Name:
                                 <input
@@ -149,12 +157,17 @@ export default function Home() {
                     )}
                 </div>
                 <div className="goalBox2">
-                    <h2>Exercise</h2>
-                    <button onClick={handleExerciseGoalClick}>
-                        {showExerciseGoalForm ? "-" : "+"}
-                    </button>
+                    <div className="goalBox-header">
+                        <h2>Exercise</h2>
+                        <button
+                            onClick={handleExerciseGoalClick}
+                            className="form-btn"
+                        >
+                            {showExerciseGoalForm ? "-" : "+"}
+                        </button>
+                    </div>
                     {showExerciseGoalForm && (
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={handleSubmit} className="goal-form">
                             <label>
                                 Goal Name:
                                 <input
@@ -199,6 +212,9 @@ export default function Home() {
                         </form>
                     )}
                 </div>
+            </div>
+            <div className="goal-Grid">
+                <GoalView />
             </div>
         </div>
     );
