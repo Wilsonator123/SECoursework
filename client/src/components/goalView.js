@@ -37,7 +37,7 @@ export default function Home() {
             {console.log(goal)}
             {goal.map((goal) => {
                 return (
-                    <div className="goal-display">
+                    <div className={`goal-display ${goal.status}`}>
                         <div className="goal-header">
                             <div className="goal-name">{goal.name}</div>
                             <div>-</div>

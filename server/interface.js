@@ -548,10 +548,9 @@ class Interface {
         const date = new Date().toISOString().slice(0, 10);
         //Returns all active goals for a user
         const stmt = this.database.prepare(
-            "UPDATE goals set status = 'inactive' WHERE id = ? AND status IS ('active') AND date<?"
+            "UPDATE goal set status = 'EXPIRED' WHERE user_id = ? AND status IS ('ACTIVE') AND end<?"
         );
-        const info = stmt.all(id, date);
-        return info;
+        stmt.run(id, date);
     }
 
     reActivateGoal(id, goalID) {

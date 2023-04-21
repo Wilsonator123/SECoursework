@@ -79,6 +79,21 @@ export default function Home() {
         document.getElementById("weight-modal").style.display = "none";
     };
 
+    const checkGoals = () => {
+        fetch("http://localhost:3001/api/checkGoals", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id: userToken }),
+        })
+            .then((res) => res.json())
+            .then((data) => console.log(data))
+            .catch((err) => console.log(err));
+    };
+
+    checkGoals();
+
     return (
         <div id="pageContainer">
             <h1> GOAL PAGE </h1>
