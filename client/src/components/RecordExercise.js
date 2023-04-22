@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import ReactDom from "react-dom";
+import "../css/Exercise.css";
 
 //Used on the Exercise page to record a new exercise
-export default function RecordExercise() {
+function RecordExercise({ onClose }) {
     const navigate = useNavigate();
 
     //Get the user's id stored in session storage
@@ -15,12 +17,13 @@ export default function RecordExercise() {
         id: tokenString,
         name: "",
         activity: "",
-        quantity: "",
-        measurement: "",
+        time: "",
+        distance: "",
     });
 
     //Gonna get a list of activities from DB to put in form
     const [activities, setActivities] = useState([]);
+    const [showDistance, setShowDistance] = useState(false);
 
     //At creatiom of form, get all activities in here!
     useEffect(() => {
@@ -28,6 +31,37 @@ export default function RecordExercise() {
             .then((response) => response.json())
             .then((data) => setActivities(data));
     }, []);
+
+    const getActivity = (event) => {
+        setForm({
+            ...form,
+            [event.target.name]: event.target.value,
+        });
+        fetch("http://localhost:3001/api/getActivity", {
+            method: "POST",
+            body: JSON.stringify({ name: event.target.value }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data) {
+                    console.log("Here" + data.type);
+                    if (data[0].type == 1) {
+                        setShowDistance(true);
+                    } else {
+                        setShowDistance(false);
+                    }
+                } else {
+                    alert("Failed to get activity.");
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("ERROR");
+            });
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -64,71 +98,92 @@ export default function RecordExercise() {
         });
     };
 
-    return (
-        <form class="exercise-form" onSubmit={handleSubmit}>
-            <label htmlFor="name">Name:</label>
-            <input
-                type="text"
-                id="name"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-            />
+    //Handles the closing of the modal
+    const handleClose = () => {
+        onClose();
+    };
 
-            <br />
-
-            <label htmlFor="activity">Activity:</label>
-            <select
-                name="activity"
-                type="number"
-                value={form.activity}
-                onChange={(event) =>
-                    setForm({ ...form, activity: parseInt(event.target.value) })
-                }
-            >
-                <option disabled value="">
-                    Select
-                </option>
-
-                {/*Gets ALL the activities and maps them in a list*/}
-                {activities.map((activity) => (
-                    <option key={activity.id} value={activity.id}>
-                        {activity.name}
-                    </option>
-                ))}
-            </select>
-
-            <br />
-            <label htmlFor="quantity">Quantity:</label>
-            <input
-                type="number"
-                id="quantity"
-                name="quantity"
-                value={form.quantity}
-                min="0"
-                onChange={(event) =>
-                    setForm({ ...form, quantity: parseInt(event.target.value) })
-                }
-            />
-
-            <br />
-            <label htmlFor="measurement">Measurement:</label>
-            <select
-                name="measurement"
-                value={form.measurement}
-                onChange={handleChange}
-            >
-                <option disabled value="">
-                    Select
-                </option>
-                <option value="m">Metres</option>
-                <option value="mins">Minutes</option>
-            </select>
-
-            <br />
-            <button class="exercise-btn" type="submit">
-                Record Exercise
+    return ReactDom.createPortal(
+        <div className="exercise-box">
+            <button className="close-btn" onClick={handleClose}>
+                <i class="fa-solid fa-xmark fa-xl"></i>
             </button>
-        </form>
+            <form class="exercise-form" onSubmit={handleSubmit}>
+                <label htmlFor="name">Name:</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange}
+                />
+
+                <br />
+
+                <label htmlFor="activity">Activity:</label>
+                <select
+                    name="activity"
+                    type="number"
+                    value={form.activity}
+                    onChange={getActivity}
+                >
+                    <option disabled value="">
+                        Select
+                    </option>
+
+                    {/*Gets ALL the activities and maps them in a list*/}
+                    {activities.map((activity) => (
+                        <option key={activity.id} value={activity.id}>
+                            {activity.name}
+                        </option>
+                    ))}
+                </select>
+
+                <br />
+                <label htmlFor="time">Time (m):</label>
+                <input
+                    type="number"
+                    id="time"
+                    name="time"
+                    value={form.time}
+                    min="0"
+                    onChange={(event) =>
+                        setForm({
+                            ...form,
+                            time: parseInt(event.target.value),
+                        })
+                    }
+                />
+
+                <br />
+                {showDistance && (
+                    <div>
+                        <label htmlFor="distance">Distance (km):</label>
+                        <input
+                            type="number"
+                            id="distance"
+                            name="distance"
+                            value={form.distance}
+                            min="0"
+                            onChange={(event) =>
+                                setForm({
+                                    ...form,
+                                    distance: parseInt(event.target.value),
+                                })
+                            }
+                        />
+                    </div>
+                )}
+
+                <br />
+                <button class="exercise-btn" type="submit">
+                    Record Exercise
+                </button>
+            </form>
+        </div>,
+
+        document.getElementById("exerciseForm")
     );
 }
+
+export default RecordExercise;

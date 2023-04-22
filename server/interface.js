@@ -23,6 +23,7 @@ class Interface {
 
         //this.database.exec("DROP TABLE group_user");
     }
+    /************************************************************************/
 
     /*********************************USER**********************************/
     getUser(id) {
@@ -178,15 +179,52 @@ class Interface {
         //Gotta have it to 2dp or it gets UGLY
         return (weight / (height * height)).toFixed(2);
     }
+    /************************************************************************/
 
     /********************************EXERCISE********************************/
-
-    //Gets all activities a user can do when recording an exercise
     getActivities() {
         console.log("Trying to get activities");
-        const stmt = this.database.prepare("SELECT * FROM activity");
+        const stmt = this.database.prepare(
+            "SELECT * FROM activity ORDER BY name"
+        );
         const info = stmt.all();
         return info;
+    }
+
+    getActivity(name) {
+        //Returns all activity for a user
+        const stmt = this.database.prepare(
+            "SELECT * FROM activity WHERE id = ?"
+        );
+        const info = stmt.all(name.name);
+        return info;
+    }
+
+    getWeeklyExercise(data) {
+        let body = {
+            SOW: 0,
+            days: [0, 0, 0, 0, 0, 0, 0],
+        };
+        let today = new Date(data.date);
+        let startOfWeek = new Date(
+            today.getTime() - today.getDay() * 24 * 60 * 60 * 1000
+        );
+        body.SOW = startOfWeek.toISOString().slice(0, 10);
+        let date = new Date(startOfWeek);
+        for (let i = 0; i < 7; i++) {
+            this.database
+                .prepare(
+                    "SELECT * FROM exercise WHERE user_id = ? AND date = ?"
+                )
+                .all(data.id, date.toISOString().slice(0, 10))
+                .forEach((row) => {
+                    body.days[i] += row.time / 60;
+                });
+            date.setDate(date.getDate() + 1);
+        }
+        console.log(body);
+
+        return body;
     }
 
     //Gets exercises for a specific date to display on the homepage
@@ -196,7 +234,7 @@ class Interface {
 
         //Get all exercises and their names for the given user (based on their token)
         const stmt = this.database.prepare(
-            "SELECT exercise.id, exercise.name, exercise.quantity, exercise.measurement, exercise.date, activity.name AS activity_name FROM exercise INNER JOIN activity ON exercise.type = activity.id WHERE exercise.user_id = ? AND exercise.date = ?"
+            "SELECT exercise.id, exercise.name, exercise.time, exercise.distance, exercise.date, activity.name AS activity_name FROM exercise INNER JOIN activity ON exercise.type = activity.id WHERE exercise.user_id = ? AND exercise.date = ?"
         );
 
         const info = stmt.all(body.id, body.date);
@@ -204,7 +242,39 @@ class Interface {
         return info;
     }
 
-    //Gets all meals for a specific date for a user to display on the homepage
+    getExercises(id) {
+        //Returns all exercise for a user
+        const stmt = this.database.prepare(
+            "SELECT exercise.name, activity.name AS type, time, distance, date FROM exercise JOIN activity on exercise.type=activity.id WHERE user_id = ? ORDER BY date ASC, exercise.id ASC"
+        );
+        const info = stmt.all(id);
+        return info;
+    }
+
+    //All details about an exercise given, checks if valid, then inserts into array
+    recordExercise(body) {
+        //ID here refers to USER ID, NOT ACTIVITY ID OR EXERCISE ID
+        const { id, name, activity, time, distance } = body;
+        if (id === "" || name === "" || time === "" || activity === "") {
+            return false;
+        }
+        if (distance === undefined) {
+            distance = 0;
+        }
+        //We need to put ALL dates in the better format, not
+        //the... weird and wrong US one
+        const date = new Date().toISOString().slice(0, 10);
+
+        const stmt = this.database.prepare(
+            "INSERT INTO exercise (user_id, name, time, distance, date, type) VALUES (?, ?, ?, ?, ?, ?)"
+        );
+
+        const result = stmt.run(id, name, time, distance, date, activity);
+        return result;
+    }
+    /************************************************************************/
+
+    /********************************MEALS********************************/
     getUserMeals(body) {
         let first =
             "SELECT meal.id, meal.name, meal.mealType, meal.date, meal.calories, food.name AS food_name, food.calories AS food_calories, meal.foodAmount, drink.name AS drink_name, drink.calories AS drink_calories, meal.drinkAmount FROM meal INNER JOIN food ON meal.food = food.name INNER JOIN drink ON meal.drink = drink.name ";
@@ -260,44 +330,6 @@ class Interface {
             return info;
         }
     }
-
-    //All details about an exercise given, checks if valid, then inserts into array
-    recordExercise(body) {
-        //ID here refers to USER ID, NOT ACTIVITY ID OR EXERCISE ID
-        const { id, name, activity, quantity, measurement } = body;
-        if (
-            id === "" ||
-            name === "" ||
-            quantity === "" ||
-            measurement === "" ||
-            activity === ""
-        ) {
-            return false;
-        }
-        console.log("in the interface");
-        console.log(body);
-        console.log(id);
-        console.log(activity);
-        //We need to put ALL dates in the better format, not
-        //the... weird and wrong US one
-        const date = new Date().toISOString().slice(0, 10);
-
-        const stmt = this.database.prepare(
-            "INSERT INTO exercise (user_id, name, quantity, measurement, date, type) VALUES (?, ?, ?, ?, ?, ?)"
-        );
-
-        const result = stmt.run(
-            id,
-            name,
-            quantity,
-            measurement,
-            date,
-            activity
-        );
-        return result;
-    }
-
-    /********************************MEALS********************************/
 
     getFood(body) {
         console.log(body);
@@ -390,6 +422,14 @@ class Interface {
         return true;
     }
 
+    dietFilter(id, body) {
+        //Date / Period of time -> 7 days
+        var line = "SELECT * FROM diet WHERE user_id = " + id;
+        if (body.date != null) {
+            line += " AND date = " + body.date;
+        }
+    }
+
     //All details about an exercise given, checks if valid, then inserts into array
     recordMeal(body) {
         //ID here refers to USER ID, NOT ACTIVITY ID OR EXERCISE ID
@@ -438,6 +478,7 @@ class Interface {
         );
         return true;
     }
+    /************************************************************************/
 
     /*********************************GROUPS**********************************/
 
@@ -890,14 +931,6 @@ class Interface {
                 date: futureDate.toISOString().slice(0, 10),
                 notes: "Walk 5 miles this week!",
             });
-        }
-    }
-
-    dietFilter(id, body) {
-        //Date / Period of time -> 7 days
-        var line = "SELECT * FROM diet WHERE user_id = " + id;
-        if (body.date != null) {
-            line += " AND date = " + body.date;
         }
     }
 }

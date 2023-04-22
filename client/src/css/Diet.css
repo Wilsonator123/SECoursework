@@ -12,7 +12,10 @@
 
 .grid-container-diet {
     display: grid;
-    grid: 500px / auto auto;
+    grid: 500px / auto auto; 
+    background-color: #e8e7ed; 
+    border: 3px solid #444444; 
+    border-radius: 8px; 
 }
 
 h1 {
@@ -29,7 +32,8 @@ h1 {
     margin: 10px;
     padding: 10px;
     background: #7ebb94;
-    border-radius: 25px;
+    border-radius: 25px; 
+    display: block;
 }
 
 .dietBox1 {
@@ -40,34 +44,52 @@ h1 {
 }
 .dietBox3 {
     grid-column: 2;
+} 
+.meal-form label {
+    display: inline-block;
+    width: 150px; /* adjust this value to your needs */
+    text-align: right;
+    margin-right: 10px; /* add some space between the label and input */
 }
+
 
 .meal-form {
-    font-size: 16px;
+    font-size: 16px; 
+    display: block;
 }
 
-.meal-form input,
-select {
+.meal-form input, .meal-from select{
     font-size: 16px;
     background-color: #e8e7ed;
     border-radius: 8px;
     border-color: #444444;
-    border: 1px solid;
-}
+    border: 1px solid; 
+    /* margin: 5px; */  
+    display: inline-block;
+    width: 250px;
+    margin: 10px; 
+    align-items: center;
+} 
+.meal-from select{
+    font-size: 10px;
+}  
+
+
 
 .meal-btn,
 .drink-btn,
 .food-btn {
     font-size: 16px;
     background-color: #ebbb52;
-    border-color: #f5bb40;
+    border-color:#444444 ;
     border-radius: 8px;
     color: #444444;
-    margin-top: 10px;
+    margin-top: 10px; 
+    padding: 15px 15px;
 }
 
 .mealType {
-    display: inline-block;
+    display: inline-block; 
 }
 
 .fdResults {
@@ -92,6 +114,19 @@ select {
     font-size: 24px;
     font-weight: 600;
     margin-bottom: 10px;
+} 
+
+.click-me{
+    font-size: 20px;
+    background-color: #FA8B8C;
+    border-radius: 8px;
+    border: 2px solid #444444;
+    color: #444444;
+    /* margin-top: 10px;  */
+    padding: 20px 30px;
+    margin-top: 20px;
+    margin-bottom: 20px; 
+    margin-right: 30px;
 }
 
 #meals {
@@ -109,19 +144,57 @@ select {
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 10px;
+}  
+.dietFilter label{ 
+    font-size: 30px; 
+    padding: 10px; 
+    margin: 20px;
+
 }
+
+.dietFilter input, 
+.dietFilter select{
+    font-size: 20px;
+    background-color: #ebbb52;
+    border-radius: 8px;
+    border: 2px solid #444444;
+    color: #444444;
+    /* margin-top: 10px;  */
+    padding: 15px 15px;
+    margin-top: 20px;
+    margin-bottom: 20px; 
+    margin-right: 30px;
+    
+} 
+.size-btn{
+    font-size: 20px;
+    background-color: #ebbb52;
+    border-radius: 8px;
+    border: 2px solid #444444;
+    color: #444444;
+    /* margin-top: 10px;  */
+    padding: 15px 15px;
+    margin-top: 20px;
+    margin-bottom: 20px; 
+    margin-right: 30px;
+}
+
 
 #dietTable {
     display: flex;
     flex-direction: column;
     font-size: 16px;
     font-weight: 600;
-    width: 80rem;
+    width: 90%;
+    margin: 0 auto;
+    margin-bottom: 20%;  
+    border: solid 2px #444444;
+    border-radius: 8px; 
 }
 
 #dietTable thead,
 tbody {
-    border: 1px solid;
+    border: 2px solid;
 }
 
 #dietTable th {
@@ -129,11 +202,14 @@ tbody {
     padding: 10px;
     font-size: 22px;
     width: 100%;
-    border-right: 1px solid;
+    border-right: 1px solid #7ebb94;
+    background-color: #7ebb94; 
+    border-radius: 3px;
 }
 
 #dietTable th:last-child {
     border-right: none;
+
 }
 
 #dietTable td {
@@ -172,6 +248,7 @@ tbody {
 }
 #dietTable td:nth-child(5) {
     width: 10rem;
+    
 }
 
 .breakfast {
@@ -185,4 +262,12 @@ tbody {
 }
 .snack {
     color: purple;
+}
+
+.viewMeal{
+    background-color: #7FACBF;
+    border-radius: 8px;
+    border: 2px solid #444444;
+    color: #444444;
+    padding: 15px 15px;
 }
