@@ -196,6 +196,11 @@ app.post("/api/checkGoals", (req, res) => {
     res.send(interface.checkGoals(req.body.id));
 });
 
+app.post("/api/reActivateGoal", (req, res) => {
+    console.log(req.body);
+    res.send(interface.expiredGoal(req.body));
+});
+
 app.listen(3001, () => {
     console.log("Server running on port 3001");
 });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import GoalView from "./components/goalView";
 import "./css/goal.css";
 
@@ -19,6 +19,51 @@ export default function Home() {
     const [showExerciseGoalForm, setShowExerciseGoalForm] = useState(false);
     const [showDietGoalForm, setShowDietGoalForm] = useState(false);
     const [showWeight, setShowWeight] = useState(false);
+    const [goal, setGoal] = useState([
+        {
+            id: "",
+            user_id: tokenString,
+            name: "",
+            goalType: "",
+            current: "",
+            target: "",
+            start: "",
+            end: "",
+        },
+    ]);
+    const [loading, setLoading] = useState(false);
+
+    async function getGoals() {
+        const response = await fetch(
+            "http://localhost:3001/api/getActiveGoals",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ id: tokenString }),
+            }
+        );
+        const data = await response.json();
+        if (data) {
+            setGoal(data);
+        } else {
+            setGoal([]);
+        }
+    }
+
+    const checkGoals = () => {
+        fetch("http://localhost:3001/api/checkGoals", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id: userToken }),
+        })
+            .then((res) => res.json())
+            .then((data) => console.log(data))
+            .catch((err) => console.log(err));
+    };
 
     const handleExerciseGoalClick = () => {
         setForm({ ...form, goalType: "exercise", target: "" });
@@ -58,6 +103,7 @@ export default function Home() {
             })
                 .then((res) => res.json())
                 .then((data) => console.log(data));
+            getGoals();
         }
     };
 
@@ -77,22 +123,14 @@ export default function Home() {
 
         setShowWeight(false);
         document.getElementById("weight-modal").style.display = "none";
+
+        getGoals();
     };
 
-    const checkGoals = () => {
-        fetch("http://localhost:3001/api/checkGoals", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ id: userToken }),
-        })
-            .then((res) => res.json())
-            .then((data) => console.log(data))
-            .catch((err) => console.log(err));
-    };
-
-    checkGoals();
+    useEffect(() => {
+        checkGoals();
+        getGoals();
+    }, []);
 
     return (
         <div id="pageContainer">
@@ -228,8 +266,9 @@ export default function Home() {
                     )}
                 </div>
             </div>
+
             <div className="goal-Grid">
-                <GoalView />
+                <GoalView goal={goal} props={getGoals} />
             </div>
         </div>
     );

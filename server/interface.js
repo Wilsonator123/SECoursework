@@ -8,6 +8,10 @@ class Interface {
             verbose: console.log,
         });
 
+        // this.database.exec(
+        //     "INSERT INTO goal VALUES (?, 15, NULL, 'Test', 'exercise', 0, 100, '2023-04-20','2023-04-21', NULL, 'ACTIVE') "
+        // );
+
         this.database.exec(
             fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8")
         );
@@ -551,38 +555,40 @@ class Interface {
             "UPDATE goal set status = 'EXPIRED' WHERE user_id = ? AND status IS ('ACTIVE') AND end<?"
         );
         stmt.run(id, date);
+        return true;
     }
 
-    reActivateGoal(id, goalID) {
+    reActivateGoal(goalID) {
         //We can actually change this to repeat the same duration as set
-        const stmt = this.database.prepare(
-            "SELECT * FROM goals WHERE id = ? AND goalID = ?"
-        );
-        const info = stmt.get(id, goalID);
-        const oldStart = new Date(info.start);
-        const oldEnd = new Date(info.end);
-        const duration = oldEnd - oldStart;
+        const stmt = this.database.prepare("SELECT * FROM goal WHERE id = ?");
+        const info = stmt.all(goalID);
+        const data = info[0];
+        const oldStart = new Date(data.start);
+        const oldEnd = new Date(data.end);
+        const diffTime = Math.abs(oldEnd - oldStart);
+        const duration = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        console.log(duration);
         const end = new Date();
-        end.setDate(end.getDate() + duration)
-            .toISOString()
-            .slice(0, 10);
+        end.setDate(end.getDate() + duration);
+
         const start = new Date().toISOString().slice(0, 10);
 
         //Returns all active goals for a user
         const stmt1 = this.database.prepare(
-            "UPDATE goals set status = 'active', set start = ?, end = ? WHERE id = ? AND goalID = ?"
+            "UPDATE goal SET status = 'ACTIVE', start = ?, end = ? WHERE id = ?"
         );
-        const info1 = stmt1.all(start, end, id, goalID);
+        const info1 = stmt1.run(start, end.toISOString().slice(0, 10), goalID);
         return info1;
     }
 
     expiredGoal(body) {
-        if (body.reactivate) this.reActivateGoal(body.id, body.goalID);
+        console.log(body);
+        if (body.reactivate) this.reActivateGoal(body.goalID);
         else {
             const stmt = this.database.prepare(
-                "UPDATE goal set status = 'complete' WHERE id = ? AND goalID = ?"
+                "UPDATE goal SET status = 'COMPLETE' WHERE id = ?"
             );
-            const info = stmt.all(body.id, body.goalID);
+            const info = stmt.run(body.goalID);
             return info;
         }
     }
@@ -598,7 +604,7 @@ class Interface {
 
     finishGoal(id) {
         const stmt = this.database.prepare(
-            "UPDATE goals set status = 'completed' WHERE user_id = ? AND target <= current"
+            "UPDATE goal set status = 'COMPLETED' WHERE user_id = ? AND target <= current"
         );
         const info = stmt.all(id);
         return info;
