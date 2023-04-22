@@ -1,4 +1,4 @@
-import "./css/group.css";
+import "./css/Group.css";
 
 export default function Home() {
     return (

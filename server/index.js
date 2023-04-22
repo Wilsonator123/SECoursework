@@ -1,9 +1,9 @@
 /*************************IMPORTS******************************/
 const express = require("express");
-const path = require("path");
+
 const bodyParser = require("body-parser");
 const app = express();
-const fs = require("fs");
+
 const cors = require("cors");
 const multer = require("multer");
 
@@ -34,17 +34,6 @@ app.use(bodyParser.json());
 
 /*************************DATABASE TINGS******************************/
 
-/**
- * This will handle all requests from the server
- */
-// database.exec(fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8"));
-// database.exec(
-//     fs.readFileSync(path.join(__dirname, "data/activity.sql"), "utf8")
-// );
-// database.exec(
-//     fs.readFileSync(path.join(__dirname, "data/food_drink.sql"), "utf8")
-// );
-// database.exec("DELETE FROM user");
 
 app.get("/", (req, res) => {
     res.send("Hello World!");
