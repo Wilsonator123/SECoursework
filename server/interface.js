@@ -2,15 +2,26 @@ const dB = require("better-sqlite3");
 const fs = require("fs");
 const path = require("path");
 const { start } = require("repl");
+
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+
 class Interface {
     constructor() {
         this.database = new dB("database.db", {
             verbose: console.log,
         });
 
+
+        //IMPORTANT DATABASE STUFF WE MIGHT NEED AGAIN!
+
+        
+        //this.database.exec(fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8"));
         this.database.exec(
             fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8")
         );
+
+        //this.database.exec("DROP TABLE group_user");
     }
     /************************************************************************/
 
@@ -468,6 +479,253 @@ class Interface {
         return true;
     }
     /************************************************************************/
+
+    /*********************************GROUPS**********************************/
+
+    //Return true only if group name hasnt been taken before
+    checkGroupName(body) {
+        const { name } = body;
+        console.log(name);
+        console.log(body);
+        const stmt = this.database.prepare(
+            "SELECT * FROM `group` WHERE name = ?"
+        );
+        const info = stmt.get(body);
+        console.log(info);
+        if(info === undefined){
+            return true;
+        }
+        if (info.length === 0) {
+            return true;
+        }
+        return false;
+    }
+
+
+    createGroup(body) {
+
+        const {
+            user_id,
+            name,
+
+        } = body;
+
+
+        if (
+            user_id === "" ||
+            name === "" 
+        ) {
+            return false;
+        }
+
+        //Checking the unique group name again
+        if(!this.checkGroupName(name)){
+            return false;
+        }
+
+
+        const stmt = this.database.prepare(
+            "INSERT INTO `group` (name, owner_id) VALUES (?, ?)"
+        );
+
+        const result = stmt.run(
+            name,
+            user_id,
+        );
+
+        
+        const getIDstmt = this.database.prepare(
+            "SELECT * from `group` WHERE name = ?"
+        );
+        const info = getIDstmt.all(name);
+        const idResult = info[0].id;
+
+        const stmt2 = this.database.prepare(
+            "INSERT INTO group_user (group_id, user_id) VALUES (?, ?)"
+        );
+
+        const result2 = stmt2.run(
+            idResult,
+            user_id,
+        );
+
+
+        return true;
+    }
+
+
+
+    getUserGroups(body) {
+        //Returns the user with the given id
+        const {id} = body;
+        const stmt = this.database.prepare("SELECT `group`.id, `group`.name FROM `group` INNER JOIN group_user ON `group`.id = group_user.group_id WHERE group_user.user_id = ?");
+        const info = stmt.all(id);
+        return info;
+    }
+
+
+    getUserGroups(body) {
+        //Returns the user with the given id
+        const {id} = body;
+        const stmt = this.database.prepare("SELECT `group`.id, `group`.name FROM `group` INNER JOIN group_user ON `group`.id = group_user.group_id WHERE group_user.user_id = ?");
+        const info = stmt.all(id);
+        return info;
+    }
+
+
+    getGroupUsers(body) {
+        //Returns the user with the given id
+        const {id} = body;
+        const stmt = this.database.prepare("SELECT user.id, user.firstname, user.lastname, user.username FROM user INNER JOIN group_user ON user.id = group_user.user_id  WHERE group_user.group_id = ?");
+        const info = stmt.all(id);
+        return info;
+    }
+
+    sendGroupInvite(body){
+        //Emails a user about joining a group
+        const {group_id, email} = body;
+
+        //First check if email in system:
+        const stmt = this.database.prepare("SELECT * from user WHERE email = ?");
+        const info = stmt.get(email);
+        if(info === undefined){
+            return false
+        }
+        else if (info.length === 0) {
+            return res.status(400).json({ error: 'User with this email not found' });
+        }
+
+
+        //Then check email is not already in the given group
+        const stmt2 = this.database.prepare("SELECT * from group_user INNER JOIN user ON user.id = group_user.user_id WHERE user.email = ? AND group_user.group_id = ?");
+        const info2 = stmt2.get(email, group_id);
+        if (info2 === undefined){
+            //This is what we want, so just continue on
+        }
+        else if (info2.length !== 0) {
+            return res.status(400).json({ error: 'User is already a member of this group' });
+        }
+
+
+
+        console.log("Valid email, so try and send");
+
+        //If all this is met, send an email.
+
+        
+        const groupPageUrl = `http://localhost:3000/Group?groupId=${group_id}&email=${email}`;
+        
+
+
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: "se.healthtracker101@gmail.com",
+              pass: "btssdtghvfwpyiyo"
+            }
+          });
+
+          //Prepares our email
+          const mailOptions = {
+            from: "se.healthtracker101@gmail.com",
+            to: email,
+            subject: "Health Tracker: Join Group",
+            html: 
+            
+                `<div>
+                    <p>You have been invited to join a group. Click</p>
+                    <a href="${groupPageUrl}">here</a>
+                    <p> to join. \nOtherwise, enter code: ${group_id}</p>
+                </div>`
+          };
+          
+
+          //Sends our email
+          transporter.sendMail(mailOptions, function(error, info) {
+            if (error) {
+              console.log(error);
+              return false;
+            } else {
+              console.log("Email sent: " + info.response);
+              return true;
+            }
+          });
+
+
+        return true;
+    }
+
+
+    //Multi purpose function for adding users to groups based on either clicking an email link or typing in hash code:
+    acceptGroupInvite(body){
+        //Emails a user about joining a group
+        const {group_id, email, user_id} = body;
+
+
+
+        //First check if email in system:
+        const stmt = this.database.prepare("SELECT * from user WHERE email = ?");
+        const info = stmt.get(email);
+        
+        if(info === undefined){
+            return {error: 'Account with that email not found'};
+        }
+
+
+        //Then check if group in system:
+        const stmt3 = this.database.prepare("SELECT * from `group` WHERE id = ?");
+        const info3 = stmt3.get(group_id);
+        
+        if(info3 === undefined){
+            return {error: 'Group not found'};
+        }
+
+
+        
+        const userID = info.id;
+
+        
+        //Check that user isnt already in group
+        const stmt4 = this.database.prepare("SELECT * from group_user WHERE user_id = ? AND group_id = ?");
+        const info4 = stmt4.get(userID, group_id);
+        if (info4 === undefined){
+            //This is what we want, so just continue on
+        }
+        else if (info4.length !== 0) {
+            return {error: 'User is already a member of this group'};
+        }
+
+        console.log(userID)
+        console.log(user_id);
+
+        //Check the userID matches the current account logged in
+        if (userID !== user_id){
+            console.log("HAH GOT YA");
+            return {error: 'Not logged in as the right user to accept this'};
+        }
+
+
+        const stmt2 = this.database.prepare(
+            "INSERT INTO group_user (user_id, group_id) VALUES (?, ?)"
+        );
+
+        const result = stmt2.run(
+            userID,
+            group_id
+        );
+
+        return true;
+    }
+
+
+
+
+
+
+
+
+
+
 
     /*********************************GOALS**********************************/
     createGoal(body) {

@@ -171,6 +171,47 @@ app.post("/api/getBMI", (req, res) => {
     res.send(JSON.stringify(interface.bmi(req.body.id)));
 });
 
+
+/*************************GROUP PAGE******************************/
+
+app.post("/api/checkGroupName", (req, res) => {
+    console.log(req.body);
+    res.send(interface.checkGroupName(req.body));
+});
+
+
+app.post("/api/createGroup", (req, res) => {
+    console.log(req.body);
+    res.send(interface.createGroup(req.body));
+});
+
+app.post("/api/getUserGroups", (req, res) => {
+    console.log(req.body);
+    res.send(interface.getUserGroups(req.body));
+});
+
+app.post("/api/getGroupUsers", (req, res) => {
+    console.log(req.body);
+    res.send(interface.getGroupUsers(req.body));
+});
+
+//Used when adding a user on frontend - will do the email send to them
+app.post("/api/addUserToGroup", (req, res) => {
+    console.log(req.body);
+    res.send(interface.sendGroupInvite(req.body));
+});
+
+
+//Adding a user to a group when they click the link on an email
+app.post("/api/addUserViaEmail", (req, res) => {
+    console.log(req.body);
+    res.send(interface.acceptGroupInvite(req.body));
+});
+
+
+
 app.listen(3001, () => {
     console.log("Server running on port 3001");
 });
+
+
