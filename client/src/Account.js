@@ -131,19 +131,23 @@ export default function Account({ userID }) {
                     <HealthDetails userID={userID} />
                 </div>
 
-                
                 <div class="group-box">
-                    <h2>Group History:</h2>  
+                    <h2>Group History:</h2>
                     <p> was not sure if we are having this or not </p>
                 </div>
                 <br />
-                <br /> 
+                <br />
 
                 <div class="date-box">
-                    <button class="arrow left" onClick={goToPrevDay}>  </button>
-                    <p class="date-text">Date: {date.toLocaleDateString("en-GB")}</p>   
-                    <button class="arrow right" onClick={goToNextDay}> </button>
-    
+                    <button class="arrow left" onClick={goToPrevDay}>
+                        {" "}
+                    </button>
+                    <p class="date-text">
+                        Date: {date.toLocaleDateString("en-GB")}
+                    </p>
+                    <button class="arrow right" onClick={goToNextDay}>
+                        {" "}
+                    </button>
                 </div>
 
                 <br />
@@ -159,13 +163,11 @@ export default function Account({ userID }) {
                             <p>{userExercise.name}</p>
                             <p>
                                 {userExercise.activity_name}:{" "}
-                                {userExercise.quantity}{" "}
-                                {userExercise.measurement}
+                                {userExercise.time} {"mins"}
                             </p>
                         </div>
                     ))}
                 </div>
-                
 
                 <div class="mealHistory-box">
                     <h2>Meal History: </h2>

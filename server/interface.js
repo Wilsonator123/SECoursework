@@ -710,7 +710,7 @@ class Interface {
         ) {
             return false;
         }
-        if (!this.dateCheck(end)) return false;
+        if (!this.dateCheck(start, end)) return false;
         //Update User Profile
         if (goalType === "diet") {
             const stmt1 = this.database.prepare(
@@ -754,20 +754,24 @@ class Interface {
         });
     }
 
-    dateCheck(date) {
+    dateCheck(start, end) {
         const today = new Date().toISOString().slice(0, 10);
-        if (date < today) {
+        if (start < today || end < today) {
+            return false;
+        }
+        if (start > end) {
             return false;
         }
         return true;
     }
 
     getActiveGoals(id) {
+        const today = new Date().toISOString().slice(0, 10);
         //Returns all active goals for a user
         const stmt = this.database.prepare(
-            "SELECT * FROM goal WHERE user_id = ? AND status != 'COMPLETED' ORDER BY CASE status WHEN 'EXPIRED' THEN 1 WHEN 'ACTIVE' THEN 2 END, end ASC"
+            "SELECT * FROM goal WHERE user_id = ? AND status != 'COMPLETED' AND start <= ? ORDER BY CASE status WHEN 'EXPIRED' THEN 1 WHEN 'ACTIVE' THEN 2 END, end ASC"
         );
-        const info = stmt.all(id);
+        const info = stmt.all(id, today);
         return info;
     }
 
