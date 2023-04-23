@@ -542,7 +542,7 @@ class Interface {
     getActiveGoals(id) {
         //Returns all active goals for a user
         const stmt = this.database.prepare(
-            "SELECT * FROM goal WHERE user_id = ? AND status NOT IN ('INACTIVE') ORDER BY CASE status WHEN 'EXPIRED' THEN 1 WHEN 'ACTIVE' THEN 2 END, end ASC"
+            "SELECT * FROM goal WHERE user_id = ? AND status NOT IN ('COMPLETE') ORDER BY CASE status WHEN 'EXPIRED' THEN 1 WHEN 'ACTIVE' THEN 2 END, end ASC"
         );
         const info = stmt.all(id);
         return info;

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import DietForm from "./components/DietForm";
-import "./css/Diet.css";
+import "./css/diet.css";
 
 /**
  *
@@ -59,7 +59,7 @@ export default function Diet() {
         else
             setSize(e.target.value, () => {
                 getMeals();
-            }); 
+            });
     };
 
     return (
@@ -69,7 +69,9 @@ export default function Diet() {
                 <h1>Diet</h1>
                 <div className="dietHeader">
                     <h2>Record Meal</h2>
-                    <button className="click-me" onClick={renderForm}>Click me</button>
+                    <button className="click-me" onClick={renderForm}>
+                        Click me
+                    </button>
                 </div>
                 <div id="dietForm" />
 
@@ -84,7 +86,8 @@ export default function Diet() {
                             defaultValue={date}
                         />
                         <label for="size">Size: </label>
-                        <select className="size-btn"
+                        <select
+                            className="size-btn"
                             id="size"
                             name="size"
                             onChange={(e) => handleChange(e)}
@@ -128,9 +131,9 @@ export default function Diet() {
                                 );
                             })}
                             <tr>
-                                <td >Total</td>
-                                <td >{meals.length}</td>
-                                <td >
+                                <td>Total</td>
+                                <td>{meals.length}</td>
+                                <td>
                                     {meals.reduce((a, b) => {
                                         return a + b.calories;
                                     }, 0)}
