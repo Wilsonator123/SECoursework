@@ -268,8 +268,14 @@ class Interface {
         );
 
         const result = stmt.run(id, name, time, distance, date, activity);
-        if (result.changes !== 0 && activity === 1)
-            this.updateGoal(id, distance);
+
+        const stmt2 = this.database.prepare(
+            "SELECT * FROM activity WHERE id = ?"
+        );
+        const info2 = stmt2.all(activity);
+        const type = info2[0].type;
+        console.log("TYPE: " + type);
+        if (result.changes !== 0 && type === 1) this.updateGoal(id, distance);
         return result;
     }
     /************************************************************************/
@@ -734,15 +740,17 @@ class Interface {
 
     updateGoal(id, distance) {
         //user_id
+        console.log("updateGoal");
+        console.log(id, distance);
 
         const stmt = this.database.prepare(
-            "SELECT * from goal WHERE user_id = ? AND goalType = 'exercise' AND status = 'active'"
+            "SELECT * from goal WHERE user_id = ? AND goalType = 'exercise' AND status = 'ACTIVE'"
         );
-        const info = stmt.get(id).forEach((goal) => {
-            const stmt = this.database.prepare(
-                "UPDATE goal SET current = current + ? WHERE id = ?"
+        const info = stmt.all(id).forEach((goal) => {
+            const stmt1 = this.database.prepare(
+                "UPDATE goal SET current = current + ? WHERE user_id = ? AND id= ? AND goalType = 'exercise' AND status = 'ACTIVE'"
             );
-            const result = stmt.run(distance, id);
+            const result = stmt1.run(distance, id, goal.id);
         });
     }
 
@@ -757,13 +765,14 @@ class Interface {
     getActiveGoals(id) {
         //Returns all active goals for a user
         const stmt = this.database.prepare(
-            "SELECT * FROM goal WHERE user_id = ? AND status NOT IN ('COMPLETE') ORDER BY CASE status WHEN 'EXPIRED' THEN 1 WHEN 'ACTIVE' THEN 2 END, end ASC"
+            "SELECT * FROM goal WHERE user_id = ? AND status != 'COMPLETED' ORDER BY CASE status WHEN 'EXPIRED' THEN 1 WHEN 'ACTIVE' THEN 2 END, end ASC"
         );
         const info = stmt.all(id);
         return info;
     }
 
     checkGoals(id) {
+        this.finishGoal(id);
         const date = new Date().toISOString().slice(0, 10);
         //Returns all active goals for a user
         const stmt = this.database.prepare(
@@ -801,7 +810,7 @@ class Interface {
         if (body.reactivate) this.reActivateGoal(body.goalID);
         else {
             const stmt = this.database.prepare(
-                "UPDATE goal SET status = 'COMPLETE' WHERE id = ?"
+                "UPDATE goal SET status = 'COMPLETED' WHERE id = ?"
             );
             const info = stmt.run(body.goalID);
             return info;
@@ -811,7 +820,7 @@ class Interface {
     getGoalHistory(id) {
         //Returns all inactive goals for a user
         const stmt = this.database.prepare(
-            "SELECT * FROM goals WHERE id = ? AND status IN ('completed')"
+            "SELECT * FROM goals WHERE id = ? AND status IN ('COMPLETED')"
         );
         const info = stmt.all(id);
         return info;
@@ -819,9 +828,9 @@ class Interface {
 
     finishGoal(id) {
         const stmt = this.database.prepare(
-            "UPDATE goal set status = 'COMPLETED' WHERE user_id = ? AND target <= current"
+            "UPDATE goal SET status = 'COMPLETED' WHERE user_id = ? AND target <= current AND status = 'ACTIVE'"
         );
-        const info = stmt.all(id);
+        const info = stmt.run(id);
         return info;
     }
 
