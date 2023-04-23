@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactDom from "react-dom";
-import "../css/Exercise.css";
+import "../css/exercise.css";
 
 function RecordExercise({ onClose }) {
     const tokenString = localStorage.getItem("token");

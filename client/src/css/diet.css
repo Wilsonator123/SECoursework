@@ -4,7 +4,7 @@
     left: 10%;
     height: 80%;
     width: 80%;
-    overflow: hidden;
+    overflow: auto;
     background-color: #b7b7b7;
     justify-content: center;
     display: flex;
