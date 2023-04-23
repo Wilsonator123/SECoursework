@@ -34,7 +34,6 @@ app.use(bodyParser.json());
 
 /*************************DATABASE TINGS******************************/
 
-
 app.get("/", (req, res) => {
     res.send("Hello World!");
 });
@@ -155,9 +154,9 @@ app.post("/api/recordMeal", (req, res) => {
     res.send(interface.recordMeal(req.body));
 });
 
-/*************************HOME PAGE******************************/
+/*************************Goal PAGE******************************/
 
-app.get("/api/getActiveGoals", (req, res) => {
+app.post("/api/getActiveGoals", (req, res) => {
     res.send(interface.getActiveGoals(req.body.id));
 });
 
@@ -171,14 +170,12 @@ app.post("/api/getBMI", (req, res) => {
     res.send(JSON.stringify(interface.bmi(req.body.id)));
 });
 
-
 /*************************GROUP PAGE******************************/
 
 app.post("/api/checkGroupName", (req, res) => {
     console.log(req.body);
     res.send(interface.checkGroupName(req.body));
 });
-
 
 app.post("/api/createGroup", (req, res) => {
     console.log(req.body);
@@ -201,17 +198,31 @@ app.post("/api/addUserToGroup", (req, res) => {
     res.send(interface.sendGroupInvite(req.body));
 });
 
-
 //Adding a user to a group when they click the link on an email
 app.post("/api/addUserViaEmail", (req, res) => {
     console.log(req.body);
     res.send(interface.acceptGroupInvite(req.body));
 });
 
+app.post("/api/expiredGoals", (req, res) => {
+    res.send(interface.getGoalHistory(req.body));
+});
 
+app.post("/api/createGoal", (req, res) => {
+    console.log(req.body);
+    res.send(interface.createGoal(req.body));
+});
+
+app.post("/api/checkGoals", (req, res) => {
+    console.log(req.body);
+    res.send(interface.checkGoals(req.body.id));
+});
+
+app.post("/api/reActivateGoal", (req, res) => {
+    console.log(req.body);
+    res.send(interface.expiredGoal(req.body));
+});
 
 app.listen(3001, () => {
     console.log("Server running on port 3001");
 });
-
-
