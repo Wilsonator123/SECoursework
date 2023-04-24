@@ -61,3 +61,11 @@
     font-size: 13px;
     color: #e8e7ed;
 }
+
+.footer .logo{ 
+    display: block;
+    width: 30%; 
+    height: 30%; 
+    margin-left: auto;
+    margin-right: auto;
+}

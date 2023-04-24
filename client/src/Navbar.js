@@ -19,8 +19,7 @@ export default function Navbar() {
             <header>
                 <div class="header-left">
                     <div class="logo">
-                        {/* <img src="./logo.png" alt=""> */}
-                        Logo
+                        <img className="logo" src="./logo5.png" alt="" />
                     </div>
                     <nav>
                         <ul>
@@ -50,7 +49,6 @@ export default function Navbar() {
                     </div>
                 </div>
             </header>
-
             <Outlet />
         </>
     );

@@ -65,7 +65,9 @@ header .header-left nav ul {
     display: flex;
 } 
 .logo{
-    color: #E8E7ED;
+    width: 100%; 
+    height: 100%;
+    padding: 15px; 
 }
 nav ul li a {
     display: block;
@@ -124,5 +126,8 @@ header .header-right .hamburger div {
     }
     header .header-left nav ul {
         display: block;
+    }
+    .logo{
+        display: none;
     }
 }
