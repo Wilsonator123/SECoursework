@@ -32,6 +32,7 @@ export default function Diet() {
     }, [date, size]);
 
     const getMeals = () => {
+        console.log("HERE" + date);
         fetch("http://localhost:3001/api/getUserMeals", {
             method: "POST",
             headers: {
@@ -52,14 +53,20 @@ export default function Diet() {
     };
 
     const handleChange = (e) => {
-        if (e.target.name === "date")
-            setDate(e.target.value, () => {
-                getMeals();
-            });
-        else
+        if (e.target.name === "date") {
+            if (new Date(e.target.value) > new Date()) {
+                alert("Date cannot be in the future");
+                setDate(new Date().toISOString().slice(0, 10));
+            } else {
+                console.log(e.target.value);
+                setDate(e.target.value, () => {
+                    getMeals();
+                });
+            }
+        } else
             setSize(e.target.value, () => {
                 getMeals();
-            }); 
+            });
     };
 
     return (
@@ -69,7 +76,9 @@ export default function Diet() {
                 <h1>Diet</h1>
                 <div className="dietHeader">
                     <h2>Record Meal</h2>
-                    <button className="click-me" onClick={renderForm}>Click me</button>
+                    <button className="click-me" onClick={renderForm}>
+                        Click me
+                    </button>
                 </div>
                 <div id="dietForm" />
 
@@ -82,9 +91,11 @@ export default function Diet() {
                             name="date"
                             onChange={(e) => handleChange(e)}
                             defaultValue={date}
+                            value={date}
                         />
                         <label for="size">Size: </label>
-                        <select className="size-btn"
+                        <select
+                            className="size-btn"
                             id="size"
                             name="size"
                             onChange={(e) => handleChange(e)}
@@ -128,9 +139,9 @@ export default function Diet() {
                                 );
                             })}
                             <tr>
-                                <td >Total</td>
-                                <td >{meals.length}</td>
-                                <td >
+                                <td>Total</td>
+                                <td>{meals.length}</td>
+                                <td>
                                     {meals.reduce((a, b) => {
                                         return a + b.calories;
                                     }, 0)}

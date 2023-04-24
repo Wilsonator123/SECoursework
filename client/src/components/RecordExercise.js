@@ -79,7 +79,7 @@ function RecordExercise({ onClose }) {
                 //May need to be updated to another page
                 if (data) {
                     alert("Recorded successfully!");
-                    navigate("/Account");
+                    handleClose();
                 } else {
                     alert("Failed to record.");
                 }

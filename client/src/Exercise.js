@@ -17,8 +17,8 @@ export default function Home() {
     const [showHistory, setShowHistory] = useState(false);
     const [body, setBody] = useState({ SOW: "", EOW: "" });
 
-    const getWeek = () => {
-        let today = date;
+    const getWeek = (tdate) => {
+        let today = tdate;
         let startOfWeek = new Date(
             today.getTime() - today.getDay() * 24 * 60 * 60 * 1000
         );
@@ -36,22 +36,28 @@ export default function Home() {
     };
 
     async function getDays(event) {
-        console.log("Date: " + date);
+        let tdate = new Date(date);
         if (event !== undefined) {
             const target = event.target;
             const attribute = target.getAttribute("value");
 
             if (attribute === "prev") {
-                setDate(new Date(date.setDate(date.getDate() - 7)));
+                setDate(new Date(tdate.setDate(tdate.getDate() - 7)));
             } else if (attribute === "next") {
-                setDate(new Date(date.setDate(date.getDate() + 7)));
+                tdate = new Date(tdate.setDate(tdate.getDate() + 7));
+                if (tdate > new Date()) {
+                    tdate = new Date();
+                    setDate(tdate);
+                } else {
+                    setDate(tdate);
+                }
             }
         }
         const response = await fetch(
             "http://localhost:3001/api/getWeeklyExercise",
             {
                 method: "POST",
-                body: JSON.stringify({ id: tokenString, date: date }),
+                body: JSON.stringify({ id: tokenString, date: tdate }),
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -61,7 +67,7 @@ export default function Home() {
         console.log("test " + data);
         if (data) {
             setDays(data);
-            getWeek();
+            getWeek(tdate);
         } else {
             alert("Failed to get exercise data.");
         }
@@ -77,7 +83,7 @@ export default function Home() {
 
     useEffect(() => {
         getDays();
-        getWeek();
+        getWeek(new Date());
     }, []);
 
     return (
