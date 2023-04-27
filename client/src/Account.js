@@ -126,24 +126,34 @@ export default function Account({ userID }) {
                     <h2>Welcome user: {user[0].username}</h2>
                 </div>
 
-                <div>
+                <div class="bmi-box">
                     <h2>Health Details</h2>
                     <HealthDetails userID={userID} />
                 </div>
 
+                <div class="group-box">
+                    <h2>Group History:</h2>
+                    <p> was not sure if we are having this or not </p>
+                </div>
                 <br />
                 <br />
 
-                <div>
-                    <button onClick={goToPrevDay}> Previous </button>
-                    <p>Date: {date.toLocaleDateString("en-GB")}</p>
-                    <button onClick={goToNextDay}> Next </button>
+                <div class="date-box">
+                    <button class="arrow left" onClick={goToPrevDay}>
+                        {" "}
+                    </button>
+                    <p class="date-text">
+                        Date: {date.toLocaleDateString("en-GB")}
+                    </p>
+                    <button class="arrow right" onClick={goToNextDay}>
+                        {" "}
+                    </button>
                 </div>
 
                 <br />
                 <br />
 
-                <div>
+                <div class="exerciseHistory-box">
                     <h2>Exercise History:</h2>
 
                     {/*Gets the exercises and maps them in divs*/}
@@ -153,17 +163,13 @@ export default function Account({ userID }) {
                             <p>{userExercise.name}</p>
                             <p>
                                 {userExercise.activity_name}:{" "}
-                                {userExercise.quantity}{" "}
-                                {userExercise.measurement}
+                                {userExercise.time} {"mins"}
                             </p>
                         </div>
                     ))}
                 </div>
 
-                <br />
-                <br />
-
-                <div>
+                <div class="mealHistory-box">
                     <h2>Meal History: </h2>
 
                     {userMeals.map((userMeal) => (

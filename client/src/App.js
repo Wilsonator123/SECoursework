@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 
 //Inspiration for authentication code taken from
 //https://www.digitalocean.com/community/tutorials/how-to-add-login-authentication-to-react-applications
+ 
 
 export default function App({ setToken }) {
     //used to set the ID for a user on a login
@@ -24,27 +25,23 @@ export default function App({ setToken }) {
             {/*Header dependent on which form you are on */}
             <h1>{currentForm ? "CREATE ACCOUNT" : "LOG IN"}</h1>
             <br />
-            <div class="grid-container-account">
-                <div class="account-box">
-                    <div class="form-box">
-                        {currentForm ? (
-                            <AccountCreation setToken={setToken} />
-                        ) : (
-                            <Login setToken={setToken} />
-                        )}
+            <div class="grid-container-account">    
+
+            <div class="account-box">
+                <div class="form-box"> 
+                <div class="button-container">
+                    {currentForm ? <AccountCreation setToken={setToken} /> : <Login setToken={setToken}/> }
                     </div>
                     <div class="kms">
-                        <p class="create-para">
-                            {currentForm
-                                ? "Already have an account?"
-                                : "Don't have an account yet?"}
-                        </p>
-
-                        <button class="login-btn" onClick={toggleForm}>
-                            {currentForm ? "Login" : "Sign Up"}
-                        </button>
-                    </div>
+                    <p class="button-text">{currentForm ? "Already have an account?" : "Don't have an account yet? "}
+                    <button class="login-btn" onClick = {toggleForm}>
+                        {currentForm ? "Login" : "Sign Up" }
+                    </button>  
+                    </p>
                 </div>
+                </div> 
+            </div>
+            
             </div>
         </div>
     );

@@ -1,4 +1,4 @@
-nav {
+/* nav {
     background-color: #766DB0;
     height: 50px;
     width: 100%;
@@ -7,9 +7,9 @@ nav {
     left: 0;
     z-index: 100;
     box-shadow: 0 0 10px #393553;
-}
+} */
 
-nav ul {
+/* nav ul {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -31,4 +31,98 @@ nav ul li a {
     color: #E8E7ED;
     font-size: 1.2rem;
     line-height: 50px;
+}  */
+
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box; 
+    text-decoration: none;
+    list-style: none;
+}
+
+header {
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    background: #766DB0;
+    box-shadow: 0 0 10px #393553;
+}
+header .header-left {
+    display: flex;
+    align-items: center;
+}
+header .header-left .logo {
+    width: 140px; 
+}
+header .header-left nav {
+    margin-left: 120px;
+}
+header .header-left nav ul {
+    display: flex;
+} 
+.logo{
+    color: #E8E7ED;
+}
+nav ul li a {
+    display: block;
+    color: #E8E7ED;
+    font-size: 18px;
+    padding: 5px 50px;
+    transition: 0.2s;
+    text-decoration: none; 
+    justify-content: space-between; 
+    align-items: center;
+    list-style: none; 
+    
+}
+nav ul li a:hover,
+nav ul li a.active {
+    color: #b7b6b8;
+}
+
+header .header-right {
+    display: flex;
+    align-items: center;
+}
+header .header-right .hamburger {
+    margin-left: 20px;
+    cursor: pointer;
+    display: none;
+}
+header .header-right .hamburger div {
+    width: 30px;
+    height: 2px;
+    margin: 6px 0;
+    background: #E8E7ED;
+}
+@media only screen and (max-width: 1000px) {
+    header {
+        padding: 0 20px;
+    }
+    header .header-right .hamburger {
+        display: block;
+    }
+    header .header-left nav {
+        margin: 0;
+        position: absolute;
+        top: -100%;
+        left: 0;
+        width: 100%;
+        height: fit-content;
+        background-color: #766DB0;
+        padding: 30px;
+        transition: 0.3s;
+        text-align: center;
+        z-index: 100;
+    }
+    header .header-left nav.active {
+        top: 70px;
+    }
+    header .header-left nav ul {
+        display: block;
+    }
 }

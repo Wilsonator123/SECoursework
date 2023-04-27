@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactDom from "react-dom";
-import "../css/Exercise.css";
+import "../css/exercise.css";
 
 //Used on the Exercise page to record a new exercise
 function RecordExercise({ onClose }) {
@@ -79,7 +79,7 @@ function RecordExercise({ onClose }) {
                 //May need to be updated to another page
                 if (data) {
                     alert("Recorded successfully!");
-                    navigate("/Account");
+                    handleClose();
                 } else {
                     alert("Failed to record.");
                 }

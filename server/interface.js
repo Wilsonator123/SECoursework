@@ -2,20 +2,24 @@ const dB = require("better-sqlite3");
 const fs = require("fs");
 const path = require("path");
 const { start } = require("repl");
+
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
+
 class Interface {
     constructor() {
         this.database = new dB("database.db", {
             verbose: console.log,
         });
 
-
         //IMPORTANT DATABASE STUFF WE MIGHT NEED AGAIN!
 
-        //this.database.exec("DROP TABLE EXERCISE");
         //this.database.exec(fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8"));
         this.database.exec(
             fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8")
         );
+
+        //this.database.exec("DROP TABLE `group`");
     }
     /************************************************************************/
 
@@ -264,6 +268,14 @@ class Interface {
         );
 
         const result = stmt.run(id, name, time, distance, date, activity);
+
+        const stmt2 = this.database.prepare(
+            "SELECT * FROM activity WHERE id = ?"
+        );
+        const info2 = stmt2.all(activity);
+        const type = info2[0].type;
+        console.log("TYPE: " + type);
+        if (result.changes !== 0 && type === 1) this.updateGoal(id, distance);
         return result;
     }
     /************************************************************************/
@@ -474,88 +486,355 @@ class Interface {
     }
     /************************************************************************/
 
+    /*********************************GROUPS**********************************/
+
+    //Return true only if group name hasnt been taken before
+    checkGroupName(body) {
+        const { name } = body;
+        console.log(name);
+        console.log(body);
+        const stmt = this.database.prepare(
+            "SELECT * FROM `group` WHERE name = ?"
+        );
+        const info = stmt.get(body);
+        console.log(info);
+        if (info === undefined) {
+            return true;
+        }
+        if (info.length === 0) {
+            return true;
+        }
+        return false;
+    }
+
+    createGroup(body) {
+        const { user_id, name } = body;
+
+        if (user_id === "" || name === "") {
+            return false;
+        }
+
+        //Checking the unique group name again
+        if (!this.checkGroupName(name)) {
+            return false;
+        }
+
+        const stmt = this.database.prepare(
+            "INSERT INTO `group` (name, owner_id) VALUES (?, ?)"
+        );
+
+        const result = stmt.run(name, user_id);
+
+        const getIDstmt = this.database.prepare(
+            "SELECT * from `group` WHERE name = ?"
+        );
+        const info = getIDstmt.all(name);
+        const idResult = info[0].id;
+
+        const stmt2 = this.database.prepare(
+            "INSERT INTO group_user (group_id, user_id) VALUES (?, ?)"
+        );
+
+        const result2 = stmt2.run(idResult, user_id);
+
+        return true;
+    }
+
+    getUserGroups(body) {
+        //Returns the user with the given id
+        const { id } = body;
+        const stmt = this.database.prepare(
+            "SELECT `group`.id, `group`.name FROM `group` INNER JOIN group_user ON `group`.id = group_user.group_id WHERE group_user.user_id = ?"
+        );
+        const info = stmt.all(id);
+        return info;
+    }
+
+    getUserGroups(body) {
+        //Returns the user with the given id
+        const { id } = body;
+        const stmt = this.database.prepare(
+            "SELECT `group`.id, `group`.name FROM `group` INNER JOIN group_user ON `group`.id = group_user.group_id WHERE group_user.user_id = ?"
+        );
+        const info = stmt.all(id);
+        return info;
+    }
+
+    getGroupUsers(body) {
+        //Returns the user with the given id
+        const { id } = body;
+        const stmt = this.database.prepare(
+            "SELECT user.id, user.firstname, user.lastname, user.username FROM user INNER JOIN group_user ON user.id = group_user.user_id  WHERE group_user.group_id = ?"
+        );
+        const info = stmt.all(id);
+        return info;
+    }
+
+    sendGroupInvite(body) {
+        //Emails a user about joining a group
+        const { group_id, email } = body;
+
+        //First check if email in system:
+        const stmt = this.database.prepare(
+            "SELECT * from user WHERE email = ?"
+        );
+        const info = stmt.get(email);
+        if (info === undefined) {
+            return false;
+        } else if (info.length === 0) {
+            return res
+                .status(400)
+                .json({ error: "User with this email not found" });
+        }
+
+        //Then check email is not already in the given group
+        const stmt2 = this.database.prepare(
+            "SELECT * from group_user INNER JOIN user ON user.id = group_user.user_id WHERE user.email = ? AND group_user.group_id = ?"
+        );
+        const info2 = stmt2.get(email, group_id);
+        if (info2 === undefined) {
+            //This is what we want, so just continue on
+        } else if (info2.length !== 0) {
+            return res
+                .status(400)
+                .json({ error: "User is already a member of this group" });
+        }
+
+        console.log("Valid email, so try and send");
+
+        //If all this is met, send an email.
+
+        const groupPageUrl = `http://localhost:3000/Group?groupId=${group_id}&email=${email}`;
+
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: "se.healthtracker101@gmail.com",
+                pass: "btssdtghvfwpyiyo",
+            },
+        });
+
+        //Prepares our email
+        const mailOptions = {
+            from: "se.healthtracker101@gmail.com",
+            to: email,
+            subject: "Health Tracker: Join Group",
+            html: `<div>
+                    <p>You have been invited to join a group. Click</p>
+                    <a href="${groupPageUrl}">here</a>
+                    <p> to join. \nOtherwise, enter code: ${group_id}</p>
+                </div>`,
+        };
+
+        //Sends our email
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+                return false;
+            } else {
+                console.log("Email sent: " + info.response);
+                return true;
+            }
+        });
+
+        return true;
+    }
+
+    //Multi purpose function for adding users to groups based on either clicking an email link or typing in hash code:
+    acceptGroupInvite(body) {
+        //Emails a user about joining a group
+        const { group_id, email, user_id } = body;
+
+        //First check if email in system:
+        const stmt = this.database.prepare(
+            "SELECT * from user WHERE email = ?"
+        );
+        const info = stmt.get(email);
+
+        if (info === undefined) {
+            return { error: "Account with that email not found" };
+        }
+
+        //Then check if group in system:
+        const stmt3 = this.database.prepare(
+            "SELECT * from `group` WHERE id = ?"
+        );
+        const info3 = stmt3.get(group_id);
+
+        if (info3 === undefined) {
+            return { error: "Group not found" };
+        }
+
+        const userID = info.id;
+
+        //Check that user isnt already in group
+        const stmt4 = this.database.prepare(
+            "SELECT * from group_user WHERE user_id = ? AND group_id = ?"
+        );
+        const info4 = stmt4.get(userID, group_id);
+        if (info4 === undefined) {
+            //This is what we want, so just continue on
+        } else if (info4.length !== 0) {
+            return { error: "User is already a member of this group" };
+        }
+
+        console.log(userID);
+        console.log(user_id);
+
+        //Check the userID matches the current account logged in
+        if (userID !== user_id) {
+            console.log("HAH GOT YA");
+            return { error: "Not logged in as the right user to accept this" };
+        }
+
+        const stmt2 = this.database.prepare(
+            "INSERT INTO group_user (user_id, group_id) VALUES (?, ?)"
+        );
+
+        const result = stmt2.run(userID, group_id);
+
+        return true;
+    }
+
     /*********************************GOALS**********************************/
     createGoal(body) {
-        const { id, name, groupID, goalType, target, date, notes } = body;
+        const { user_id, name, group_id, goalType, target, start, end, notes } =
+            body;
+        let current = body.current;
         if (
-            id === "" ||
             name === "" ||
             goalType === "" ||
             target === "" ||
-            measurement === "" ||
-            date === ""
+            start === "" ||
+            end === ""
         ) {
             return false;
         }
-        if (!dateCheck(date)) return false;
+        if (!this.dateCheck(start, end)) return false;
+        //Update User Profile
+        if (goalType === "diet") {
+            const stmt1 = this.database.prepare(
+                "UPDATE user SET weight = ?, tweight = ? WHERE id = ?"
+            );
+            const result1 = stmt1.run(current, target, user_id);
+        } else {
+            current = 0;
+        }
+
         const stmt = this.database.prepare(
-            "INSERT INTO goals (user_id, name, groupID, goalType, target, date, notes) VALUES (?, ?, ?, ?, ?, ?)"
+            "INSERT INTO goal (user_id, name, group_id, goalType, current, target, start, end, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
         );
         const result = stmt.run(
-            id,
             user_id,
             name,
-            groupID,
+            group_id,
             goalType,
+            current,
             target,
-            date,
+            start,
+            end,
             notes
         );
         return result;
     }
 
-    dateCheck(date) {
-        try {
-            const date = new Date(date);
-            if (date < new Date()) return false;
-            return true;
-        } catch (error) {
+    updateGoal(id, distance) {
+        //user_id
+        console.log("updateGoal");
+        console.log(id, distance);
+
+        const stmt = this.database.prepare(
+            "SELECT * from goal WHERE user_id = ? AND goalType = 'exercise' AND status = 'ACTIVE'"
+        );
+        const info = stmt.all(id).forEach((goal) => {
+            const stmt1 = this.database.prepare(
+                "UPDATE goal SET current = current + ? WHERE user_id = ? AND id= ? AND goalType = 'exercise' AND status = 'ACTIVE'"
+            );
+            const result = stmt1.run(distance, id, goal.id);
+        });
+    }
+
+    dateCheck(start, end) {
+        const today = new Date().toISOString().slice(0, 10);
+        if (start < today || end < today) {
             return false;
         }
+        if (start > end) {
+            return false;
+        }
+        return true;
     }
 
     getActiveGoals(id) {
+        const today = new Date().toISOString().slice(0, 10);
         //Returns all active goals for a user
         const stmt = this.database.prepare(
-            "SELECT * FROM goals WHERE id = ? AND status NOT IN ('inactive')"
+            "SELECT * FROM goal WHERE user_id = ? AND status != 'COMPLETED' AND start <= ? ORDER BY CASE status WHEN 'EXPIRED' THEN 1 WHEN 'ACTIVE' THEN 2 END, end ASC"
         );
-        const info = stmt.all(id);
+        const info = stmt.all(id, today);
         return info;
     }
 
     checkGoals(id) {
+        this.finishGoal(id);
         const date = new Date().toISOString().slice(0, 10);
         //Returns all active goals for a user
         const stmt = this.database.prepare(
-            "UPDATE goals set status = inactive WHERE id = ? AND status IS ('active') AND date<" +
-                date
+            "UPDATE goal set status = 'EXPIRED' WHERE user_id = ? AND status IS ('ACTIVE') AND end<?"
         );
-        const info = stmt.all(id);
-        return info;
+        stmt.run(id, date);
+        return true;
     }
 
-    reActivateGoal(id, goalID) {
-        const now = new Date();
-        const futureDate = new Date();
-        futureDate.setDate(now.getDate() + 7);
+    reActivateGoal(goalID) {
+        //We can actually change this to repeat the same duration as set
+        const stmt = this.database.prepare("SELECT * FROM goal WHERE id = ?");
+        const info = stmt.all(goalID);
+        const data = info[0];
+        const oldStart = new Date(data.start);
+        const oldEnd = new Date(data.end);
+        const diffTime = Math.abs(oldEnd - oldStart);
+        const duration = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        console.log(duration);
+        const end = new Date();
+        end.setDate(end.getDate() + duration);
+
+        const start = new Date().toISOString().slice(0, 10);
+
         //Returns all active goals for a user
-        const stmt = this.database.prepare(
-            "UPDATE goals set status = active AND set date = ? WHERE id = ? AND goalID = ?"
+        const stmt1 = this.database.prepare(
+            "UPDATE goal SET status = 'ACTIVE', start = ?, end = ? WHERE id = ?"
         );
-        const info = stmt.all(
-            futureDate.toISOString().slice(0, 10),
-            id,
-            goalID
-        );
-        return info;
+        const info1 = stmt1.run(start, end.toISOString().slice(0, 10), goalID);
+        return info1;
+    }
+
+    expiredGoal(body) {
+        console.log(body);
+        if (body.reactivate) this.reActivateGoal(body.goalID);
+        else {
+            const stmt = this.database.prepare(
+                "UPDATE goal SET status = 'COMPLETED' WHERE id = ?"
+            );
+            const info = stmt.run(body.goalID);
+            return info;
+        }
     }
 
     getGoalHistory(id) {
         //Returns all inactive goals for a user
         const stmt = this.database.prepare(
-            "SELECT * FROM goals WHERE id = ? AND status IN ('inactive')"
+            "SELECT * FROM goals WHERE id = ? AND status IN ('COMPLETED')"
         );
         const info = stmt.all(id);
+        return info;
+    }
+
+    finishGoal(id) {
+        const stmt = this.database.prepare(
+            "UPDATE goal SET status = 'COMPLETED' WHERE user_id = ? AND target <= current AND status = 'ACTIVE'"
+        );
+        const info = stmt.run(id);
         return info;
     }
 

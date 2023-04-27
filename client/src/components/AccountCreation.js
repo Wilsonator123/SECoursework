@@ -44,6 +44,7 @@ function AccountCreation({ setToken }) {
                 //May need to be updated to another page
                 if (data) {
                     setToken(data.id);
+                    
                 } else {
                     alert("Invalid account creation details.");
                 }
