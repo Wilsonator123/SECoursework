@@ -691,8 +691,12 @@ class Interface {
         console.log(userID);
         console.log(user_id);
 
+        console.log(typeof userID);
+        console.log(typeof user_id);
+        console.log(userID == user_id);
+
         //Check the userID matches the current account logged in
-        if (userID !== user_id) {
+        if (userID != user_id) {
             console.log("HAH GOT YA");
             return { error: "Not logged in as the right user to accept this" };
         }

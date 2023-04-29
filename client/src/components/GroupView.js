@@ -35,7 +35,7 @@ function GroupView(props) {
             .then((data) => {
                 if (data) {
                     setAddUserError("Email sent to user!")
-                    props.onClose();
+                    //props.onClose();
                 } else {
                     setAddUserError(data.error);
                 }
@@ -111,11 +111,6 @@ function GroupView(props) {
                             </div>
                         ))}
 
-                        <br/>
-                        <br/>
-                        <button>Add Member</button>
-                        <button>Create Goal</button>
-                        <button>Leave Group</button>
 
 
                     </div>
