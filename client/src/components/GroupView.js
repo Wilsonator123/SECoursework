@@ -81,6 +81,32 @@ function GroupView(props) {
                     alert("ERROR");
                 });
         };
+
+
+        const leaveGroup = () => {
+            fetch("http://localhost:3001/api/leaveGroup", {
+                method: "POST",
+                body: JSON.stringify({group_id: props.group_id, user_id: tokenString}),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+                .then((response) => response.json())
+    
+                .then((data) => {
+                    if (data) {
+                        alert("Left Group Successfully.");
+                        window.location.reload();
+                    } else {
+                        alert("Cannot Leave Group.");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                    alert("ERROR");
+                });
+        }; 
+        
     
 
 
@@ -177,9 +203,10 @@ function GroupView(props) {
                         <h3>Create Goal</h3>
                     </div>)}
 
-                    {!owner && (<div class="groupBox1">
+                    <div class="groupBox1">
                         <h3>Leave Group</h3>
-                    </div>)}
+                        <button onClick={leaveGroup}>Leave</button>
+                    </div>
 
 
                 </div>

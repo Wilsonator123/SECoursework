@@ -758,6 +758,62 @@ class Interface {
 
 
 
+    //Remove a non-owner from a group, or an owner if the group only has one member
+    leaveGroup(body){
+        const { group_id, user_id } = body;
+        console.log(body);
+
+        //If user is owner and group size is 1, allow them to leave. Otherwise, dont.
+        //If user is NOT the owner, allow them to leave
+        const stmt = this.database.prepare(
+            "SELECT * from `group` WHERE owner_id = ? AND id = ?"
+        );
+        const info = stmt.get(user_id, group_id);
+        console.log(info);
+
+        if (info === undefined) {
+            const stmt2 = this.database.prepare(
+                "DELETE from group_user WHERE user_id = ? AND group_id = ?"
+            );
+            stmt2.run(user_id, group_id);
+
+
+            return true;
+        }
+
+        else{
+            
+            const stmt3 = this.database.prepare(
+                "SELECT COUNT(*) FROM group_user WHERE group_id = ?"
+            )
+            const info3 = stmt3.get(group_id);
+            console.log(info3);     
+            //If only one member left in group remove them and delete group
+
+            if(info3['COUNT(*)'] <= 1){
+                console.log("Removing owner");
+                const stmt4 = this.database.prepare(
+                    "DELETE from group_user WHERE user_id = ? AND group_id = ?"
+                );
+                stmt4.run(user_id, group_id);
+
+                
+                //Deletes the group
+                const stmt5 = this.database.prepare(
+                    "DELETE from `group` WHERE id = ?"
+                );
+                stmt5.run(group_id);
+                return true;
+            }
+            else{
+                console.log("Will not remove owner");
+                return false;
+            }
+        }
+    }
+
+
+
 
     /*********************************GOALS**********************************/
     createGoal(body) {

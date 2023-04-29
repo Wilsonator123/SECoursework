@@ -222,6 +222,11 @@ app.post("/api/checkOwner", (req, res) => {
 });
 
 
+app.post("/api/leaveGroup", (req, res) => {
+    res.send(interface.leaveGroup(req.body));
+});
+
+
 
 
 
