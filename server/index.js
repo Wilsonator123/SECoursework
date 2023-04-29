@@ -217,6 +217,10 @@ app.post("/api/addUserViaCode", (req, res) => {
     res.send(interface.addUserViaCode(req.body));
 });
 
+app.post("/api/checkOwner", (req, res) => {
+    res.send(interface.checkOwner(req.body));
+});
+
 
 
 

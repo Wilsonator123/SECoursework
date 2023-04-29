@@ -731,6 +731,31 @@ class Interface {
     
         }
 
+    
+    
+    //Checks if user is owner of group or not - if so, they see the group modification details. If not, they get the member view
+    checkOwner(body){
+        const { group_id, user_id } = body;
+        console.log(body);
+
+        //Get users email
+        const stmt = this.database.prepare(
+            "SELECT * from `group` WHERE owner_id = ? AND id = ?"
+        );
+        const info = stmt.get(user_id, group_id);
+        console.log(info);
+
+        if (info === undefined) {
+            console.log("NOT OWNER");
+            return false;
+        }
+
+        else{
+            console.log("IS OWNER");
+            return true;
+        }
+    }
+
 
 
 
