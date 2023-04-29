@@ -98,6 +98,13 @@ app.post("/api/createUser", upload.single("file"), (req, res) => {
     }
 });
 
+
+/*********************ACCOUNT PAGE *****************************/
+app.post("/api/recordWeight", (req, res) => {
+    console.log(req.body);
+    res.send(interface.recordWeight(req.body));
+});
+
 /*********************RECORD EXERCISE PAGE**********************/
 
 app.get("/api/getActivities", (req, res) => {
@@ -220,7 +227,6 @@ app.post("/api/addUserViaCode", (req, res) => {
 app.post("/api/checkOwner", (req, res) => {
     res.send(interface.checkOwner(req.body));
 });
-
 
 app.post("/api/leaveGroup", (req, res) => {
     res.send(interface.leaveGroup(req.body));

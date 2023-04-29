@@ -24,11 +24,22 @@ class Interface {
     /************************************************************************/
 
     /*********************************USER**********************************/
+    
+    
     getUser(id) {
         //Returns the user with the given id
         const stmt = this.database.prepare("SELECT * FROM user WHERE id = ?");
         const info = stmt.all(id);
         return info;
+    }
+
+    recordWeight(body){
+        const {id, weight} = body;
+        const stmt = this.database.prepare(
+            "UPDATE user SET weight = ? WHERE id = ?"
+        );
+        stmt.run(weight, id);
+        return true;
     }
 
     checkEmailFormat(email) {
