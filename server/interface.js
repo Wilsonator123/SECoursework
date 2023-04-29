@@ -640,6 +640,13 @@ class Interface {
         return true;
     }
 
+
+
+
+
+
+
+
     //Multi purpose function for adding users to groups based on either clicking an email link or typing in hash code:
     acceptGroupInvite(body) {
         //Emails a user about joining a group
@@ -650,18 +657,21 @@ class Interface {
             "SELECT * from user WHERE email = ?"
         );
         const info = stmt.get(email);
-
+        
+        
         if (info === undefined) {
             return { error: "Account with that email not found" };
         }
 
         //Then check if group in system:
+        
         const stmt3 = this.database.prepare(
             "SELECT * from `group` WHERE id = ?"
         );
         const info3 = stmt3.get(group_id);
-
+        console.log(info3);
         if (info3 === undefined) {
+            console.log("Group not found error");
             return { error: "Group not found" };
         }
 
@@ -695,6 +705,30 @@ class Interface {
 
         return true;
     }
+
+
+    //Additional functionality needed when adding user by a code - need to get their email first
+    addUserViaCode(body){
+            const { user_id, group_id } = body;
+    
+            //Get users email
+            const stmt5 = this.database.prepare(
+                "SELECT email from user WHERE id = ?"
+            );
+            const info5 = stmt5.get(user_id);
+            console.log(info5);
+            if (info5 === undefined) {
+                return { error: "Account with that email not found" };
+            }
+
+            const body2 = ({ group_id: group_id, email: info5.email, user_id: user_id })
+            console.log(body2);
+            return this.acceptGroupInvite(body2);
+    
+        }
+
+
+
 
     /*********************************GOALS**********************************/
     createGoal(body) {
