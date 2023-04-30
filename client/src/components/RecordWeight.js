@@ -41,7 +41,7 @@ export default function RecordWeight(props) {
     });
 
     const [recordIntervalForm, setRecordIntervalForm] = useState({
-        waitInterval: ""
+        waitInterval: waitInterval
     })
 
 
