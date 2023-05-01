@@ -19,7 +19,7 @@ class Interface {
             fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8")
         );
 
-        //this.database.exec("DROP TABLE group_user");
+        //this.database.exec("DROP TABLE `group`");
     }
     /************************************************************************/
 

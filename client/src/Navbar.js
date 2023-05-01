@@ -14,6 +14,14 @@ export default function Navbar() {
         });
     }, []);
 
+    //Action to logout a user
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        window.location.reload();
+    };
+
+    
+
     return (
         <>
             <header>
@@ -38,6 +46,9 @@ export default function Navbar() {
                             </li>
                             <li>
                                 <Link to="/Account">Account</Link>
+                            </li>
+                            <li>
+                                <Link onClick={handleLogout}>Logout</Link>
                             </li>
                         </ul>
                     </nav>
