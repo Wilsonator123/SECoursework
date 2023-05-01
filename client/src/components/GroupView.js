@@ -8,7 +8,7 @@ function GroupView(props) {
     //Get the user's id stored in session storage
     const tokenString = localStorage.getItem("token");
 
-
+    const [owner, setOwner] = useState(false);
     const [error, setError] = useState("");
     const [users, setUsers] = useState([]);
     const [addUserError, setAddUserError] = useState("");
@@ -35,7 +35,7 @@ function GroupView(props) {
             .then((data) => {
                 if (data) {
                     setAddUserError("Email sent to user!")
-                    props.onClose();
+                    //props.onClose();
                 } else {
                     setAddUserError(data.error);
                 }
@@ -57,12 +57,65 @@ function GroupView(props) {
         };
 
 
+    //Checks if the user is owner of the group
+        const checkOwner = () => {
+
+            fetch("http://localhost:3001/api/checkOwner", {
+                method: "POST",
+                body: JSON.stringify({group_id: props.group_id, user_id: tokenString}),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+                .then((response) => response.json())
+    
+                .then((data) => {
+                    if (data) {
+                        setOwner(true);
+                    } else {
+                        setOwner(false);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                    alert("ERROR");
+                });
+        };
+
+
+        const leaveGroup = () => {
+            fetch("http://localhost:3001/api/leaveGroup", {
+                method: "POST",
+                body: JSON.stringify({group_id: props.group_id, user_id: tokenString}),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+                .then((response) => response.json())
+    
+                .then((data) => {
+                    if (data) {
+                        alert("Left Group Successfully.");
+                        window.location.reload();
+                    } else {
+                        alert("Cannot Leave Group.");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                    alert("ERROR");
+                });
+        }; 
+        
+    
 
 
 
 
     useEffect(() => {
         getUsers();
+
+        checkOwner();
     }, []);
 
 
@@ -111,11 +164,6 @@ function GroupView(props) {
                             </div>
                         ))}
 
-                        <br/>
-                        <br/>
-                        <button>Add Member</button>
-                        <button>Create Goal</button>
-                        <button>Leave Group</button>
 
 
                     </div>
@@ -124,7 +172,10 @@ function GroupView(props) {
                         <h3>Goals</h3>
                     </div>
 
-                    <div class="groupBox1">
+
+                    
+
+                    {owner && ( <div class="groupBox1">
                         <h3>Add User</h3>
                         <form class="group-form" onSubmit={handleAddUserSubmit}>
                         <label htmlFor="email">User Email:</label>
@@ -144,14 +195,17 @@ function GroupView(props) {
                             Add User
                         </button>
                     </form>
-                    </div>
+                    </div>)}
 
-                    <div class="groupBox1">
+
+
+                    {owner && (<div class="groupBox1">
                         <h3>Create Goal</h3>
-                    </div>
+                    </div>)}
 
                     <div class="groupBox1">
                         <h3>Leave Group</h3>
+                        <button onClick={leaveGroup}>Leave</button>
                     </div>
 
 

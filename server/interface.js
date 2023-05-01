@@ -19,16 +19,27 @@ class Interface {
             fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8")
         );
 
-        //this.database.exec("DROP TABLE `group`");
+        //this.database.exec("DROP TABLE user");
     }
     /************************************************************************/
 
     /*********************************USER**********************************/
+    
+    
     getUser(id) {
         //Returns the user with the given id
         const stmt = this.database.prepare("SELECT * FROM user WHERE id = ?");
         const info = stmt.all(id);
         return info;
+    }
+
+    recordWeight(body){
+        const {id, weight} = body;
+        const stmt = this.database.prepare(
+            "UPDATE user SET weight = ? WHERE id = ?"
+        );
+        stmt.run(weight, id);
+        return true;
     }
 
     checkEmailFormat(email) {
@@ -99,7 +110,7 @@ class Interface {
             firstname,
             lastname,
             gender,
-            password,
+            crypto.createHash('md5').update(password).digest('hex'),
             email,
             weight,
             height,
@@ -129,7 +140,7 @@ class Interface {
             const stmt = this.database.prepare(
                 "SELECT id FROM user WHERE email = ? AND password = ?"
             );
-            const info = stmt.all(login, password);
+            const info = stmt.all(login, crypto.createHash('md5').update(password).digest('hex'));
             if (info.length === 0)
                 return false; //If email and password do not match
             else return info[0].id; //If email and password match
@@ -140,7 +151,7 @@ class Interface {
                 "SELECT * FROM user WHERE username = ? AND password = ?"
             );
 
-            const info = stmt.all(login, password);
+            const info = stmt.all(login, crypto.createHash('md5').update(password).digest('hex'));
             if (info.length === 0)
                 return false; //If username and password do not match
             else return info[0].id; //If username and password match
@@ -640,6 +651,13 @@ class Interface {
         return true;
     }
 
+
+
+
+
+
+
+
     //Multi purpose function for adding users to groups based on either clicking an email link or typing in hash code:
     acceptGroupInvite(body) {
         //Emails a user about joining a group
@@ -650,18 +668,21 @@ class Interface {
             "SELECT * from user WHERE email = ?"
         );
         const info = stmt.get(email);
-
+        
+        
         if (info === undefined) {
             return { error: "Account with that email not found" };
         }
 
         //Then check if group in system:
+        
         const stmt3 = this.database.prepare(
             "SELECT * from `group` WHERE id = ?"
         );
         const info3 = stmt3.get(group_id);
-
+        console.log(info3);
         if (info3 === undefined) {
+            console.log("Group not found error");
             return { error: "Group not found" };
         }
 
@@ -681,8 +702,12 @@ class Interface {
         console.log(userID);
         console.log(user_id);
 
+        console.log(typeof userID);
+        console.log(typeof user_id);
+        console.log(userID == user_id);
+
         //Check the userID matches the current account logged in
-        if (userID !== user_id) {
+        if (userID != user_id) {
             console.log("HAH GOT YA");
             return { error: "Not logged in as the right user to accept this" };
         }
@@ -695,6 +720,111 @@ class Interface {
 
         return true;
     }
+
+
+    //Additional functionality needed when adding user by a code - need to get their email first
+    addUserViaCode(body){
+            const { user_id, group_id } = body;
+    
+            //Get users email
+            const stmt5 = this.database.prepare(
+                "SELECT email from user WHERE id = ?"
+            );
+            const info5 = stmt5.get(user_id);
+            console.log(info5);
+            if (info5 === undefined) {
+                return { error: "Account with that email not found" };
+            }
+
+            const body2 = ({ group_id: group_id, email: info5.email, user_id: user_id })
+            console.log(body2);
+            return this.acceptGroupInvite(body2);
+    
+        }
+
+    
+    
+    //Checks if user is owner of group or not - if so, they see the group modification details. If not, they get the member view
+    checkOwner(body){
+        const { group_id, user_id } = body;
+        console.log(body);
+
+        //Get users email
+        const stmt = this.database.prepare(
+            "SELECT * from `group` WHERE owner_id = ? AND id = ?"
+        );
+        const info = stmt.get(user_id, group_id);
+        console.log(info);
+
+        if (info === undefined) {
+            console.log("NOT OWNER");
+            return false;
+        }
+
+        else{
+            console.log("IS OWNER");
+            return true;
+        }
+    }
+
+
+
+    //Remove a non-owner from a group, or an owner if the group only has one member
+    leaveGroup(body){
+        const { group_id, user_id } = body;
+        console.log(body);
+
+        //If user is owner and group size is 1, allow them to leave. Otherwise, dont.
+        //If user is NOT the owner, allow them to leave
+        const stmt = this.database.prepare(
+            "SELECT * from `group` WHERE owner_id = ? AND id = ?"
+        );
+        const info = stmt.get(user_id, group_id);
+        console.log(info);
+
+        if (info === undefined) {
+            const stmt2 = this.database.prepare(
+                "DELETE from group_user WHERE user_id = ? AND group_id = ?"
+            );
+            stmt2.run(user_id, group_id);
+
+
+            return true;
+        }
+
+        else{
+            
+            const stmt3 = this.database.prepare(
+                "SELECT COUNT(*) FROM group_user WHERE group_id = ?"
+            )
+            const info3 = stmt3.get(group_id);
+            console.log(info3);     
+            //If only one member left in group remove them and delete group
+
+            if(info3['COUNT(*)'] <= 1){
+                console.log("Removing owner");
+                const stmt4 = this.database.prepare(
+                    "DELETE from group_user WHERE user_id = ? AND group_id = ?"
+                );
+                stmt4.run(user_id, group_id);
+
+                
+                //Deletes the group
+                const stmt5 = this.database.prepare(
+                    "DELETE from `group` WHERE id = ?"
+                );
+                stmt5.run(group_id);
+                return true;
+            }
+            else{
+                console.log("Will not remove owner");
+                return false;
+            }
+        }
+    }
+
+
+
 
     /*********************************GOALS**********************************/
     createGoal(body) {
