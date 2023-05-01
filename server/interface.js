@@ -19,7 +19,7 @@ class Interface {
             fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8")
         );
 
-        //this.database.exec("DROP TABLE `group`");
+        //this.database.exec("DROP TABLE user");
     }
     /************************************************************************/
 
@@ -110,7 +110,7 @@ class Interface {
             firstname,
             lastname,
             gender,
-            password,
+            crypto.createHash('md5').update(password).digest('hex'),
             email,
             weight,
             height,
@@ -140,7 +140,7 @@ class Interface {
             const stmt = this.database.prepare(
                 "SELECT id FROM user WHERE email = ? AND password = ?"
             );
-            const info = stmt.all(login, password);
+            const info = stmt.all(login, crypto.createHash('md5').update(password).digest('hex'));
             if (info.length === 0)
                 return false; //If email and password do not match
             else return info[0].id; //If email and password match
@@ -151,7 +151,7 @@ class Interface {
                 "SELECT * FROM user WHERE username = ? AND password = ?"
             );
 
-            const info = stmt.all(login, password);
+            const info = stmt.all(login, crypto.createHash('md5').update(password).digest('hex'));
             if (info.length === 0)
                 return false; //If username and password do not match
             else return info[0].id; //If username and password match
