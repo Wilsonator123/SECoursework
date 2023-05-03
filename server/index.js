@@ -251,6 +251,25 @@ app.post("/api/checkGoals", (req, res) => {
     res.send(interface.checkGoals(req.body.id));
 });
 
+
+
+//Group goals functions
+app.post("/api/createGroupGoal", (req, res) => {
+    console.log(req.body);
+    res.send(interface.createGroupGoal(req.body));
+});
+
+app.post("/api/checkGroupGoals", (req, res) => {
+    console.log(req.body);
+    res.send(interface.checkGroupGoals(req.body.id));
+});
+
+app.post("/api/getActiveGroupGoals", (req, res) => {
+    res.send(interface.getGroupGoals(req.body));
+});
+
+
+
 app.post("/api/reActivateGoal", (req, res) => {
     console.log(req.body);
     res.send(interface.expiredGoal(req.body));

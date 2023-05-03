@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactDom from "react-dom";
 import "../css/group.css";
+import GroupGoals from "./GroupGoals";
 
 function GroupView(props) {
     
@@ -114,7 +115,6 @@ function GroupView(props) {
 
     useEffect(() => {
         getUsers();
-
         checkOwner();
     }, []);
 
@@ -170,6 +170,7 @@ function GroupView(props) {
                     <br />
                     <div class="groupBox1">
                         <h3>Goals</h3>
+                        <GroupGoals owner={owner} group_id={props.group_id}/>
                     </div>
 
 

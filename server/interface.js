@@ -968,14 +968,175 @@ class Interface {
         return info;
     }
 
-    getGroupGoals(id) {
+
+
+
+
+
+
+
+
+    getGroupGoals(body) {
         //Returns all group goals for a user
+        const { id, group_id } =
+        body;
         const stmt = this.database.prepare(
-            "SELECT * FROM goals WHERE groupID = ? AND status NOT IN ('inactive')"
+            "SELECT * FROM goal WHERE group_id = ? AND user_id = ? AND status NOT IN ('inactive')"
         );
-        const info = stmt.all(id);
+        const info = stmt.all(group_id, id);
         return info;
     }
+
+
+
+    createGroupGoal(body) {
+        const { user_id, name, group_id, goalType, target, start, end, notes } =
+            body;
+        console.log(body);
+        let current = body.current;
+        if (
+            name === "" ||
+            goalType === "" ||
+            target === "" ||
+            start === "" ||
+            end === ""
+        ) {
+            return false;
+        }
+        if (!this.dateCheck(start, end)) return false;
+        //Update User Profile
+        current = 0;
+
+        
+        //GET A LIST OF ALL USERS IN GROUP
+        const stmt2 = this.database.prepare(
+            "SELECT * FROM user JOIN group_user on user.id = group_user.user_id WHERE group_user.group_id = ?"
+        );
+        const info = stmt2.all(group_id);
+
+        //Get the owners ID
+        const stmt3 = this.database.prepare(
+            "SELECT owner_id from `group` WHERE id = ?"
+        );
+        const ownerID = stmt3.all(group_id);
+
+
+
+        
+        //Prepares email stuff
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: "se.healthtracker101@gmail.com",
+                pass: "btssdtghvfwpyiyo",
+            },
+        });
+
+
+        //Add admin goal first and get its id
+        const stmt = this.database.prepare(
+            "INSERT INTO goal (user_id, name, group_id, goalType, current, target, start, end, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        );
+
+        const result = stmt.run(
+            user_id,
+            name,
+            group_id,
+            goalType,
+            current,
+            target,
+            start,
+            end,
+            notes
+        );
+        
+        const stmt5 = this.database.prepare(
+            "SELECT id FROM goal WHERE user_id = ? AND name = ? AND group_id = ? and goalType = ? and current = ? and target = ? and start = ? and end = ? and notes = ?"
+        );
+
+        const result2= stmt5.all(
+            user_id,
+            name,
+            group_id,
+            goalType,
+            current,
+            target,
+            start,
+            end,
+            notes
+        );
+        console.log(result2);
+
+        const ownerGoalID = result2[0].id;
+
+
+        const groupGoalPageUrl = `http://localhost:3000/Goal?id=${ownerGoalID}`;
+        
+
+        //Loop through the users - group owner gets goal automatically added, everyone else gets a link.
+        info.forEach(user => {
+            console.log("USER ID:" + user.user_id);
+            console.log(ownerID);
+            if (user.user_id == ownerID[0].owner_id){
+                //IF owner, pass here as already done
+                console.log("Doesn't send to owner")
+
+            }
+            else {
+                
+                
+                const mailOptions = {
+                    from: "se.healthtracker101@gmail.com",
+                    to: user.email,
+                    subject: "Health Tracker: Add Group Goal",
+                    html: `<div>
+                            <p>You have been sent a goal from one of your groups. Click</p>
+                            <a href="${groupGoalPageUrl}">here</a>
+                            <p> to add it. \nOtherwise, enter code: ${ownerGoalID}</p>
+                        </div>`,
+                };
+        
+                //Sends our email
+                transporter.sendMail(mailOptions, function (error, info) {
+                    if (error) {
+                        console.log(error);
+                        return false;
+                    } else {
+                        console.log("Email sent: " + info.response);
+                        return true;
+                    }
+                });
+            }
+
+
+    
+            
+        });
+
+        return true;
+
+
+        
+    }
+
+
+    checkGroupGoals(id) {
+        //NEED TO UPDATE FINISH GOALS TO SEND OUT EMAILS TO ALL MEMBERS IF GROUP ID IS NOT NULL
+        this.finishGoal(id);
+        const date = new Date().toISOString().slice(0, 10);
+        //Returns all active goals for a user
+        const stmt = this.database.prepare(
+            "UPDATE goal set status = 'EXPIRED' WHERE user_id = ? AND status IS ('ACTIVE') AND end<?"
+        );
+        stmt.run(id, date);
+        return true;
+    }
+
+
+
+
+
+
 
     estimateGoal(id) {
         //We need to use BMI to create a goal
