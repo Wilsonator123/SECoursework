@@ -98,6 +98,13 @@ app.post("/api/createUser", upload.single("file"), (req, res) => {
     }
 });
 
+
+/*********************ACCOUNT PAGE *****************************/
+app.post("/api/recordWeight", (req, res) => {
+    console.log(req.body);
+    res.send(interface.recordWeight(req.body));
+});
+
 /*********************RECORD EXERCISE PAGE**********************/
 
 app.get("/api/getActivities", (req, res) => {
@@ -211,6 +218,25 @@ app.post("/api/addUserViaEmail", (req, res) => {
     res.send(interface.acceptGroupInvite(req.body));
 });
 
+
+//Adding a user to a group when they add the group_id code
+app.post("/api/addUserViaCode", (req, res) => {
+    res.send(interface.addUserViaCode(req.body));
+});
+
+app.post("/api/checkOwner", (req, res) => {
+    res.send(interface.checkOwner(req.body));
+});
+
+app.post("/api/leaveGroup", (req, res) => {
+    res.send(interface.leaveGroup(req.body));
+});
+
+
+
+
+
+
 app.post("/api/expiredGoals", (req, res) => {
     res.send(interface.getGoalHistory(req.body));
 });
@@ -231,6 +257,6 @@ app.post("/api/reActivateGoal", (req, res) => {
 });
 
 const sslServer = https.createServer({key: serverKey, cert: serverCert}, app);
-sslServer.listen(3001, () => {
+app.listen(3001, () => {
     console.log("Server running on port 3001");
 });

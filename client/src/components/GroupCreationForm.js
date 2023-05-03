@@ -35,7 +35,8 @@ function GroupCreationForm(props) {
                 if (data) {
                     alert("Group Created Successfully!");
                     setError("")
-                    props.onClose();
+
+                    window.location.reload();
                 } else {
                     setError("Your group name is already taken. Please enter another.")
                 }
