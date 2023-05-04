@@ -291,6 +291,7 @@ class Interface {
     }
     /************************************************************************/
 
+
     /********************************MEALS********************************/
     getUserMeals(body) {
         let first =
@@ -960,7 +961,100 @@ class Interface {
         return info;
     }
 
+
+
+    // for finishing a goal - does an extra check on group goals to see if emails need to be checked
     finishGoal(id) {
+
+        //Get all goals that are about to be completed.
+        const stmt2 = this.database.prepare(
+            "SELECT * FROM goal WHERE user_id = ? AND target <= current AND status = 'ACTIVE'"
+        );
+        const result2 = stmt2.all(id);
+
+        result2.forEach(goal => {
+
+            //If part of a group, send email to all users in group
+            if (goal.group_id !== null){
+
+                //Get details about group
+                const stmt3 = this.database.prepare(
+                    "SELECT * FROM `group` WHERE id = ?"
+                )
+                const result3 = stmt3.all(goal.group_id);
+
+
+                const stmt2 = this.database.prepare(
+                    "SELECT * FROM user JOIN group_user on user.id = group_user.user_id WHERE group_user.group_id = ?"
+                );
+                const info = stmt2.all(goal.group_id);
+
+                info.forEach(user => {
+
+
+                    const transporter = nodemailer.createTransport({
+                        service: "gmail",
+                        auth: {
+                            user: "se.healthtracker101@gmail.com",
+                            pass: "btssdtghvfwpyiyo",
+                        }
+                    });
+
+                    let mailOptions;
+                    //If it is the user who completed the goal, tell them that
+                    if (user.user_id === goal.user_id){
+                        mailOptions = {
+                            from: "se.healthtracker101@gmail.com",
+                            to: user.email,
+                            subject: "Health Tracker: You completed a Group Goal",
+                            html: `<div>
+                                    <p>You have completed a goal for ${result3[0].name}</p>
+                                    <p>Details:</p>
+                                    <p>Goal Name: ${goal.name}</p>
+                                    <p>Goal Type: ${goal.goalType}</p>
+                                    <p>Target: ${goal.target}</p>
+                                </div>`,
+                        };
+                    }
+
+
+                    //Otherwise, notify that another user has completed the goal.
+                    else {mailOptions = {
+                        from: "se.healthtracker101@gmail.com",
+                        to: user.email,
+                        subject: "Health Tracker: A Group Member completed a Group Goal",
+                        html: `<div>
+                                <p>${user.username} has completed a goal for ${result3[0].name}</p>
+                                <p>Details:</p>
+                                <p>Goal Name: ${goal.name}</p>
+                                <p>Goal Type: ${goal.goalType}</p>
+                                <p>Target: ${goal.target}</p>
+                            </div>`,
+                    };
+                    }
+            
+                    //Sends our email
+                    transporter.sendMail(mailOptions, function (error, info) {
+                        if (error) {
+                            console.log(error);
+                            return false;
+                        } else {
+                            console.log("Email sent: " + info.response);
+                            return true;
+                        }
+
+                });
+
+                });
+            
+
+            }
+            
+        });
+
+
+
+        //Set all to completed after
         const stmt = this.database.prepare(
             "UPDATE goal SET status = 'COMPLETED' WHERE user_id = ? AND target <= current AND status = 'ACTIVE'"
         );
@@ -981,7 +1075,7 @@ class Interface {
         const { id, group_id } =
         body;
         const stmt = this.database.prepare(
-            "SELECT * FROM goal WHERE group_id = ? AND user_id = ? AND status NOT IN ('inactive')"
+            "SELECT * FROM goal WHERE group_id = ? AND user_id = ? AND status = 'ACTIVE'"
         );
         const info = stmt.all(group_id, id);
         return info;
@@ -1162,7 +1256,7 @@ class Interface {
             return { error: "You are not a member of this group." }
         }
 
-        
+
 
         //Disallow goal if out of date
         if (result2[0].status !== 'ACTIVE'){
