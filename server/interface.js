@@ -1120,6 +1120,111 @@ class Interface {
     }
 
 
+
+
+    //Can be used for both types of group goal adding
+    acceptGoalInvite(body){
+        const { goal_id, user_id } =
+            body;
+        
+        console.log("Testing accept goal invite");
+        console.log(body);
+
+
+        //Get goal which will be copied into the user
+        const stmt5 = this.database.prepare(
+            "SELECT * FROM goal WHERE id = ?"
+        );
+
+        const result2= stmt5.all(
+            goal_id
+        );
+
+
+        console.log("RESULT2");
+        console.log(result2);
+
+        //Return an error if no goal found with the code.
+        if (result2.length === 0){
+            return { error: "No goal found with this code." }
+        }
+
+
+        //Check if user is part of group. If not, disallow them from adding the goal
+        const stmt6 = this.database.prepare(
+            "SELECT * FROM group_user WHERE user_id = ? AND group_id = ?"
+        );
+        const result6= stmt6.all(
+            user_id, result2[0].group_id
+        );
+
+        if (result6.length === 0){
+            return { error: "You are not a member of this group." }
+        }
+
+        
+
+        //Disallow goal if out of date
+        if (result2[0].status !== 'ACTIVE'){
+            return { error: "This group goal is no longer active." }
+        }
+        
+
+
+        //Check the user doesn't already have the goal. If so, return false with a message
+        const stmt3 = this.database.prepare(
+            "SELECT id FROM goal WHERE user_id = ? AND name = ? AND group_id = ? and goalType = ? and current = ? and target = ? and start = ? and end = ? and notes = ?"
+        );
+
+        const result3= stmt3.all(
+            user_id,
+            result2[0].name,
+            result2[0].group_id,
+            result2[0].goalType,
+            result2[0].current,
+            result2[0].target,
+            result2[0].start,
+            result2[0].end,
+            result2[0].notes
+        );
+        
+
+        console.log("RESULT3");
+        console.log(result3);
+
+        if(result3.length !== 0){
+            return { error: "User already has this group goal on their account." }
+        }
+
+
+
+       
+
+
+
+        
+        //Add this goal to the user
+        const stmt = this.database.prepare(
+            "INSERT INTO goal (user_id, name, group_id, goalType, current, target, start, end, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        );
+
+        const result = stmt.run(
+            user_id,
+            result2[0].name,
+            result2[0].group_id,
+            result2[0].goalType,
+            result2[0].current,
+            result2[0].target,
+            result2[0].start,
+            result2[0].end,
+            result2[0].notes
+        );
+
+        return true;
+    }
+
+
+    
     checkGroupGoals(id) {
         //NEED TO UPDATE FINISH GOALS TO SEND OUT EMAILS TO ALL MEMBERS IF GROUP ID IS NOT NULL
         this.finishGoal(id);

@@ -252,6 +252,14 @@ app.post("/api/checkGoals", (req, res) => {
 });
 
 
+//Adding a group goal when they click the link on an email
+app.post("/api/addGoalViaEmail", (req, res) => {
+    console.log(req.body);
+    res.send(interface.acceptGoalInvite(req.body));
+});
+
+
+
 
 //Group goals functions
 app.post("/api/createGroupGoal", (req, res) => {
