@@ -114,8 +114,12 @@ class Interface {
             );
             const info = stmt.all(username);
             const user = info[0].id;
-            this.estimateGoal(user);
-            return user;
+            const alert = this.estimateGoal(user);
+            const body = {
+                user: user,
+                alert: alert,
+            };
+            return body;
         } else return false;
     }
 
@@ -275,7 +279,7 @@ class Interface {
         const info2 = stmt2.all(activity);
         const type = info2[0].type;
         console.log("TYPE: " + type);
-        if (result.changes !== 0 && type === 1) this.updateGoal(id, distance);
+        if (result.changes !== 0 && type === 1) this.updateEGoal(id, distance);
         return result;
     }
     /************************************************************************/
@@ -738,7 +742,7 @@ class Interface {
         return result;
     }
 
-    updateGoal(id, distance) {
+    updateEGoal(id, distance) {
         //user_id
         console.log("updateGoal");
         console.log(id, distance);
@@ -752,6 +756,16 @@ class Interface {
             );
             const result = stmt1.run(distance, id, goal.id);
         });
+    }
+
+    updateWGoal(id) {
+        const user = this.database.prepare("SELECT * from user WHERE id = ?");
+        const weight = user[0].weight;
+
+        const stmt = this.database.prepare(
+            "UPDATE goal SET current = ? WHERE user_id = ? AND goalType = 'diet' AND status = 'ACTIVE'"
+        );
+        const result = stmt.run(weight, id);
     }
 
     dateCheck(start, end) {
@@ -769,7 +783,7 @@ class Interface {
         const today = new Date().toISOString().slice(0, 10);
         //Returns all active goals for a user
         const stmt = this.database.prepare(
-            "SELECT * FROM goal WHERE user_id = ? AND status != 'COMPLETED' AND start <= ? ORDER BY CASE status WHEN 'EXPIRED' THEN 1 WHEN 'ACTIVE' THEN 2 END, end ASC"
+            "SELECT * FROM goal WHERE user_id = ? AND status != 'COMPLETED' AND start <= ? ORDER BY CASE status WHEN 'COMPLETE' THEN 1 WHEN 'EXPIRED' THEN 2 WHEN 'ACTIVE' THEN 3 END, end ASC"
         );
         const info = stmt.all(id, today);
         return info;
@@ -832,7 +846,7 @@ class Interface {
 
     finishGoal(id) {
         const stmt = this.database.prepare(
-            "UPDATE goal SET status = 'COMPLETED' WHERE user_id = ? AND target <= current AND status = 'ACTIVE'"
+            "UPDATE goal SET status = 'COMPLETE' WHERE user_id = ? AND target <= current AND status = 'ACTIVE'"
         );
         const info = stmt.run(id);
         return info;
@@ -856,11 +870,18 @@ class Interface {
         const tweight = info[0].tweight;
         const bmi = this.bmi(info[0].id);
         const goal = null;
-        if (bmi < 18.5)
-            goal = this.createUnderweightGoal(id, weight, height, tweight, bmi);
-        else if (bmi >= 25 && bmi < 30)
-            goal = this.createOverweightGoal(id, weight, height, tweight, bmi);
-        else goal = this.createObeseGoal(id, weight, height, tweight, bmi);
+        if (bmi < 18.5) {
+            this.createUnderweightGoal(id, weight, height, tweight, bmi);
+            return true;
+        } else if (bmi >= 18.5 && bmi < 25) {
+            return false;
+        } else if (bmi >= 25 && bmi < 30) {
+            this.createOverweightGoal(id, weight, height, tweight, bmi);
+            return true;
+        } else {
+            this.createObeseGoal(id, weight, height, tweight, bmi);
+            return true;
+        }
     }
 
     createUnderweightGoal(id, weight, tweight) {
@@ -870,23 +891,31 @@ class Interface {
         futureDate.setDate(now.getDate() + 7);
         //Creates a goal for underweight people
         if (tweight <= weight) {
-            return (goal = {
-                id: id,
-                goalType: "weight",
-                current: weight,
-                target: weight + 1,
-                date: futureDate.toISOString().slice(0, 10),
-                notes: "Gain 1kg this week! Get some protein!",
-            });
+            const stmt = this.database.prepare(
+                "INSERT INTO goal (user_id, name, goalType, current, target, start, end, notes, status) VALUES (?, 'Goal #1', ?, ?, ?, ?, ?, ?, 'ACTIVE')"
+            );
+            const info = stmt.run(
+                id,
+                "diet",
+                weight,
+                weight + 1,
+                now.toISOString().slice(0, 10),
+                futureDate.toISOString().slice(0, 10),
+                "Gain 1kg this week! Get some protein!"
+            );
         } else {
-            return (goal = {
-                id: id,
-                goalType: "distance",
-                current: 0,
-                target: 5,
-                date: futureDate.toISOString().slice(0, 10),
-                notes: "Walk or run 5 miles this week!",
-            });
+            const stmt = this.database.prepare(
+                "INSERT INTO goal (user_id, name, goalType, current, target, start, end, notes, status) VALUES (?, 'Goal #1', ?, ?, ?, ?, ?, ?, 'ACTIVE')"
+            );
+            const info = stmt.run(
+                id,
+                "exercise",
+                0,
+                5,
+                now.toISOString().slice(0, 10),
+                futureDate.toISOString().slice(0, 10),
+                "Walk or run 5 miles this week!"
+            );
         }
     }
 
@@ -897,14 +926,18 @@ class Interface {
         futureDate.setDate(now.getDate() + 7);
         //Creates a goal for underweight people
 
-        return (goal = {
-            id: id,
-            goalType: "distance",
-            current: 0,
-            target: 10,
-            date: futureDate.toISOString().slice(0, 10),
-            notes: "Run 10 miles this week! TIP: Split it up into multiple runs",
-        });
+        const stmt = this.database.prepare(
+            "INSERT INTO goal (user_id, name, goalType, current, target, start, end, notes, status) VALUES (?, 'Goal #1', ?, ?, ?, ?, ?, ?, 'ACTIVE')"
+        );
+        const info = stmt.run(
+            id,
+            "exercise",
+            0,
+            5,
+            now.toISOString().slice(0, 10),
+            futureDate.toISOString().slice(0, 10),
+            "Walk or run 5 miles this week!"
+        );
     }
 
     createOverweightGoal(id, weight, tweight) {
@@ -914,23 +947,31 @@ class Interface {
         futureDate.setDate(now.getDate() + 7);
         //Creates a goal for underweight people
         if (tweight <= weight) {
-            return (goal = {
-                id: id,
-                goalType: "weight",
-                current: weight,
-                target: weight - 1,
-                date: futureDate.toISOString().slice(0, 10),
-                notes: "Lose 1kg this week! Get moving!",
-            });
+            const stmt = this.database.prepare(
+                "INSERT INTO goal (user_id, name, goalType, current, target, start, end, notes, status) VALUES (?, 'Goal #1', ?, ?, ?, ?, ?, ?, 'ACTIVE')"
+            );
+            const info = stmt.run(
+                id,
+                "diet",
+                weight,
+                weight - 1,
+                now.toISOString().slice(0, 10),
+                futureDate.toISOString().slice(0, 10),
+                "Lose 1kg this week! Get moving!"
+            );
         } else {
-            return (goal = {
-                id: id,
-                goalType: "distance",
-                current: 0,
-                target: 5,
-                date: futureDate.toISOString().slice(0, 10),
-                notes: "Walk 5 miles this week!",
-            });
+            const stmt = this.database.prepare(
+                "INSERT INTO goal (user_id, name, goalType, current, target, start, end, notes, status) VALUES (?, 'Goal #1', ?, ?, ?, ?, ?, ?, 'ACTIVE')"
+            );
+            const info = stmt.run(
+                id,
+                "exercise",
+                0,
+                5,
+                now.toISOString().slice(0, 10),
+                futureDate.toISOString().slice(0, 10),
+                "Walk 5 miles this week!"
+            );
         }
     }
 
@@ -940,23 +981,31 @@ class Interface {
         futureDate.setDate(now.getDate() + 7);
         //Creates a goal for underweight people
         if (tweight < weight) {
-            return (goal = {
-                id: id,
-                goalType: "weight",
-                current: weight,
-                target: weight - 1,
-                date: futureDate.toISOString().slice(0, 10),
-                notes: "Lose 1kg this week! Get moving!",
-            });
+            const stmt = this.database.prepare(
+                "INSERT INTO goal (user_id, name, goalType, current, target, start, end, notes, status) VALUES (?, 'Goal #1', ?, ?, ?, ?, ?, ?, 'ACTIVE')"
+            );
+            const info = stmt.run(
+                id,
+                "diet",
+                weight,
+                weight - 3,
+                now.toISOString().slice(0, 10),
+                futureDate.toISOString().slice(0, 10),
+                "Lose 3kg this week! Get moving!"
+            );
         } else {
-            return (goal = {
-                id: id,
-                goalType: "distance",
-                current: 0,
-                target: 5,
-                date: futureDate.toISOString().slice(0, 10),
-                notes: "Walk 5 miles this week!",
-            });
+            const stmt = this.database.prepare(
+                "INSERT INTO goal (user_id, name, goalType, current, target, start, end, notes, status) VALUES (?, 'Goal #1', ?, ?, ?, ?, ?, ?, 'ACTIVE')"
+            );
+            const info = stmt.run(
+                id,
+                "exercise",
+                0,
+                5,
+                now.toISOString().slice(0, 10),
+                futureDate.toISOString().slice(0, 10),
+                "Walk 5 miles this week!"
+            );
         }
     }
 }

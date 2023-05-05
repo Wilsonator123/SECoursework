@@ -3,13 +3,11 @@ const express = require("express");
 
 const bodyParser = require("body-parser");
 const app = express();
-const fs = require('fs');
+const fs = require("fs");
 
-const https = require('https');
-const serverKey = fs.readFileSync('./key.pem');
-const serverCert = fs.readFileSync('./cert.pem');
-
-
+const https = require("https");
+const serverKey = fs.readFileSync("./key.pem");
+const serverCert = fs.readFileSync("./cert.pem");
 
 const cors = require("cors");
 const multer = require("multer");
@@ -230,7 +228,7 @@ app.post("/api/reActivateGoal", (req, res) => {
     res.send(interface.expiredGoal(req.body));
 });
 
-const sslServer = https.createServer({key: serverKey, cert: serverCert}, app);
-sslServer.listen(3001, () => {
+const sslServer = https.createServer({ key: serverKey, cert: serverCert }, app);
+app.listen(3001, () => {
     console.log("Server running on port 3001");
 });
