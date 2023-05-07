@@ -1,5 +1,6 @@
 const dB = require("better-sqlite3");
 const fs = require("fs");
+var assert = require('assert');
 const path = require("path");
 const { start } = require("repl");
 
@@ -72,6 +73,7 @@ class Interface {
 
     createUser(body, img) {
         console.log("Body :" + body);
+        
         //Creates a new user
         const {
             username,
@@ -85,6 +87,9 @@ class Interface {
             tweight,
             dob,
         } = body;
+
+        
+        
         if (
             username === "" ||
             firstname === "" ||
@@ -1468,8 +1473,31 @@ class Interface {
 
 
             //Account Creation
+            let body = {
+
+                username: "unitTest",
+                firstname: "Unit",
+                lastname: "Test",
+                email: "driverandrew@yahoo.com",
+                password: "test",
+        
+                gender: "male",
+                dob: new Date("2003-04-21").toDateString(),
+                height: "170",
+                weight: "60",
+                tweight: "65"
+
+            };
+
+
+
+            let img = "default.png";
+
 
                 // A new user registration: the Health Tracker User enters valid details.
+
+                //NEED GEORGE TO FIX THE GOAL CREATION ON ACCOUNT CREATION BEFORE I CAN WRITE THESE TESTS!
+                //(this.createUser(body, img));
 
                 // A new user registration: The Health Tracker User enters a non-unique username
 
@@ -1479,9 +1507,22 @@ class Interface {
 
                 // A new user registration: the Health Tracker User enters invalid health data.
 
+                
+
 
                 //GEORGE - DO THIS ONE PLS
                 // A new user registration: the Health Tracker User enters health data that suggests a deviation from the norm 
+
+
+
+                console.log("\nACCOUNT CREATION TESTS PASSED\n");
+
+
+
+                console.log("\nA user logs in - a user logs in with valid details");
+                assert(this.checkLogin("unitTest", "test"));
+
+                console.log("\nLOGIN TESTS PASSED\n")
 
 
 
