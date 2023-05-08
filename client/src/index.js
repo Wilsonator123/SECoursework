@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-//All of our pages we will use later!
 import App from "./App";
-//Not sure if we will be using this page?
-//import Home from "./Home";
-
 import Account from "./Account";
 import Meal from "./Diet";
 import Exercise from "./Exercise";
@@ -14,7 +9,6 @@ import Goal from "./Goal";
 import Group from "./Group";
 import History from "./History";
 import Navbar from "./Navbar";
-import Footer from "./Footer";
 
 //------------------------REFERENCE-----------------------------//
 //Login authentication and storing user ID tokens adapted from tutorial:
@@ -85,7 +79,6 @@ function Index() {
                         />
                     </Route>
                 </Routes>
-                <Footer />
             </BrowserRouter>
         );
     }
