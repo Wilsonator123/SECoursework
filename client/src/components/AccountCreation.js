@@ -43,8 +43,8 @@ function AccountCreation({ setToken }) {
             .then((data) => {
                 //May need to be updated to another page
                 if (data) {
-                    setToken(data.id);
-                    
+                    console.log(data.id.user);
+                    setToken(data.id.user);
                 } else {
                     alert("Invalid account creation details.");
                 }
@@ -271,7 +271,9 @@ function AccountCreation({ setToken }) {
             <br />
             <br />
 
-            <button class="create-account-btn" type="submit">Create Account</button>
+            <button class="create-account-btn" type="submit">
+                Create Account
+            </button>
         </form>
     );
 }
