@@ -16,6 +16,16 @@ export default function Home() {
         end: "",
         notes: "",
     });
+
+
+    //Group goal stuff
+    const [groupGoalForm, setGroupGoalForm] = useState({
+        goal_id: ""
+    });
+
+    const [showGroupGoalForm, setShowGroupGoalForm] = useState(false);
+
+
     const [showExerciseGoalForm, setShowExerciseGoalForm] = useState(false);
     const [showDietGoalForm, setShowDietGoalForm] = useState(false);
     const [showWeight, setShowWeight] = useState(false);
@@ -32,6 +42,42 @@ export default function Home() {
         },
     ]);
     const [loading, setLoading] = useState(false);
+
+    //For adding a group goal by email
+    const addGoalViaEmail = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const groupGoalID = urlParams.get("id");
+        
+
+        if (groupGoalID !== null) {
+            console.log(groupGoalID);
+
+            fetch("http://localhost:3001/api/addGoalViaEmail", {
+                method: "POST",
+                body: JSON.stringify({
+                    goal_id: groupGoalID,
+                    user_id: userToken
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+                .then((response) => response.json())
+
+                .then((data) => {
+                    console.log(data);
+                    if (typeof data === "boolean" && data) {
+                        alert("Goal Added!");
+                        getGoals();
+                    } else {
+                        alert(data.error);
+                    }
+                })
+                .catch((error) => {
+                    alert("Error in adding goal.");
+                });
+        }
+    };
 
     async function getGoals() {
         const response = await fetch(
@@ -68,18 +114,37 @@ export default function Home() {
     const handleExerciseGoalClick = () => {
         setForm({ ...form, goalType: "exercise", target: "" });
         setShowDietGoalForm(false);
+        setShowGroupGoalForm(false);
         setShowExerciseGoalForm((prev) => !prev);
     };
 
     const handleDietGoalClick = () => {
         setForm({ ...form, goalType: "diet", target: "" });
         setShowExerciseGoalForm(false);
+        setShowGroupGoalForm(false);
         setShowDietGoalForm((prev) => !prev);
     };
+
+
+    const handleGroupGoalClick = () => {
+        setShowExerciseGoalForm(false);
+        setShowDietGoalForm(false);
+        setShowGroupGoalForm((prev) => !prev);
+    };
+
 
     const handleChange = (event) => {
         console.log(event.target.name);
         setForm({
+            ...form,
+            [event.target.name]: event.target.value,
+        });
+    };
+
+
+    const handleGroupGoalChange = (event) => {
+        console.log(event.target.name);
+        setGroupGoalForm({
             ...form,
             [event.target.name]: event.target.value,
         });
@@ -127,9 +192,46 @@ export default function Home() {
         getGoals();
     };
 
+
+
+    const handleGroupGoalSubmit = () => {
+        console.log(groupGoalForm);
+        // Handle diet goal form submission
+        if (groupGoalForm.goal_id !== null) {
+            fetch("http://localhost:3001/api/addGoalViaEmail", {
+                method: "POST",
+                body: JSON.stringify({
+                    goal_id: groupGoalForm.goal_id,
+                    user_id: userToken
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+                .then((response) => response.json())
+
+                .then((data) => {
+                    console.log(data);
+                    if (typeof data === "boolean" && data) {
+                        alert("Goal Added!");
+                        getGoals();
+                    } else {
+                        alert(data.error);
+                    }
+                })
+                .catch((error) => {
+                    alert("Error in adding goal.");
+                });
+        } else {
+            alert("Group Goal form not filled in. Fill in and try again");
+        }
+
+    };
+
     useEffect(() => {
         checkGoals();
         getGoals();
+        addGoalViaEmail();
     }, []);
 
     return (
@@ -266,6 +368,35 @@ export default function Home() {
                     )}
                 </div>
             </div>
+
+            <br/>
+
+            <div className="goalBox1">
+                    <div className="goalBox-header">
+                        <h2>Group Goal</h2>
+                        <button
+                            onClick={handleGroupGoalClick}
+                            className="form-btn"
+                        >
+                            {showGroupGoalForm ? "-" : "+"}
+                        </button>
+                    </div>
+                    {showGroupGoalForm && (
+                        <form onSubmit={handleGroupGoalSubmit} className="goal-form">
+                            <label>
+                                Goal Code:
+                                <input
+                                    type="number"
+                                    id="goal_id"
+                                    name="goal_id"
+                                    value={groupGoalForm.goal_id}
+                                    onChange={handleGroupGoalChange}
+                                />
+                            </label>
+                            <button type="submit">Add Group Goal</button>
+                        </form>
+                    )}
+                </div>
 
             <div className="goal-Grid">
                 <GoalView goal={goal} props={getGoals} />

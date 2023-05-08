@@ -9,7 +9,7 @@ const https = require('https');
 const serverKey = fs.readFileSync('./key.pem');
 const serverCert = fs.readFileSync('./cert.pem');
 
-
+//import {testHarness} from './testHarness.js';
 
 const cors = require("cors");
 const multer = require("multer");
@@ -251,6 +251,33 @@ app.post("/api/checkGoals", (req, res) => {
     res.send(interface.checkGoals(req.body.id));
 });
 
+
+//Adding a group goal when they click the link on an email
+app.post("/api/addGoalViaEmail", (req, res) => {
+    console.log(req.body);
+    res.send(interface.acceptGoalInvite(req.body));
+});
+
+
+
+
+//Group goals functions
+app.post("/api/createGroupGoal", (req, res) => {
+    console.log(req.body);
+    res.send(interface.createGroupGoal(req.body));
+});
+
+app.post("/api/checkGroupGoals", (req, res) => {
+    console.log(req.body);
+    res.send(interface.checkGroupGoals(req.body.id));
+});
+
+app.post("/api/getActiveGroupGoals", (req, res) => {
+    res.send(interface.getGroupGoals(req.body));
+});
+
+
+
 app.post("/api/reActivateGoal", (req, res) => {
     console.log(req.body);
     res.send(interface.expiredGoal(req.body));
@@ -260,3 +287,10 @@ const sslServer = https.createServer({key: serverKey, cert: serverCert}, app);
 app.listen(3001, () => {
     console.log("Server running on port 3001");
 });
+
+
+
+
+
+//Calls test harness
+interface.testHarness();
