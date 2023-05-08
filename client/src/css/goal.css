@@ -143,6 +143,11 @@
     color: #ff0000;
 }
 
+.COMPLETE {
+    border: 1px solid #099c09;
+    color: #099c09;
+}
+
 .expired-btn {
     display: flex;
     position: absolute;

@@ -47,6 +47,15 @@ export default function Home(data, props) {
                                 </button>
                             </div>
                         )}
+                        {goal.status === "COMPLETE" && (
+                            <div className="expired-btn">
+                                <button
+                                    onClick={() => reActivate(false, goal.id)}
+                                >
+                                    Complete Goal
+                                </button>
+                            </div>
+                        )}
                         <div className="goal-icon">
                             <img src={goal.goalType + ".png"}></img>
                         </div>
