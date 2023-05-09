@@ -33,7 +33,7 @@ class Interface {
 
     checkEmailFormat(email) {
         //Returns true if email is in correct format, false if it is not
-        console.log("Email: " + email);
+        //console.log("Email: " + email);
         const re = /\S+@\S+\.\S+/; //Regex for email format
         return re.test(email);
     }
@@ -45,6 +45,8 @@ class Interface {
             "SELECT * FROM user WHERE email = ?"
         );
         const info = stmt.all(email);
+        console.log("Worked correctly here");
+        console.log(email);
         if (info.length === 0) return true; //If email is not in this.database
         else return false; //If email is in this.database
     }
@@ -88,6 +90,7 @@ class Interface {
         ) {
             return false;
         }
+        
         if (!this.checkEmail(email)) return false;
         if (!this.checkUsername(username)) return false;
         const stmt = this.database.prepare(
