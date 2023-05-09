@@ -1,5 +1,6 @@
 const dB = require("better-sqlite3");
 const fs = require("fs");
+var assert = require('assert');
 const path = require("path");
 const { start } = require("repl");
 
@@ -19,16 +20,27 @@ class Interface {
             fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8")
         );
 
-        //this.database.exec("DROP TABLE group_user");
+        //this.database.exec("DROP TABLE user");
     }
     /************************************************************************/
 
     /*********************************USER**********************************/
+    
+    
     getUser(id) {
         //Returns the user with the given id
         const stmt = this.database.prepare("SELECT * FROM user WHERE id = ?");
         const info = stmt.all(id);
         return info;
+    }
+
+    recordWeight(body){
+        const {id, weight} = body;
+        const stmt = this.database.prepare(
+            "UPDATE user SET weight = ? WHERE id = ?"
+        );
+        stmt.run(weight, id);
+        return true;
     }
 
     checkEmailFormat(email) {
@@ -61,6 +73,7 @@ class Interface {
 
     createUser(body, img) {
         console.log("Body :" + body);
+        
         //Creates a new user
         const {
             username,
@@ -74,6 +87,9 @@ class Interface {
             tweight,
             dob,
         } = body;
+
+        
+        
         if (
             username === "" ||
             firstname === "" ||
@@ -99,7 +115,7 @@ class Interface {
             firstname,
             lastname,
             gender,
-            password,
+            crypto.createHash('md5').update(password).digest('hex'),
             email,
             weight,
             height,
@@ -114,8 +130,12 @@ class Interface {
             );
             const info = stmt.all(username);
             const user = info[0].id;
-            this.estimateGoal(user);
-            return user;
+            const alert = this.estimateGoal(user);
+            const body = {
+                user: user,
+                alert: alert,
+            };
+            return body;
         } else return false;
     }
 
@@ -129,7 +149,7 @@ class Interface {
             const stmt = this.database.prepare(
                 "SELECT id FROM user WHERE email = ? AND password = ?"
             );
-            const info = stmt.all(login, password);
+            const info = stmt.all(login, crypto.createHash('md5').update(password).digest('hex'));
             if (info.length === 0)
                 return false; //If email and password do not match
             else return info[0].id; //If email and password match
@@ -140,7 +160,7 @@ class Interface {
                 "SELECT * FROM user WHERE username = ? AND password = ?"
             );
 
-            const info = stmt.all(login, password);
+            const info = stmt.all(login, crypto.createHash('md5').update(password).digest('hex'));
             if (info.length === 0)
                 return false; //If username and password do not match
             else return info[0].id; //If username and password match
@@ -275,10 +295,11 @@ class Interface {
         const info2 = stmt2.all(activity);
         const type = info2[0].type;
         console.log("TYPE: " + type);
-        if (result.changes !== 0 && type === 1) this.updateGoal(id, distance);
+        if (result.changes !== 0 && type === 1) this.updateEGoal(id, distance);
         return result;
     }
     /************************************************************************/
+
 
     /********************************MEALS********************************/
     getUserMeals(body) {
@@ -640,6 +661,13 @@ class Interface {
         return true;
     }
 
+
+
+
+
+
+
+
     //Multi purpose function for adding users to groups based on either clicking an email link or typing in hash code:
     acceptGroupInvite(body) {
         //Emails a user about joining a group
@@ -650,18 +678,21 @@ class Interface {
             "SELECT * from user WHERE email = ?"
         );
         const info = stmt.get(email);
-
+        
+        
         if (info === undefined) {
             return { error: "Account with that email not found" };
         }
 
         //Then check if group in system:
+        
         const stmt3 = this.database.prepare(
             "SELECT * from `group` WHERE id = ?"
         );
         const info3 = stmt3.get(group_id);
-
+        console.log(info3);
         if (info3 === undefined) {
+            console.log("Group not found error");
             return { error: "Group not found" };
         }
 
@@ -681,8 +712,12 @@ class Interface {
         console.log(userID);
         console.log(user_id);
 
+        console.log(typeof userID);
+        console.log(typeof user_id);
+        console.log(userID == user_id);
+
         //Check the userID matches the current account logged in
-        if (userID !== user_id) {
+        if (userID != user_id) {
             console.log("HAH GOT YA");
             return { error: "Not logged in as the right user to accept this" };
         }
@@ -695,6 +730,111 @@ class Interface {
 
         return true;
     }
+
+
+    //Additional functionality needed when adding user by a code - need to get their email first
+    addUserViaCode(body){
+            const { user_id, group_id } = body;
+    
+            //Get users email
+            const stmt5 = this.database.prepare(
+                "SELECT email from user WHERE id = ?"
+            );
+            const info5 = stmt5.get(user_id);
+            console.log(info5);
+            if (info5 === undefined) {
+                return { error: "Account with that email not found" };
+            }
+
+            const body2 = ({ group_id: group_id, email: info5.email, user_id: user_id })
+            console.log(body2);
+            return this.acceptGroupInvite(body2);
+    
+        }
+
+    
+    
+    //Checks if user is owner of group or not - if so, they see the group modification details. If not, they get the member view
+    checkOwner(body){
+        const { group_id, user_id } = body;
+        console.log(body);
+
+        //Get users email
+        const stmt = this.database.prepare(
+            "SELECT * from `group` WHERE owner_id = ? AND id = ?"
+        );
+        const info = stmt.get(user_id, group_id);
+        console.log(info);
+
+        if (info === undefined) {
+            console.log("NOT OWNER");
+            return false;
+        }
+
+        else{
+            console.log("IS OWNER");
+            return true;
+        }
+    }
+
+
+
+    //Remove a non-owner from a group, or an owner if the group only has one member
+    leaveGroup(body){
+        const { group_id, user_id } = body;
+        console.log(body);
+
+        //If user is owner and group size is 1, allow them to leave. Otherwise, dont.
+        //If user is NOT the owner, allow them to leave
+        const stmt = this.database.prepare(
+            "SELECT * from `group` WHERE owner_id = ? AND id = ?"
+        );
+        const info = stmt.get(user_id, group_id);
+        console.log(info);
+
+        if (info === undefined) {
+            const stmt2 = this.database.prepare(
+                "DELETE from group_user WHERE user_id = ? AND group_id = ?"
+            );
+            stmt2.run(user_id, group_id);
+
+
+            return true;
+        }
+
+        else{
+            
+            const stmt3 = this.database.prepare(
+                "SELECT COUNT(*) FROM group_user WHERE group_id = ?"
+            )
+            const info3 = stmt3.get(group_id);
+            console.log(info3);     
+            //If only one member left in group remove them and delete group
+
+            if(info3['COUNT(*)'] <= 1){
+                console.log("Removing owner");
+                const stmt4 = this.database.prepare(
+                    "DELETE from group_user WHERE user_id = ? AND group_id = ?"
+                );
+                stmt4.run(user_id, group_id);
+
+                
+                //Deletes the group
+                const stmt5 = this.database.prepare(
+                    "DELETE from `group` WHERE id = ?"
+                );
+                stmt5.run(group_id);
+                return true;
+            }
+            else{
+                console.log("Will not remove owner");
+                return false;
+            }
+        }
+    }
+
+
+
 
     /*********************************GOALS**********************************/
     createGoal(body) {
@@ -738,7 +878,7 @@ class Interface {
         return result;
     }
 
-    updateGoal(id, distance) {
+    updateEGoal(id, distance) {
         //user_id
         console.log("updateGoal");
         console.log(id, distance);
@@ -752,6 +892,16 @@ class Interface {
             );
             const result = stmt1.run(distance, id, goal.id);
         });
+    }
+
+    updateWGoal(id) {
+        const user = this.database.prepare("SELECT * from user WHERE id = ?");
+        const weight = user[0].weight;
+
+        const stmt = this.database.prepare(
+            "UPDATE goal SET current = ? WHERE user_id = ? AND goalType = 'diet' AND status = 'ACTIVE'"
+        );
+        const result = stmt.run(weight, id);
     }
 
     dateCheck(start, end) {
@@ -769,7 +919,7 @@ class Interface {
         const today = new Date().toISOString().slice(0, 10);
         //Returns all active goals for a user
         const stmt = this.database.prepare(
-            "SELECT * FROM goal WHERE user_id = ? AND status != 'COMPLETED' AND start <= ? ORDER BY CASE status WHEN 'EXPIRED' THEN 1 WHEN 'ACTIVE' THEN 2 END, end ASC"
+            "SELECT * FROM goal WHERE user_id = ? AND status != 'COMPLETED' AND start <= ? ORDER BY CASE status WHEN 'COMPLETE' THEN 1 WHEN 'EXPIRED' THEN 2 WHEN 'ACTIVE' THEN 3 END, end ASC"
         );
         const info = stmt.all(id, today);
         return info;
@@ -830,22 +980,381 @@ class Interface {
         return info;
     }
 
+
+
+    // for finishing a goal - does an extra check on group goals to see if emails need to be checked
     finishGoal(id) {
+
+        //Get all goals that are about to be completed.
+        const stmt2 = this.database.prepare(
+            "SELECT * FROM goal WHERE user_id = ? AND target <= current AND status = 'ACTIVE'"
+        );
+        const result2 = stmt2.all(id);
+
+        result2.forEach(goal => {
+
+            //If part of a group, send email to all users in group
+            if (goal.group_id !== null){
+
+                //Get details about group
+                const stmt3 = this.database.prepare(
+                    "SELECT * FROM `group` WHERE id = ?"
+                )
+                const result3 = stmt3.all(goal.group_id);
+
+
+                const stmt2 = this.database.prepare(
+                    "SELECT * FROM user JOIN group_user on user.id = group_user.user_id WHERE group_user.group_id = ?"
+                );
+                const info = stmt2.all(goal.group_id);
+
+                info.forEach(user => {
+
+
+                    const transporter = nodemailer.createTransport({
+                        service: "gmail",
+                        auth: {
+                            user: "se.healthtracker101@gmail.com",
+                            pass: "btssdtghvfwpyiyo",
+                        }
+                    });
+
+                    let mailOptions;
+                    //If it is the user who completed the goal, tell them that
+                    if (user.user_id === goal.user_id){
+                        mailOptions = {
+                            from: "se.healthtracker101@gmail.com",
+                            to: user.email,
+                            subject: "Health Tracker: You completed a Group Goal",
+                            html: `<div>
+                                    <p>You have completed a goal for ${result3[0].name}</p>
+                                    <p>Details:</p>
+                                    <p>Goal Name: ${goal.name}</p>
+                                    <p>Goal Type: ${goal.goalType}</p>
+                                    <p>Target: ${goal.target}</p>
+                                </div>`,
+                        };
+                    }
+
+
+                    //Otherwise, notify that another user has completed the goal.
+                    else {mailOptions = {
+                        from: "se.healthtracker101@gmail.com",
+                        to: user.email,
+                        subject: "Health Tracker: A Group Member completed a Group Goal",
+                        html: `<div>
+                                <p>${user.username} has completed a goal for ${result3[0].name}</p>
+                                <p>Details:</p>
+                                <p>Goal Name: ${goal.name}</p>
+                                <p>Goal Type: ${goal.goalType}</p>
+                                <p>Target: ${goal.target}</p>
+                            </div>`,
+                    };
+                    }
+            
+                    //Sends our email
+                    transporter.sendMail(mailOptions, function (error, info) {
+                        if (error) {
+                            console.log(error);
+                            return false;
+                        } else {
+                            console.log("Email sent: " + info.response);
+                            return true;
+                        }
+
+                });
+
+                });
+            
+
+            }
+            
+        });
+
+
+
+        //Set all to completed after
         const stmt = this.database.prepare(
-            "UPDATE goal SET status = 'COMPLETED' WHERE user_id = ? AND target <= current AND status = 'ACTIVE'"
+            "UPDATE goal SET status = 'COMPLETE' WHERE user_id = ? AND target <= current AND status = 'ACTIVE'"
         );
         const info = stmt.run(id);
         return info;
     }
 
-    getGroupGoals(id) {
+
+
+
+
+
+
+
+
+    getGroupGoals(body) {
         //Returns all group goals for a user
+        const { id, group_id } =
+        body;
         const stmt = this.database.prepare(
-            "SELECT * FROM goals WHERE groupID = ? AND status NOT IN ('inactive')"
+            "SELECT * FROM goal WHERE group_id = ? AND user_id = ? AND status = 'ACTIVE'"
         );
-        const info = stmt.all(id);
+        const info = stmt.all(group_id, id);
         return info;
     }
+
+
+
+    createGroupGoal(body) {
+        const { user_id, name, group_id, goalType, target, start, end, notes } =
+            body;
+        console.log(body);
+        let current = body.current;
+        if (
+            name === "" ||
+            goalType === "" ||
+            target === "" ||
+            start === "" ||
+            end === ""
+        ) {
+            return false;
+        }
+        if (!this.dateCheck(start, end)) return false;
+        //Update User Profile
+        current = 0;
+
+        
+        //GET A LIST OF ALL USERS IN GROUP
+        const stmt2 = this.database.prepare(
+            "SELECT * FROM user JOIN group_user on user.id = group_user.user_id WHERE group_user.group_id = ?"
+        );
+        const info = stmt2.all(group_id);
+
+        //Get the owners ID
+        const stmt3 = this.database.prepare(
+            "SELECT owner_id from `group` WHERE id = ?"
+        );
+        const ownerID = stmt3.all(group_id);
+
+
+
+        
+        //Prepares email stuff
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: "se.healthtracker101@gmail.com",
+                pass: "btssdtghvfwpyiyo",
+            },
+        });
+
+
+        //Add admin goal first and get its id
+        const stmt = this.database.prepare(
+            "INSERT INTO goal (user_id, name, group_id, goalType, current, target, start, end, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        );
+
+        const result = stmt.run(
+            user_id,
+            name,
+            group_id,
+            goalType,
+            current,
+            target,
+            start,
+            end,
+            notes
+        );
+        
+        const stmt5 = this.database.prepare(
+            "SELECT id FROM goal WHERE user_id = ? AND name = ? AND group_id = ? and goalType = ? and current = ? and target = ? and start = ? and end = ? and notes = ?"
+        );
+
+        const result2= stmt5.all(
+            user_id,
+            name,
+            group_id,
+            goalType,
+            current,
+            target,
+            start,
+            end,
+            notes
+        );
+        console.log(result2);
+
+        const ownerGoalID = result2[0].id;
+
+
+        const groupGoalPageUrl = `http://localhost:3000/Goal?id=${ownerGoalID}`;
+        
+
+        //Loop through the users - group owner gets goal automatically added, everyone else gets a link.
+        info.forEach(user => {
+            console.log("USER ID:" + user.user_id);
+            console.log(ownerID);
+            if (user.user_id == ownerID[0].owner_id){
+                //IF owner, pass here as already done
+                console.log("Doesn't send to owner")
+
+            }
+            else {
+                
+                
+                const mailOptions = {
+                    from: "se.healthtracker101@gmail.com",
+                    to: user.email,
+                    subject: "Health Tracker: Add Group Goal",
+                    html: `<div>
+                            <p>You have been sent a goal from one of your groups. Click</p>
+                            <a href="${groupGoalPageUrl}">here</a>
+                            <p> to add it. \nOtherwise, enter code: ${ownerGoalID}</p>
+                        </div>`,
+                };
+        
+                //Sends our email
+                transporter.sendMail(mailOptions, function (error, info) {
+                    if (error) {
+                        console.log(error);
+                        return false;
+                    } else {
+                        console.log("Email sent: " + info.response);
+                        return true;
+                    }
+                });
+            }
+
+
+    
+            
+        });
+
+        return true;
+
+
+        
+    }
+
+
+
+
+    //Can be used for both types of group goal adding
+    acceptGoalInvite(body){
+        const { goal_id, user_id } =
+            body;
+        
+        console.log("Testing accept goal invite");
+        console.log(body);
+
+
+        //Get goal which will be copied into the user
+        const stmt5 = this.database.prepare(
+            "SELECT * FROM goal WHERE id = ?"
+        );
+
+        const result2= stmt5.all(
+            goal_id
+        );
+
+
+        console.log("RESULT2");
+        console.log(result2);
+
+        //Return an error if no goal found with the code.
+        if (result2.length === 0){
+            return { error: "No goal found with this code." }
+        }
+
+
+        //Check if user is part of group. If not, disallow them from adding the goal
+        const stmt6 = this.database.prepare(
+            "SELECT * FROM group_user WHERE user_id = ? AND group_id = ?"
+        );
+        const result6= stmt6.all(
+            user_id, result2[0].group_id
+        );
+
+        if (result6.length === 0){
+            return { error: "You are not a member of this group." }
+        }
+
+
+
+        //Disallow goal if out of date
+        if (result2[0].status !== 'ACTIVE'){
+            return { error: "This group goal is no longer active." }
+        }
+        
+
+
+        //Check the user doesn't already have the goal. If so, return false with a message
+        const stmt3 = this.database.prepare(
+            "SELECT id FROM goal WHERE user_id = ? AND name = ? AND group_id = ? and goalType = ? and current = ? and target = ? and start = ? and end = ? and notes = ?"
+        );
+
+        const result3= stmt3.all(
+            user_id,
+            result2[0].name,
+            result2[0].group_id,
+            result2[0].goalType,
+            result2[0].current,
+            result2[0].target,
+            result2[0].start,
+            result2[0].end,
+            result2[0].notes
+        );
+        
+
+        console.log("RESULT3");
+        console.log(result3);
+
+        if(result3.length !== 0){
+            return { error: "User already has this group goal on their account." }
+        }
+
+
+
+       
+
+
+
+        
+        //Add this goal to the user
+        const stmt = this.database.prepare(
+            "INSERT INTO goal (user_id, name, group_id, goalType, current, target, start, end, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        );
+
+        const result = stmt.run(
+            user_id,
+            result2[0].name,
+            result2[0].group_id,
+            result2[0].goalType,
+            result2[0].current,
+            result2[0].target,
+            result2[0].start,
+            result2[0].end,
+            result2[0].notes
+        );
+
+        return true;
+    }
+
+
+    
+    checkGroupGoals(id) {
+        //NEED TO UPDATE FINISH GOALS TO SEND OUT EMAILS TO ALL MEMBERS IF GROUP ID IS NOT NULL
+        this.finishGoal(id);
+        const date = new Date().toISOString().slice(0, 10);
+        //Returns all active goals for a user
+        const stmt = this.database.prepare(
+            "UPDATE goal set status = 'EXPIRED' WHERE user_id = ? AND status IS ('ACTIVE') AND end<?"
+        );
+        stmt.run(id, date);
+        return true;
+    }
+
+
+
+
+
+
 
     estimateGoal(id) {
         //We need to use BMI to create a goal
@@ -856,11 +1365,18 @@ class Interface {
         const tweight = info[0].tweight;
         const bmi = this.bmi(info[0].id);
         const goal = null;
-        if (bmi < 18.5)
-            goal = this.createUnderweightGoal(id, weight, height, tweight, bmi);
-        else if (bmi >= 25 && bmi < 30)
-            goal = this.createOverweightGoal(id, weight, height, tweight, bmi);
-        else goal = this.createObeseGoal(id, weight, height, tweight, bmi);
+        if (bmi < 18.5) {
+            this.createUnderweightGoal(id, weight, height, tweight, bmi);
+            return true;
+        } else if (bmi >= 18.5 && bmi < 25) {
+            return false;
+        } else if (bmi >= 25 && bmi < 30) {
+            this.createOverweightGoal(id, weight, height, tweight, bmi);
+            return true;
+        } else {
+            this.createObeseGoal(id, weight, height, tweight, bmi);
+            return true;
+        }
     }
 
     createUnderweightGoal(id, weight, tweight) {
@@ -870,23 +1386,31 @@ class Interface {
         futureDate.setDate(now.getDate() + 7);
         //Creates a goal for underweight people
         if (tweight <= weight) {
-            return (goal = {
-                id: id,
-                goalType: "weight",
-                current: weight,
-                target: weight + 1,
-                date: futureDate.toISOString().slice(0, 10),
-                notes: "Gain 1kg this week! Get some protein!",
-            });
+            const stmt = this.database.prepare(
+                "INSERT INTO goal (user_id, name, goalType, current, target, start, end, notes, status) VALUES (?, 'Goal #1', ?, ?, ?, ?, ?, ?, 'ACTIVE')"
+            );
+            const info = stmt.run(
+                id,
+                "diet",
+                weight,
+                weight + 1,
+                now.toISOString().slice(0, 10),
+                futureDate.toISOString().slice(0, 10),
+                "Gain 1kg this week! Get some protein!"
+            );
         } else {
-            return (goal = {
-                id: id,
-                goalType: "distance",
-                current: 0,
-                target: 5,
-                date: futureDate.toISOString().slice(0, 10),
-                notes: "Walk or run 5 miles this week!",
-            });
+            const stmt = this.database.prepare(
+                "INSERT INTO goal (user_id, name, goalType, current, target, start, end, notes, status) VALUES (?, 'Goal #1', ?, ?, ?, ?, ?, ?, 'ACTIVE')"
+            );
+            const info = stmt.run(
+                id,
+                "exercise",
+                0,
+                5,
+                now.toISOString().slice(0, 10),
+                futureDate.toISOString().slice(0, 10),
+                "Walk or run 5 miles this week!"
+            );
         }
     }
 
@@ -897,14 +1421,18 @@ class Interface {
         futureDate.setDate(now.getDate() + 7);
         //Creates a goal for underweight people
 
-        return (goal = {
-            id: id,
-            goalType: "distance",
-            current: 0,
-            target: 10,
-            date: futureDate.toISOString().slice(0, 10),
-            notes: "Run 10 miles this week! TIP: Split it up into multiple runs",
-        });
+        const stmt = this.database.prepare(
+            "INSERT INTO goal (user_id, name, goalType, current, target, start, end, notes, status) VALUES (?, 'Goal #1', ?, ?, ?, ?, ?, ?, 'ACTIVE')"
+        );
+        const info = stmt.run(
+            id,
+            "exercise",
+            0,
+            5,
+            now.toISOString().slice(0, 10),
+            futureDate.toISOString().slice(0, 10),
+            "Walk or run 5 miles this week!"
+        );
     }
 
     createOverweightGoal(id, weight, tweight) {
@@ -914,23 +1442,31 @@ class Interface {
         futureDate.setDate(now.getDate() + 7);
         //Creates a goal for underweight people
         if (tweight <= weight) {
-            return (goal = {
-                id: id,
-                goalType: "weight",
-                current: weight,
-                target: weight - 1,
-                date: futureDate.toISOString().slice(0, 10),
-                notes: "Lose 1kg this week! Get moving!",
-            });
+            const stmt = this.database.prepare(
+                "INSERT INTO goal (user_id, name, goalType, current, target, start, end, notes, status) VALUES (?, 'Goal #1', ?, ?, ?, ?, ?, ?, 'ACTIVE')"
+            );
+            const info = stmt.run(
+                id,
+                "diet",
+                weight,
+                weight - 1,
+                now.toISOString().slice(0, 10),
+                futureDate.toISOString().slice(0, 10),
+                "Lose 1kg this week! Get moving!"
+            );
         } else {
-            return (goal = {
-                id: id,
-                goalType: "distance",
-                current: 0,
-                target: 5,
-                date: futureDate.toISOString().slice(0, 10),
-                notes: "Walk 5 miles this week!",
-            });
+            const stmt = this.database.prepare(
+                "INSERT INTO goal (user_id, name, goalType, current, target, start, end, notes, status) VALUES (?, 'Goal #1', ?, ?, ?, ?, ?, ?, 'ACTIVE')"
+            );
+            const info = stmt.run(
+                id,
+                "exercise",
+                0,
+                5,
+                now.toISOString().slice(0, 10),
+                futureDate.toISOString().slice(0, 10),
+                "Walk 5 miles this week!"
+            );
         }
     }
 
@@ -940,24 +1476,194 @@ class Interface {
         futureDate.setDate(now.getDate() + 7);
         //Creates a goal for underweight people
         if (tweight < weight) {
-            return (goal = {
-                id: id,
-                goalType: "weight",
-                current: weight,
-                target: weight - 1,
-                date: futureDate.toISOString().slice(0, 10),
-                notes: "Lose 1kg this week! Get moving!",
-            });
+            const stmt = this.database.prepare(
+                "INSERT INTO goal (user_id, name, goalType, current, target, start, end, notes, status) VALUES (?, 'Goal #1', ?, ?, ?, ?, ?, ?, 'ACTIVE')"
+            );
+            const info = stmt.run(
+                id,
+                "diet",
+                weight,
+                weight - 3,
+                now.toISOString().slice(0, 10),
+                futureDate.toISOString().slice(0, 10),
+                "Lose 3kg this week! Get moving!"
+            );
         } else {
-            return (goal = {
-                id: id,
-                goalType: "distance",
-                current: 0,
-                target: 5,
-                date: futureDate.toISOString().slice(0, 10),
-                notes: "Walk 5 miles this week!",
-            });
+            const stmt = this.database.prepare(
+                "INSERT INTO goal (user_id, name, goalType, current, target, start, end, notes, status) VALUES (?, 'Goal #1', ?, ?, ?, ?, ?, ?, 'ACTIVE')"
+            );
+            const info = stmt.run(
+                id,
+                "exercise",
+                0,
+                5,
+                now.toISOString().slice(0, 10),
+                futureDate.toISOString().slice(0, 10),
+                "Walk 5 miles this week!"
+            );
         }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    testHarness(){
+        console.log("TEST HARNESS");
+        // First Sprint Test Cases:
+
+
+
+            //Account Creation
+            let body = {
+
+                username: "unitTest",
+                firstname: "Unit",
+                lastname: "Test",
+                email: "driverandrew@yahoo.com",
+                password: "test",
+        
+                gender: "male",
+                dob: new Date("2003-04-21").toDateString(),
+                height: "170",
+                weight: "60",
+                tweight: "65"
+
+            };
+
+
+
+            let img = "default.png";
+
+
+                // A new user registration: the Health Tracker User enters valid details.
+
+                //NEED GEORGE TO FIX THE GOAL CREATION ON ACCOUNT CREATION BEFORE I CAN WRITE THESE TESTS!
+                //(this.createUser(body, img));
+
+                // A new user registration: The Health Tracker User enters a non-unique username
+
+                // A new user registration: the Health Tracker User enters an invalid email
+
+                // A new user registration: the Health Tracker User enters an email that is already in use by another account
+
+                // A new user registration: the Health Tracker User enters invalid health data.
+
+                
+
+
+                //GEORGE - DO THIS ONE PLS
+                // A new user registration: the Health Tracker User enters health data that suggests a deviation from the norm 
+
+
+
+                console.log("\nACCOUNT CREATION TESTS PASSED\n");
+
+
+
+                console.log("\nA user logs in - a user logs in with valid details");
+                assert(this.checkLogin("unitTest", "test"));
+
+                console.log("\nLOGIN TESTS PASSED\n")
+
+
+
+
+            //Goals
+
+                // A user creates a goal: the Health Tracker User creates a valid goal.
+
+                // A user creates a goal: the Health Tracker User enters an invalid weight goal.
+
+                // A user creates a goal: the Health Tracker User enters an invalid distance goal.
+
+                // A user creates a goal: the Health Tracker User does not enter a goal name.
+
+            
+                
+            
+            //Exercise
+
+                // A user records an exercise: Valid recording of exercise.
+
+                // A user records an exercise: The Health Tracker User enters an invalid duration.
+
+                // A user records an exercise: The Health Tracker User enters an invalid distance.
+
+
+
+            
+            //Meal
+
+                // A user records a meal: The Health Tracker User records a valid meal with food from a predefined list
+
+                // A user records a meal: The Health Tracker User records a valid meal by defining a new custom food item.
+
+                // A user records a meal: The Health Tracker User enters invalid new food item
+
+                // A user records a meal: The Health Tracker User enters an invalid serving size
+
+
+
+        
+
+
+
+        //Second Sprint Test Cases
+
+            //Groups
+
+                //The Health Tracker User validly joins a group
+
+                // A user joins a group: The Health Tracker User tries to join a group with invalid details
+
+                // A user joins a group: The Health Tracker User tries to join a group they are already in
+
+                // A user leaves a group: the Health Tracker User leaves their group.
+
+                // A user creates a group: The Health Tracker User creates a valid group
+
+                // A user creates a group: The Health Tracker User tries to create a group with a non-unique name.
+
+                // A user adds members: The Health Tracker User tries to add an invalid member
+            
+
+
+
+            // Group Goals
+
+                // A user creates a group goal: The Health Tracker User creates a valid group goal.
+
+                // A user creates a group goal: The Health Tracker tries to create an invalid group goal.
+
+                // A user completes a group goal: The Health Tracker user logs exercise that completes a group goal.
+
+            
+
+
+            // Goals
+
+                //  A user’s goal expires: the Health Tracker User logs in when their goal has expired.
+
+
+            
+
+
+
+
+
+
+
+
+
+
     }
 }
 

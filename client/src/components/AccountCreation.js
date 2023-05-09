@@ -43,8 +43,11 @@ function AccountCreation({ setToken }) {
             .then((data) => {
                 //May need to be updated to another page
                 if (data) {
-                    setToken(data.id);
-                    
+                    setToken(data.id.user);
+                    //Used to store when they last entered their weight, and the frequency that they need to input their weight in
+                    localStorage.setItem("lastWeighIn", new Date());
+                    localStorage.setItem("waitInterval", 1);
+                    window.location.reload();
                 } else {
                     alert("Invalid account creation details.");
                 }
@@ -271,7 +274,9 @@ function AccountCreation({ setToken }) {
             <br />
             <br />
 
-            <button class="create-account-btn" type="submit">Create Account</button>
+            <button class="create-account-btn" type="submit">
+                Create Account
+            </button>
         </form>
     );
 }
