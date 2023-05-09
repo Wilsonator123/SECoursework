@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import GoalView from "./components/goalView";
 import "./css/goal.css";
+import "./css/index.css";
 
 export default function Home() {
     const tokenString = localStorage.getItem("token");

@@ -1,4 +1,5 @@
 import "./css/group.css";
+import "./css/index.css";
 import { useState, useEffect } from "react";
 import GroupCreationForm from "./components/GroupCreationForm";
 import GroupView from "./components/GroupView";

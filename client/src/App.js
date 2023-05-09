@@ -1,4 +1,5 @@
 import "./css/App.css";
+import "./css/index.css";
 import { useState } from "react";
 import AccountCreation from "./components/AccountCreation";
 import Login from "./components/LogIn";

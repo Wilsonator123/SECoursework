@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./Navbar";
 import { Outlet, Link } from "react-router-dom";
 import "./css/header.css";
+import "./css/index.css";
 
 export default function Navbar() {
     useEffect(() => {

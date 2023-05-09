@@ -1,5 +1,6 @@
 import HealthDetails from "./components/HealthDetails";
 import "./css/Account.css";
+import "./css/index.css";
 
 import React, { useState, useEffect } from "react";
 
@@ -123,7 +124,7 @@ export default function Account({ userID }) {
             <h1> ACCOUNT PAGE </h1>
             <div class="grid-container-accountpage">
                 <div class="profile-box">
-                    <h2>Welcome user: {user[0].username}</h2>
+                    <h1>Welcome user: {user[0].username}</h1>
                 </div>
 
                 <div class="bmi-box">
@@ -139,15 +140,16 @@ export default function Account({ userID }) {
                 <br />
 
                 <div class="date-box">
-                    <button class="arrow left" onClick={goToPrevDay}>
-                        {" "}
-                    </button>
-                    <p class="date-text">
-                        Date: {date.toLocaleDateString("en-GB")}
-                    </p>
-                    <button class="arrow right" onClick={goToNextDay}>
-                        {" "}
-                    </button>
+                <h2>
+                    <a id="prev" value="prev" onClick={goToPrevDay}>
+                        <i value="prev" className="fa-light fa-less-than" />
+                    </a>
+                    {"  "}
+                    {date.toLocaleDateString("en-GB")}
+                    <a id="next" data-value="next" onClick={goToNextDay}>
+                        <i value="next" className="fa-light fa-greater-than" />
+                    </a>
+                </h2>
                 </div>
 
                 <br />
