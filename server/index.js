@@ -3,13 +3,6 @@ const express = require("express");
 
 const bodyParser = require("body-parser");
 const app = express();
-const fs = require("fs");
-
-const https = require("https");
-const serverKey = fs.readFileSync("./key.pem");
-const serverCert = fs.readFileSync("./cert.pem");
-
-//import {testHarness} from './testHarness.js';
 
 const cors = require("cors");
 const multer = require("multer");
@@ -96,12 +89,6 @@ app.post("/api/createUser", upload.single("file"), (req, res) => {
     } else {
         res.send(false);
     }
-});
-
-/*********************ACCOUNT PAGE *****************************/
-app.post("/api/recordWeight", (req, res) => {
-    console.log(req.body);
-    res.send(interface.recordWeight(req.body));
 });
 
 /*********************RECORD EXERCISE PAGE**********************/
@@ -217,19 +204,6 @@ app.post("/api/addUserViaEmail", (req, res) => {
     res.send(interface.acceptGroupInvite(req.body));
 });
 
-//Adding a user to a group when they add the group_id code
-app.post("/api/addUserViaCode", (req, res) => {
-    res.send(interface.addUserViaCode(req.body));
-});
-
-app.post("/api/checkOwner", (req, res) => {
-    res.send(interface.checkOwner(req.body));
-});
-
-app.post("/api/leaveGroup", (req, res) => {
-    res.send(interface.leaveGroup(req.body));
-});
-
 app.post("/api/expiredGoals", (req, res) => {
     res.send(interface.getGoalHistory(req.body));
 });
@@ -244,36 +218,11 @@ app.post("/api/checkGoals", (req, res) => {
     res.send(interface.checkGoals(req.body.id));
 });
 
-//Adding a group goal when they click the link on an email
-app.post("/api/addGoalViaEmail", (req, res) => {
-    console.log(req.body);
-    res.send(interface.acceptGoalInvite(req.body));
-});
-
-//Group goals functions
-app.post("/api/createGroupGoal", (req, res) => {
-    console.log(req.body);
-    res.send(interface.createGroupGoal(req.body));
-});
-
-app.post("/api/checkGroupGoals", (req, res) => {
-    console.log(req.body);
-    res.send(interface.checkGroupGoals(req.body.id));
-});
-
-app.post("/api/getActiveGroupGoals", (req, res) => {
-    res.send(interface.getGroupGoals(req.body));
-});
-
 app.post("/api/reActivateGoal", (req, res) => {
     console.log(req.body);
     res.send(interface.expiredGoal(req.body));
 });
 
-const sslServer = https.createServer({ key: serverKey, cert: serverCert }, app);
 app.listen(3001, () => {
     console.log("Server running on port 3001");
 });
-
-//Calls test harness
-interface.testHarness();

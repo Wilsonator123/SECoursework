@@ -1,5 +1,4 @@
 import HealthDetails from "./components/HealthDetails";
-import RecordWeight from "./components/RecordWeight";
 import "./css/Account.css";
 
 import React, { useState, useEffect } from "react";
@@ -15,7 +14,6 @@ export default function Account({ userID }) {
 
     //Used to get users id from session storage
     const tokenString = localStorage.getItem("token");
-
 
     const userToken = JSON.parse(tokenString);
 
@@ -134,7 +132,8 @@ export default function Account({ userID }) {
                 </div>
 
                 <div class="group-box">
-                   <RecordWeight />
+                    <h2>Group History:</h2>
+                    <p> was not sure if we are having this or not </p>
                 </div>
                 <br />
                 <br />
