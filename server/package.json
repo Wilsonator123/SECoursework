@@ -18,7 +18,7 @@
     "scripts": {
         "start": "node index.js",
         "dev": "nodemon index.js",
-        "test": "mocha test/AccountCreation.test.js"
+        "test": "mocha test/TestHarness.test.js"
     },
     "author": "",
     "license": "ISC",
