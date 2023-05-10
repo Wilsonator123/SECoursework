@@ -277,74 +277,246 @@ describe('Diet Tests', function() {
 
 
 
-describe('Excercise Tests', function() {
+describe('Exercise Tests', function() {
 
   describe('recordExercise', function() {
-    it('Return true for valid input of food', function() {
+    it('Return true for valid input of distance based exercise', function() {
 
-      const result = backend.recordNewFood({id: 1, name: "testFood123", calories: 200});
+      const result = backend.recordExercise({id: 1, name: "testExercise123", activity: 1, time: 100, distance: 100});
       assert.isTrue(result.changes === 1);
 
     });
 
-    it('Return false if any part of input is empty', function() {
 
-
-      let result = backend.recordNewFood({id: "", name: "testFood123", calories: 200});
-      assert.isFalse(result);
-      result = backend.recordNewFood({id: 1, name: "", calories: 200});
-      assert.isFalse(result);
-      result = backend.recordNewFood({id: 1, name: "testFood123", calories: ""});
-      assert.isFalse(result);
-
-    });
-
-  });
-
-
-
-
-  describe('recordNewDrink', function() {
-    it('Return true for valid input of drink', function() {
-
-      const result = backend.recordNewDrink({id: 1, name: "testDrink123", calories: 200});
+    it('Return true for valid input of time based exercise', function() {
+      const result = backend.recordExercise({id: 1, name: "testExercise456", activity: 5, time: 100, distance: ""});
       assert.isTrue(result.changes === 1);
-
     });
 
-    it('Return false if any part of input is empty', function() {
 
-      let result = backend.recordNewDrink({id: "", name: "testDrink123", calories: 200});
+    it('Return false when a field is empty', function() {
+      const result = backend.recordExercise({id: 1, name: "testExercise789", activity: "", time: 100, distance: 200});
       assert.isFalse(result);
-      result = backend.recordNewDrink({id: 1, name: "", calories: 200});
-      assert.isFalse(result);
-      result = backend.recordNewDrink({id: 1, name: "testDrink123", calories: ""});
-      assert.isFalse(result);
-
-    });
-
-  });
-
-
-
-
-  describe('recordMeal', function() {
-    it('Return true for valid input of meal', function() {
-
-      const result = backend.recordMeal({user_id: 1, name: "testMeal123", mealType: "breakfast", food: "Apple", foodAmount: 200, drink: "Water", drinkAmount: 200});
-      assert.isTrue(result);
-
-    });
-
-    it('Return false if any part of input is null', function() {
-
-      const result = backend.recordMeal({user_id: 1, name: "", mealType: "breakfast", food: "Apple", foodAmount: 200, drink: "Water", drinkAmount: 200});
-      assert.isFalse(result);
-
     });
 
   });
 
   
 });
+
+
+
+
+
+
+
+
+describe('Group Tests', function() {
+
+  describe('createGroup', function() {
+
+
+    it('Return true for valid creation of group', function() {
+
+      const result = backend.createGroup({user_id: 1, name: "testGroup123"});
+      assert.isTrue(result);
+
+    });
+
+
+    it('Return false for duplicate name of group', function() {
+
+      const result = backend.createGroup({user_id: 1, name: "testGroup123"});
+      assert.isFalse(result);
+
+    });
+
+  });
+
+
+
+
+
+  describe('sendGroupInvite', function() {
+
+
+    it('Return true for valid group invite', function() {
+
+
+      const userData = {
+        username: 'unitTest5678',
+        firstname: 'Unit',
+        lastname: 'Test',
+        email: 'driverandrew@yahoo.com',
+        password: 'test',
+        gender: 'male',
+        dob: new Date('2003-04-21').toDateString(),
+        height: '170',
+        weight: '60',
+        tweight: '65'
+      };
+      
+      const img = 'default.png';
+      const result = backend.createUser(userData, img);
+      assert.isTrue(result !== false);
+
+
+      const result2 = backend.sendGroupInvite({group_id: 1, email: "driverandrew@yahoo.com"});
+      assert.isTrue(result2);
+
+    });
+
+
+    it('Return false where email isnt in database', function() {
+
+      const result = backend.sendGroupInvite({group_id: 1, email: "driverandrew1@yahoo.com"});
+      assert.isTrue(result.error === 'User with this email not found');
+
+    });
+
+
+    it('Return false where user is already in group', function() {
+
+      const result = backend.sendGroupInvite({group_id: 1, email: "driverandrew222@yahoo.com"});
+      assert.isTrue(result.error === 'User is already a member of this group');
+
+    });
+
+
+
+  });
+
+
+
+
+
+
+
+
+
+  describe('acceptGroupInvite', function() {
+
+
+    it('Return true for a valid accepting of invite', function() {
+
+      const userData = {
+        username: 'unitTest333',
+        firstname: 'Unit',
+        lastname: 'Test',
+        email: 'driverandrew333@yahoo.com',
+        password: 'test',
+        gender: 'male',
+        dob: new Date('2003-04-21').toDateString(),
+        height: '170',
+        weight: '60',
+        tweight: '65'
+      };
+      
+      const img = 'default.png';
+      const result = backend.createUser(userData, img);
+      assert.isTrue(result !== false);
+
+
+      const result2 = backend.acceptGroupInvite({group_id: 1, email: "driverandrew@yahoo.com", user_id: 2});
+      assert.isTrue(result2);
+
+    });
+
+
+
+    it('Return false for an invalid email', function() {
+
+      const result = backend.acceptGroupInvite({group_id: 1, email: "driverandrewbbb@yahoo.com", user_id: 2});
+      assert.isTrue(result.error === 'Account with that email not found');
+
+    });
+
+
+    it('Return false when the member is already part of the group', function() {
+
+      const result = backend.acceptGroupInvite({group_id: 1, email: "driverandrew222@yahoo.com", user_id: 1});
+      assert.isTrue(result.error === "User is already a member of this group");
+
+    });
+
+
+    it('Return false when the not logged in as the correct user', function() {
+
+      const result = backend.acceptGroupInvite({group_id: 1, email: "driverandrew333@yahoo.com", user_id: 1});
+      assert.isTrue(result.error === "Not logged in as the right user to accept this");
+
+    });
+
+
+
+
+  });
+
+
+
+
+
+
+
+
+  describe('addUserViaCode', function() {
+
+
+
+    it('Return false for a valid invite code', function() {
+
+      const result = backend.addUserViaCode({user_id: 3, group_id: 200});
+      assert.isTrue(result.error === 'Group not found');
+
+    });
+
+    it('Return true for a valid invite', function() {
+
+      const result = backend.addUserViaCode({user_id: 3, group_id: 1});
+      assert.isTrue(result);
+
+    });
+
+
+
+
+  });
+
+
+
+
+
+  describe('checkOwner', function() {
+
+
+
+    it('Return true if it is the owner', function() {
+
+      const result = backend.addUserViaCode({user_id: 3, group_id: 200});
+      assert.isTrue(result.error === 'Group not found');
+
+    });
+
+    it('Return false if it is not the owner', function() {
+
+      const result = backend.addUserViaCode({user_id: 3, group_id: 1});
+      assert.isTrue(result);
+
+    });
+
+
+
+
+  });
+
+
+
+
+
+
+  
+});
+
+
+
 

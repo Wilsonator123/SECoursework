@@ -294,7 +294,7 @@ class Interface {
         );
         const info2 = stmt2.all(activity);
         const type = info2[0].type;
-        console.log("TYPE: " + type);
+        
         if (result.changes !== 0 && type === 1) this.updateEGoal(id, distance);
         return result;
     }
@@ -508,13 +508,12 @@ class Interface {
     //Return true only if group name hasnt been taken before
     checkGroupName(body) {
         const { name } = body;
-        console.log(name);
-        console.log(body);
+
         const stmt = this.database.prepare(
             "SELECT * FROM `group` WHERE name = ?"
         );
         const info = stmt.get(body);
-        console.log(info);
+
         if (info === undefined) {
             return true;
         }
@@ -526,13 +525,14 @@ class Interface {
 
     createGroup(body) {
         const { user_id, name } = body;
-
+        
         if (user_id === "" || name === "") {
             return false;
         }
 
         //Checking the unique group name again
         if (!this.checkGroupName(name)) {
+            
             return false;
         }
 
@@ -541,7 +541,7 @@ class Interface {
         );
 
         const result = stmt.run(name, user_id);
-
+        
         const getIDstmt = this.database.prepare(
             "SELECT * from `group` WHERE name = ?"
         );
@@ -553,7 +553,7 @@ class Interface {
         );
 
         const result2 = stmt2.run(idResult, user_id);
-
+        
         return true;
     }
 
@@ -590,18 +590,14 @@ class Interface {
     sendGroupInvite(body) {
         //Emails a user about joining a group
         const { group_id, email } = body;
-
+        
         //First check if email in system:
         const stmt = this.database.prepare(
             "SELECT * from user WHERE email = ?"
         );
         const info = stmt.get(email);
-        if (info === undefined) {
-            return false;
-        } else if (info.length === 0) {
-            return res
-                .status(400)
-                .json({ error: "User with this email not found" });
+        if (info === undefined || info.length === 0) {
+            return { error: "User with this email not found" };
         }
 
         //Then check email is not already in the given group
@@ -612,12 +608,11 @@ class Interface {
         if (info2 === undefined) {
             //This is what we want, so just continue on
         } else if (info2.length !== 0) {
-            return res
-                .status(400)
-                .json({ error: "User is already a member of this group" });
+            
+            return { error: "User is already a member of this group" };
         }
 
-        console.log("Valid email, so try and send");
+        
 
         //If all this is met, send an email.
 
@@ -649,7 +644,6 @@ class Interface {
                 console.log(error);
                 return false;
             } else {
-                console.log("Email sent: " + info.response);
                 return true;
             }
         });
@@ -686,9 +680,9 @@ class Interface {
             "SELECT * from `group` WHERE id = ?"
         );
         const info3 = stmt3.get(group_id);
-        console.log(info3);
+        
         if (info3 === undefined) {
-            console.log("Group not found error");
+            
             return { error: "Group not found" };
         }
 
@@ -705,16 +699,11 @@ class Interface {
             return { error: "User is already a member of this group" };
         }
 
-        console.log(userID);
-        console.log(user_id);
 
-        console.log(typeof userID);
-        console.log(typeof user_id);
-        console.log(userID == user_id);
 
         //Check the userID matches the current account logged in
         if (userID != user_id) {
-            console.log("HAH GOT YA");
+            
             return { error: "Not logged in as the right user to accept this" };
         }
 
@@ -737,13 +726,13 @@ class Interface {
                 "SELECT email from user WHERE id = ?"
             );
             const info5 = stmt5.get(user_id);
-            console.log(info5);
+            
             if (info5 === undefined) {
                 return { error: "Account with that email not found" };
             }
 
             const body2 = ({ group_id: group_id, email: info5.email, user_id: user_id })
-            console.log(body2);
+            
             return this.acceptGroupInvite(body2);
     
         }
@@ -876,8 +865,7 @@ class Interface {
 
     updateEGoal(id, distance) {
         //user_id
-        console.log("updateGoal");
-        console.log(id, distance);
+
 
         const stmt = this.database.prepare(
             "SELECT * from goal WHERE user_id = ? AND goalType = 'exercise' AND status = 'ACTIVE'"
