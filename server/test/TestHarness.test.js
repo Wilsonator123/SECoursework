@@ -492,14 +492,112 @@ describe('Group Tests', function() {
 
     it('Return true if it is the owner', function() {
 
-      const result = backend.addUserViaCode({user_id: 3, group_id: 200});
-      assert.isTrue(result.error === 'Group not found');
+      const result = backend.checkOwner({user_id: 1, group_id: 1});
+      assert.isTrue(result);
 
     });
 
     it('Return false if it is not the owner', function() {
 
-      const result = backend.addUserViaCode({user_id: 3, group_id: 1});
+      const result = backend.checkOwner({user_id: 2, group_id: 1});
+      assert.isFalse(result);
+
+    });
+
+
+
+
+  });
+
+
+
+
+
+  describe('createGroupGoal', function() {
+
+
+
+    it('Return true if a valid group goal is made', function() {
+
+      const result = backend.createGroupGoal({user_id: 1, name: "testGoal", group_id: 1, goalType: 'exercise', target: 500, start: "2023-05-10", end: "2023-05-17", notes: ""});
+      assert.isTrue(result);
+
+    });
+
+
+
+    it('Return false if an invalid end date is given', function() {
+
+      const result = backend.createGroupGoal({user_id: 1, name: "testGoal", group_id: 1, goalType: 'exercise', target: 500, start: "2023-05-10", end: "2023-05-09", notes: ""});
+      assert.isFalse(result);
+
+    });
+
+
+
+    it('Return false if an empty field is given', function() {
+
+      const result = backend.createGroupGoal({user_id: 1, name: "", group_id: 1, goalType: 'exercise', target: 500, start: "2023-05-10", end: "2023-05-17", notes: ""});
+      assert.isFalse(result);
+
+    });
+
+
+
+  });
+
+
+
+
+
+  describe('acceptGoalInvite', function() {
+
+
+    it('Return false if an invalid code', function() {
+
+      const result = backend.acceptGoalInvite({goal_id: 123, user_id: 1});
+      assert.isTrue(result.error === "No goal found with this code.");
+
+    });
+
+
+    it('Return false if user not in group', function() {
+      const userData = {
+        username: 'unitTest444',
+        firstname: 'Unit',
+        lastname: 'Test',
+        email: 'driverandrew444@yahoo.com',
+        password: 'test',
+        gender: 'male',
+        dob: new Date('2003-04-21').toDateString(),
+        height: '170',
+        weight: '60',
+        tweight: '65'
+      };
+      
+      const img = 'default.png';
+      const result = backend.createUser(userData, img);
+      assert.isTrue(result !== false);
+
+
+      const result2 = backend.acceptGoalInvite({goal_id: 1, user_id: 4});
+      assert.isTrue(result2.error === "You are not a member of this group.");
+
+    });
+
+
+
+    it('Return false if user already has group goal', function() {
+
+      const result = backend.acceptGoalInvite({goal_id: 1, user_id: 1});
+      assert.isTrue(result.error === "User already has this group goal on their account.");
+
+    });
+
+
+    it('Return true if user validly adds group goal', function() {
+
+      const result = backend.acceptGoalInvite({goal_id: 1, user_id: 2});
       assert.isTrue(result);
 
     });
@@ -508,6 +606,48 @@ describe('Group Tests', function() {
 
 
   });
+
+
+
+
+
+
+
+
+
+  describe('leaveGroup', function() {
+
+
+
+    it('Return false if the owner tries to leave and the group is not empty', function() {
+
+      const result = backend.leaveGroup({group_id: 1, user_id: 1});
+      assert.isFalse(result);
+
+    });
+
+
+    it('Return true if other members try to leave a group', function() {
+
+      const result = backend.leaveGroup({group_id: 1, user_id: 2});
+      assert.isTrue(result);
+      const result2 = backend.leaveGroup({group_id: 1, user_id: 3});
+      assert.isTrue(result2);
+
+    });
+
+
+    it('Return true if the owner tries to leave an empty group', function() {
+
+      const result = backend.leaveGroup({group_id: 1, user_id: 1});
+      assert.isTrue(result);
+
+    });
+
+
+
+  });
+
 
 
 

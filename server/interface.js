@@ -742,22 +742,22 @@ class Interface {
     //Checks if user is owner of group or not - if so, they see the group modification details. If not, they get the member view
     checkOwner(body){
         const { group_id, user_id } = body;
-        console.log(body);
+        
 
         //Get users email
         const stmt = this.database.prepare(
             "SELECT * from `group` WHERE owner_id = ? AND id = ?"
         );
         const info = stmt.get(user_id, group_id);
-        console.log(info);
+        
 
         if (info === undefined) {
-            console.log("NOT OWNER");
+            
             return false;
         }
 
-        else{
-            console.log("IS OWNER");
+        else {
+
             return true;
         }
     }
@@ -767,7 +767,7 @@ class Interface {
     //Remove a non-owner from a group, or an owner if the group only has one member
     leaveGroup(body){
         const { group_id, user_id } = body;
-        console.log(body);
+        
 
         //If user is owner and group size is 1, allow them to leave. Otherwise, dont.
         //If user is NOT the owner, allow them to leave
@@ -775,7 +775,7 @@ class Interface {
             "SELECT * from `group` WHERE owner_id = ? AND id = ?"
         );
         const info = stmt.get(user_id, group_id);
-        console.log(info);
+        
 
         if (info === undefined) {
             const stmt2 = this.database.prepare(
@@ -793,11 +793,11 @@ class Interface {
                 "SELECT COUNT(*) FROM group_user WHERE group_id = ?"
             )
             const info3 = stmt3.get(group_id);
-            console.log(info3);     
+            
             //If only one member left in group remove them and delete group
 
             if(info3['COUNT(*)'] <= 1){
-                console.log("Removing owner");
+                
                 const stmt4 = this.database.prepare(
                     "DELETE from group_user WHERE user_id = ? AND group_id = ?"
                 );
@@ -812,7 +812,7 @@ class Interface {
                 return true;
             }
             else{
-                console.log("Will not remove owner");
+                
                 return false;
             }
         }
@@ -1089,7 +1089,7 @@ class Interface {
     createGroupGoal(body) {
         const { user_id, name, group_id, goalType, target, start, end, notes } =
             body;
-        console.log(body);
+        
         let current = body.current;
         if (
             name === "" ||
@@ -1162,7 +1162,7 @@ class Interface {
             end,
             notes
         );
-        console.log(result2);
+        
 
         const ownerGoalID = result2[0].id;
 
@@ -1172,11 +1172,11 @@ class Interface {
 
         //Loop through the users - group owner gets goal automatically added, everyone else gets a link.
         info.forEach(user => {
-            console.log("USER ID:" + user.user_id);
-            console.log(ownerID);
+            
+            
             if (user.user_id == ownerID[0].owner_id){
                 //IF owner, pass here as already done
-                console.log("Doesn't send to owner")
+                
 
             }
             else {
@@ -1199,7 +1199,7 @@ class Interface {
                         console.log(error);
                         return false;
                     } else {
-                        console.log("Email sent: " + info.response);
+                        
                         return true;
                     }
                 });
@@ -1224,8 +1224,7 @@ class Interface {
         const { goal_id, user_id } =
             body;
         
-        console.log("Testing accept goal invite");
-        console.log(body);
+
 
 
         //Get goal which will be copied into the user
@@ -1238,8 +1237,7 @@ class Interface {
         );
 
 
-        console.log("RESULT2");
-        console.log(result2);
+
 
         //Return an error if no goal found with the code.
         if (result2.length === 0){
@@ -1286,8 +1284,7 @@ class Interface {
         );
         
 
-        console.log("RESULT3");
-        console.log(result3);
+
 
         if(result3.length !== 0){
             return { error: "User already has this group goal on their account." }
