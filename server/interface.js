@@ -10,7 +10,7 @@ const crypto = require("crypto");
 class Interface {
     constructor() {
         this.database = new dB("database.db", {
-            verbose: console.log,
+            verbose: null,
         });
 
         //IMPORTANT DATABASE STUFF WE MIGHT NEED AGAIN!
@@ -19,6 +19,7 @@ class Interface {
         this.database.exec(
             fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8")
         );
+
 
         //this.database.exec("DROP TABLE user");
     }
@@ -57,8 +58,6 @@ class Interface {
             "SELECT * FROM user WHERE email = ?"
         );
         const info = stmt.all(email);
-        console.log("Worked correctly here");
-        console.log(email);
         if (info.length === 0) return true; //If email is not in this.database
         else return false; //If email is in this.database
     }
@@ -191,8 +190,6 @@ class Interface {
 
     bmi(id) {
         //Returns BMI for a specific user
-        console.log("In interface method");
-        console.log(id);
         const stmt = this.database.prepare("SELECT * FROM user WHERE id = ?");
         const info = stmt.all(id);
         const weight = info[0].weight;
@@ -362,7 +359,6 @@ class Interface {
     }
 
     getFood(body) {
-        console.log(body);
         const stmt = this.database.prepare(
             "SELECT * FROM food WHERE (createdBy = ? OR createdBy = 0) AND LOWER(name) LIKE ? ORDER BY name ASC LIMIT 6"
         );
@@ -409,10 +405,10 @@ class Interface {
     }
 
     getCalories(food, foodAmount, drink, drinkAmount) {
-        console.log(food, foodAmount, drink, drinkAmount);
+
         var foodCalories = 0;
         var drinkCalories = 0;
-        console.log("in getCalories");
+
         if (food !== "") {
             const stmt = this.database.prepare(
                 "SELECT calories FROM food WHERE name = ?"
@@ -485,9 +481,6 @@ class Interface {
         }
 
         var calories = this.getCalories(food, foodAmount, drink, drinkAmount);
-        console.log(user_id);
-        console.log(name);
-        console.log(typeof user_id);
 
         const date = new Date().toISOString().slice(0, 10);
 

@@ -13,24 +13,37 @@ backend.database.exec("DROP TABLE group_user");
 backend.database.exec("DROP TABLE meal");
 backend.database.exec("DROP TABLE exercise");
 backend.database.exec("DROP TABLE goal");
+backend.database.exec("DROP TABLE food");
+backend.database.exec("DROP TABLE drink");
+backend.database.exec("DROP TABLE activity");
 backend.database.exec("DROP TABLE `group`");
-
-
 
 
 backend.database.exec(
   fs.readFileSync(path.join(__dirname, "/../ddl.sql"), "utf8")
 );
 
+backend.database.exec(
+  fs.readFileSync(path.join(__dirname, "/../data/food_drink.sql"), "utf8")
+);
+
+backend.database.exec(
+  fs.readFileSync(path.join(__dirname, "/../data/activity.sql"), "utf8")
+);
+
+
+
+
+
 
 
 describe('Account Creation Tests', function() {
-  // ...
+
 
   describe('checkEmailFormat', function() {
 
 
-    it('should return true for a valid email format', function() {
+    it('Returns true on a valid email format', function() {
 
       const email = 'test@example.com';
       const result = backend.checkEmailFormat(email);
@@ -39,7 +52,7 @@ describe('Account Creation Tests', function() {
 
     });
 
-    it('should return false for an invalid email format', function() {
+    it('Return false on an invalid email format', function() {
 
       const email = 'invalid_email_format';
       const result = backend.checkEmailFormat(email);
@@ -48,10 +61,10 @@ describe('Account Creation Tests', function() {
     });
   });
 
+
   describe('createUser', function() {
 
-  
-    it('should create a new user with the provided data', function() {
+    it('Creates a user when valid data is given', function() {
       const userData = {
         username: 'unitTest1234',
         firstname: 'Unit',
@@ -72,7 +85,7 @@ describe('Account Creation Tests', function() {
     });
 
 
-    it('should return false if the email has already been taken', function() {
+    it('Return false if email has already been taken', function() {
       const userData = {
         username: 'unitTest123',
         firstname: 'Unit',
@@ -96,7 +109,7 @@ describe('Account Creation Tests', function() {
 
 
   describe('checkEmail', function() {
-    it('should return true if the email is available', function() {
+    it('Return true if email is available', function() {
       const email = 'test@example.com';
       const result = backend.checkEmail(email);
       assert.isTrue(result);
@@ -104,7 +117,7 @@ describe('Account Creation Tests', function() {
     });
 
 
-    it('should return false if the email is already taken', function() {
+    it('Return false if email is already taken', function() {
       
       const email = 'driverandrew222@yahoo.com';
       const result = backend.checkEmail(email);
@@ -114,7 +127,7 @@ describe('Account Creation Tests', function() {
   });
 
   describe('checkUsername', function() {
-    it('should return true if the username is available', function() {
+    it('Return true if username is available', function() {
 
 
       const username = 'unitTest12345';
@@ -124,7 +137,7 @@ describe('Account Creation Tests', function() {
     });
 
 
-    it('should return false if the username is already taken', function() {
+    it('Return false if the username is already taken', function() {
 
       const username = 'unitTest1234';
       const result = backend.checkUsername(username);
@@ -142,7 +155,7 @@ describe('Account Creation Tests', function() {
 
 describe('Login Tests', function() {
   describe('login', function() {
-    it('should return true for a valid username and password', function() {
+    it('Return true for a valid username and password', function() {
 
       const username = 'unitTest1234';
       const password = 'test';
@@ -152,7 +165,7 @@ describe('Login Tests', function() {
 
     });
 
-    it('should return false for an invalid username or password', function() {
+    it('Return false for an invalid username or password', function() {
       const username = 'unitTest1234';
       const password = 'wrongpassword';
 
@@ -162,7 +175,7 @@ describe('Login Tests', function() {
 
     });
 
-    it('should return false for a non-existing username', function() {
+    it('Return false for a non-existing username', function() {
       const username = 'nonexistinguser';
       const password = 'password123';
 
@@ -170,6 +183,85 @@ describe('Login Tests', function() {
 
       assert.isFalse(result);
     });
+  });
+
+  
+});
+
+
+
+
+
+
+
+
+
+describe('Diet Tests', function() {
+
+  describe('recordNewFood', function() {
+    it('Return true for valid input of food', function() {
+
+      const result = backend.recordNewFood({id: 1, name: "testFood123", calories: 200});
+      assert.isTrue(result.changes === 1);
+
+    });
+
+    it('Return false if any part of input is empty', function() {
+
+
+      let result = backend.recordNewFood({id: "", name: "testFood123", calories: 200});
+      assert.isFalse(result);
+      result = backend.recordNewFood({id: 1, name: "", calories: 200});
+      assert.isFalse(result);
+      result = backend.recordNewFood({id: 1, name: "testFood123", calories: ""});
+      assert.isFalse(result);
+
+    });
+
+  });
+
+
+
+
+  describe('recordNewDrink', function() {
+    it('Return true for valid input of drink', function() {
+
+      const result = backend.recordNewDrink({id: 1, name: "testDrink123", calories: 200});
+      assert.isTrue(result.changes === 1);
+
+    });
+
+    it('Return false if any part of input is empty', function() {
+
+      let result = backend.recordNewDrink({id: "", name: "testDrink123", calories: 200});
+      assert.isFalse(result);
+      result = backend.recordNewDrink({id: 1, name: "", calories: 200});
+      assert.isFalse(result);
+      result = backend.recordNewDrink({id: 1, name: "testDrink123", calories: ""});
+      assert.isFalse(result);
+
+    });
+
+  });
+
+
+
+
+  describe('recordMeal', function() {
+    it('Return true for valid input of meal', function() {
+
+      const result = backend.recordMeal({user_id: 1, name: "testMeal123", mealType: "breakfast", food: "Apple", foodAmount: 200, drink: "Water", drinkAmount: 200});
+      assert.isTrue(result);
+
+    });
+
+    it('Return false if any part of input is null', function() {
+
+      const result = backend.recordMeal({user_id: 1, name: "", mealType: "breakfast", food: "Apple", foodAmount: 200, drink: "Water", drinkAmount: 200});
+      assert.isFalse(result);
+
+    });
+
   });
 
   
