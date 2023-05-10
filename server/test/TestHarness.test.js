@@ -267,3 +267,84 @@ describe('Diet Tests', function() {
   
 });
 
+
+
+
+
+
+
+
+
+
+
+describe('Excercise Tests', function() {
+
+  describe('recordExercise', function() {
+    it('Return true for valid input of food', function() {
+
+      const result = backend.recordNewFood({id: 1, name: "testFood123", calories: 200});
+      assert.isTrue(result.changes === 1);
+
+    });
+
+    it('Return false if any part of input is empty', function() {
+
+
+      let result = backend.recordNewFood({id: "", name: "testFood123", calories: 200});
+      assert.isFalse(result);
+      result = backend.recordNewFood({id: 1, name: "", calories: 200});
+      assert.isFalse(result);
+      result = backend.recordNewFood({id: 1, name: "testFood123", calories: ""});
+      assert.isFalse(result);
+
+    });
+
+  });
+
+
+
+
+  describe('recordNewDrink', function() {
+    it('Return true for valid input of drink', function() {
+
+      const result = backend.recordNewDrink({id: 1, name: "testDrink123", calories: 200});
+      assert.isTrue(result.changes === 1);
+
+    });
+
+    it('Return false if any part of input is empty', function() {
+
+      let result = backend.recordNewDrink({id: "", name: "testDrink123", calories: 200});
+      assert.isFalse(result);
+      result = backend.recordNewDrink({id: 1, name: "", calories: 200});
+      assert.isFalse(result);
+      result = backend.recordNewDrink({id: 1, name: "testDrink123", calories: ""});
+      assert.isFalse(result);
+
+    });
+
+  });
+
+
+
+
+  describe('recordMeal', function() {
+    it('Return true for valid input of meal', function() {
+
+      const result = backend.recordMeal({user_id: 1, name: "testMeal123", mealType: "breakfast", food: "Apple", foodAmount: 200, drink: "Water", drinkAmount: 200});
+      assert.isTrue(result);
+
+    });
+
+    it('Return false if any part of input is null', function() {
+
+      const result = backend.recordMeal({user_id: 1, name: "", mealType: "breakfast", food: "Apple", foodAmount: 200, drink: "Water", drinkAmount: 200});
+      assert.isFalse(result);
+
+    });
+
+  });
+
+  
+});
+
