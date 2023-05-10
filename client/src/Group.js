@@ -1,7 +1,8 @@
-import "./css/group.css";
 import "./css/index.css";
+import "./css/group.css";
 import { useState, useEffect } from "react";
 import GroupCreationForm from "./components/GroupCreationForm";
+import JoinGroup from "./components/JoinGroup";
 import GroupView from "./components/GroupView";
 import { useNavigate } from "react-router-dom";
 
@@ -54,10 +55,15 @@ export default function Group() {
     const [userGroups, setUserGroups] = useState([]);
 
     const [showGroupCreationForm, setShowGroupCreationForm] = useState(false);
+    const [showJoinGroupForm, setShowJoinGroupForm] = useState(false);
     const [showGroupView, setShowGroupView] = useState(false);
 
     const renderGroupCreationForm = () => {
         setShowGroupCreationForm(!showGroupCreationForm);
+    };
+
+    const renderJoinGroupForm = () => {
+        setShowJoinGroupForm(!showJoinGroupForm);
     };
 
     const renderGroupView = () => {
@@ -97,10 +103,16 @@ export default function Group() {
                 <GroupCreationForm onClose={renderGroupCreationForm} />
             ) : null}
 
+            {showJoinGroupForm ? (
+                <JoinGroup onClose={renderJoinGroupForm} />
+            ) : null}
+
             <div id="pageContainer">
                 <h1> GROUP PAGE </h1>
                 <button onClick={renderGroupCreationForm}>Create Group</button>
+                <button onClick={renderJoinGroupForm}>Join Group</button>
                 <div id="groupCreationForm" />
+                <div id="joinGroupForm" />
 
                 <h2>Your Groups</h2>
 
