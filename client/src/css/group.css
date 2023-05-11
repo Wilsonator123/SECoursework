@@ -16,7 +16,7 @@
 }
 .groupBox2 {
     grid-column: 2;
-    background:#7EBB94;
+    background:#7EBB94; 
 }
 .groupBox3 {
     grid-column: 3;
@@ -56,7 +56,7 @@
     height: 80%;
     width: 80%;
     overflow: hidden;
-    background-color: #b7b7b7;
+    /* background-color: #b7b7b7; */
     justify-content: center;
     display: flex;
     overflow: auto;
@@ -65,4 +65,44 @@
 .grid-container-group {
     display: grid;
     grid: 500px / auto auto;
+}
+
+.group-buttons{
+    display: flex;
+    justify-content: space-evenly;
+    margin: 0 auto;
+}
+
+.header-container{
+    display: grid;
+    grid: 150px / auto; 
+    border: 3px solid #444444; 
+    background-color:  #7FACBF;
+    grid-column: 1; 
+    margin: 10px;
+    padding: 10px;
+    border-radius: 25px;
+    text-align: center;
+} 
+.header-container h1{
+    margin-top: 60px; 
+}
+.groups-btn{
+    font-size: 20px;
+    background-color: #FA8B8C;
+    border-radius: 8px;
+    border: 2px solid #444444;
+    color: #444444;
+    margin-bottom: 20px; 
+    padding: 15px 15px; 
+
+}
+.group-img{
+    width: 130px;
+    height: 130px; 
+    margin-top: 30px;
+
+}
+#weight-form{
+    background-color: #7FACBF;
 }

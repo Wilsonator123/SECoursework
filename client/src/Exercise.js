@@ -6,6 +6,7 @@ import Chart from "./components/exerciseChart";
 import RecordExercise from "./components/RecordExercise";
 import ExerciseHistory from "./components/exerciseHistory";
 import "./css/exercise.css";
+import "./css/index.css";
 
 export default function Home() {
     const tokenString = localStorage.getItem("token");

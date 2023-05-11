@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import GoalView from "./components/goalView";
 import "./css/goal.css";
+import "./css/index.css";
 
 export default function Home() {
     const tokenString = localStorage.getItem("token");
@@ -251,7 +252,7 @@ export default function Home() {
                                 value={form.current}
                                 onChange={handleChange}
                             />
-                            <button type="submit">Submit</button>
+                            <button class="submit-btn"type="submit">Submit</button>
                         </form>
                     )}
                 </div>
@@ -307,7 +308,7 @@ export default function Home() {
                                     onChange={handleChange}
                                 />
                             </label>
-                            <button type="submit">Submit goal</button>
+                            <button class="submit-btn" type="submit">Submit goal</button>
                         </form>
                     )}
                 </div>
@@ -322,7 +323,7 @@ export default function Home() {
                         </button>
                     </div>
                     {showExerciseGoalForm && (
-                        <form onSubmit={handleSubmit} className="goal-form">
+                        <form onSubmit={handleSubmit} className="exercisegoal-form">
                             <label>
                                 Goal Name:
                                 <input
@@ -363,7 +364,7 @@ export default function Home() {
                                     onChange={handleChange}
                                 />
                             </label>
-                            <button type="submit">Submit goal</button>
+                            <button class="submit-btn" type="submit">Submit goal</button>
                         </form>
                     )}
                 </div>
@@ -393,7 +394,7 @@ export default function Home() {
                                     onChange={handleGroupGoalChange}
                                 />
                             </label>
-                            <button type="submit">Add Group Goal</button>
+                            <button class="submit-btn"type="submit">Add Group Goal</button>
                         </form>
                     )}
                 </div>

@@ -1,6 +1,7 @@
 import React from "react";
 import "./css/footer.css";
 import { Link } from "react-router-dom";
+import "./css/index.css";
 
 function Footer() {
     return (
@@ -50,6 +51,11 @@ function Footer() {
                     </li>
                 </ul>
                 <p className="copyright">Team Name &copy; 2023</p>
+
+                <div class="logo">
+                    <img className="logo" src="./logo5.png" alt="" />
+                </div> 
+                
             </section>
         </div>
     );

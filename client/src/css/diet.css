@@ -5,7 +5,7 @@
     height: 80%;
     width: 80%;
     overflow: auto;
-    background-color: #b7b7b7;
+    /* background-color: #b7b7b7; */
     justify-content: center;
     display: flex;
 }
@@ -14,7 +14,7 @@
     display: grid;
     grid: 500px / auto auto; 
     background-color: #e8e7ed; 
-    border: 3px solid #444444; 
+    /* border: 3px solid #444444;  */
     border-radius: 8px; 
 }
 
@@ -34,6 +34,7 @@ h1 {
     background: #7ebb94;
     border-radius: 25px; 
     display: block;
+    border: 3px solid #444444;
 }
 
 .dietBox1 {

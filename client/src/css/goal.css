@@ -11,6 +11,7 @@
     margin: 10px;
     padding: 10px;
     border-radius: 25px;
+    border: 2px solid #444444;
 }
 
 .goalBox-header {
@@ -29,8 +30,9 @@
     border-radius: 10px;
     font-size: 20px;
     font-weight: 600;
-    color: #fff;
+    color:#444444;
     cursor: pointer;
+    border: 2px solid #444444;
 }
 
 .goal-form {
@@ -38,8 +40,32 @@
     flex-direction: column;
     z-index: 2;
     padding: 20px;
-    background-color: aliceblue;
+    background-color: #7ebb94;
+    margin-top: 5px;
+    border: 3px solid #444444; 
+    border-radius: 25px; 
+
+} 
+.exercisegoal-form{
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+    padding: 20px;
+    background-color: #7facbf;
+    margin-top: 5px;
+    border: 3px solid #444444; 
+    border-radius: 25px; 
 }
+
+.exercisegoal-form input{
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+
 .goal-form input {
     margin: 10px;
     padding: 10px;
@@ -164,4 +190,16 @@
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
+}
+
+.submit-btn{
+    font-size: 18px;
+    background-color: #ebbb52;
+    border-radius: 8px;
+    border: 2px solid #444444;
+    color: #444444;
+    /* margin-top: 10px;  */
+    padding: 10px 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }

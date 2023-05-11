@@ -1,8 +1,9 @@
-import "./css/App.css";
+import "./css/app.css";
 import { useState } from "react";
 import AccountCreation from "./components/AccountCreation";
 import Login from "./components/LogIn";
 import PropTypes from "prop-types";
+import "./css/index.css";
 
 //Inspiration for authentication code taken from
 //https://www.digitalocean.com/community/tutorials/how-to-add-login-authentication-to-react-applications
