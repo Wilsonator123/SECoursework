@@ -34,7 +34,7 @@ function GroupView(props) {
             .then((response) => response.json())
 
             .then((data) => {
-                if (data) {
+                if (typeof data === "boolean" && data) {
                     setAddUserError("Email sent to user!")
                     //props.onClose();
                 } else {
