@@ -15,7 +15,7 @@
 }
 .profile-box h1 {
     text-align: center;
-    padding-top: 30px;
+    padding-top: 20px;
 }
 
 .bmi-box{ 
@@ -88,8 +88,6 @@
 .text-bmi{
     text-align: center;
     font-size: 50px; 
-    padding: 15px 15px;  
-    margin-top: 15%;
-    
-
+    padding: 40px 40px;  
+    margin-top: 10%;
 }

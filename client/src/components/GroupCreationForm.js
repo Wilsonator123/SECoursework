@@ -90,7 +90,7 @@ function GroupCreationForm(props) {
 
 
                 </div>
-                </div>
+            </div>
         </div>,
         document.getElementById("groupCreationForm")
     );

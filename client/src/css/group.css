@@ -1,7 +1,8 @@
 .grid-container-group {
     display: grid;
-    grid: 600px / auto; 
-    
+    grid: 500px / auto auto auto;
+    height: 300px;
+    margin-left: 80px;
 } 
 .grid-container-group2{
     display: grid;
@@ -10,7 +11,7 @@
     border-radius: 25px;
     border: 2px solid #444444; 
 }
-.groupBox1, .groupBox2, .groupBox3, .groupBox4, .groupBox5, .groupBox6 {
+.groupBox1, .groupBox2, .groupBox3, .groupBox4, .groupBox5{
     margin: 50px;
     padding: 50px;
     background: #7ebb94;
@@ -21,9 +22,12 @@
 
 
 .groupBox1 {
-    grid-column: 1;
+    grid-column: 2;
     background:#7EBB94;
+    width: 500px;
+    height:250px;
 }
+
 .groupBox2 {
     grid-column: 1;
     background:#7EBB94;  
@@ -77,11 +81,6 @@
     overflow: auto; 
 }  
 
-.grid-container-group {
-    display: grid;
-    grid: 500px / auto auto;
-}
-
 .group-buttons{
     display: flex;
     justify-content: space-evenly;
@@ -116,8 +115,8 @@
 
 }
 .group-img{
-    width: 130px;
-    height: 130px; 
+    width: 120px;
+    height: 120px; 
     margin-top: 30px;
 }
 #weight-form{
@@ -137,6 +136,34 @@
     color: #444444;
 
 }
+
+.input-box{
+    font-size: 16px;
+    background-color: #e8e7ed;
+    border-radius: 8px;
+    border-color: #444444;
+    border: 1px solid; 
+    /* margin: 5px; */  
+    display: inline-block;
+    width: 80px;
+    margin: 10px; 
+    align-items: center;
+} 
+
+.input-box2{
+    font-size: 16px;
+    background-color: #e8e7ed;
+    border-radius: 8px;
+    border-color: #444444;
+    border: 1px solid; 
+    /* margin: 5px; */  
+    display: inline-block;
+    width: 150px;
+    margin: 10px; 
+    align-items: center;
+} 
+
+
 
 @media only screen and (max-width: 600px) {   
     .header-container h1{
