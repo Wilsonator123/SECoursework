@@ -642,7 +642,47 @@ class Interface {
             subject: "Health Tracker: Join Group", 
             html: `
             <head>  
-            <link rel="stylesheet" type="text/css" href="/css/email.css">
+            <style>
+            @import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
+            *{
+                font-family: 'Cabin', sans-serif;
+            }
+
+            .email-btn{
+                font-size: 25px;
+                background-color: #ebbb52;
+                border-radius: 8px;
+                border: 2px solid #444444;
+                color: #444444;
+                padding: 15px 15px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                margin-left: 35%;
+                text-align: center;
+            }
+
+            .email-container {
+                border: 3px solid #444444;
+                background-color: #7FACBF;
+                margin: 10px;
+                padding: 10px;
+                border-radius: 25px;
+                text-align: center;
+                margin-bottom: 30px;
+            }
+
+            h1 {
+                font-size: 36px;
+                font-weight: 700;
+                margin-bottom: 25px;
+                color: #444444;
+                text-align: center;
+            }
+
+            .email-goal{
+                text-align: left;
+            }
+            </style>
             </head>
             <body>
             <div class="email-container">
@@ -1033,8 +1073,48 @@ class Interface {
                             to: user.email,
                             subject: "Health Tracker: You completed a Group Goal",
                             html: `
-                            <head>  
-                                <link rel="stylesheet" type="text/css" href="/css/email.css">
+                            <head>
+                            <style>  
+                            @import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
+                            *{
+                                font-family: 'Cabin', sans-serif;
+                            }
+                            
+                            .email-btn{
+                                font-size: 25px;
+                                background-color: #ebbb52;
+                                border-radius: 8px;
+                                border: 2px solid #444444;
+                                color: #444444;
+                                padding: 15px 15px;
+                                margin-top: 20px;
+                                margin-bottom: 20px;
+                                margin-left: 35%;
+                                text-align: center;
+                            }
+                            
+                            .email-container {
+                                border: 3px solid #444444;
+                                background-color: #7FACBF;
+                                margin: 10px;
+                                padding: 10px;
+                                border-radius: 25px;
+                                text-align: center;
+                                margin-bottom: 30px;
+                            }
+                            
+                            h1 {
+                                font-size: 36px;
+                                font-weight: 700;
+                                margin-bottom: 25px;
+                                color: #444444;
+                                text-align: center;
+                            }
+                            
+                            .email-goal{
+                                text-align: left;
+                            }
+                            </style>
                             </head>  
                             <body>
                             <div class="email-container">
@@ -1058,7 +1138,47 @@ class Interface {
                         subject: "Health Tracker: A Group Member completed a Group Goal",
                         html: `
                         <head>  
-                                <link rel="stylesheet" type="text/css" href="/css/email.css">
+                        <style>
+                        @import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
+                        *{
+                            font-family: 'Cabin', sans-serif;
+                        }
+            
+                        .email-btn{
+                            font-size: 25px;
+                            background-color: #ebbb52;
+                            border-radius: 8px;
+                            border: 2px solid #444444;
+                            color: #444444;
+                            padding: 15px 15px;
+                            margin-top: 20px;
+                            margin-bottom: 20px;
+                            margin-left: 35%;
+                            text-align: center;
+                        }
+            
+                        .email-container {
+                            border: 3px solid #444444;
+                            background-color: #7FACBF;
+                            margin: 10px;
+                            padding: 10px;
+                            border-radius: 25px;
+                            text-align: center;
+                            margin-bottom: 30px;
+                        }
+            
+                        h1 {
+                            font-size: 36px;
+                            font-weight: 700;
+                            margin-bottom: 25px;
+                            color: #444444;
+                            text-align: center;
+                        }
+            
+                        .email-goal{
+                            text-align: left;
+                        }
+                        </style>
                         </head>  
                         <body>
                         <div class="email-container">
@@ -1226,7 +1346,47 @@ class Interface {
                     subject: "Health Tracker: Add Group Goal",
                     html: ` 
                             <head>  
-                                <link rel="stylesheet" type="text/css" href="/css/email.css">
+                            <style>
+                            @import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
+                            *{
+                                font-family: 'Cabin', sans-serif;
+                            }
+                
+                            .email-btn{
+                                font-size: 25px;
+                                background-color: #ebbb52;
+                                border-radius: 8px;
+                                border: 2px solid #444444;
+                                color: #444444;
+                                padding: 15px 15px;
+                                margin-top: 20px;
+                                margin-bottom: 20px;
+                                margin-left: 35%;
+                                text-align: center;
+                            }
+                
+                            .email-container {
+                                border: 3px solid #444444;
+                                background-color: #7FACBF;
+                                margin: 10px;
+                                padding: 10px;
+                                border-radius: 25px;
+                                text-align: center;
+                                margin-bottom: 30px;
+                            }
+                
+                            h1 {
+                                font-size: 36px;
+                                font-weight: 700;
+                                margin-bottom: 25px;
+                                color: #444444;
+                                text-align: center;
+                            }
+                
+                            .email-goal{
+                                text-align: left;
+                            }
+                            </style>
                             </head> 
                             <body>
                             <div class="email-container">
