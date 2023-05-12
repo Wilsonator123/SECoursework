@@ -159,7 +159,7 @@ export default function GroupGoals(props) {
                                 value={form.end} />
                         </label>
                         <label>
-                            Distance:
+                            Distance (m):
                             <input
                                 type="number"
                                 id="target"

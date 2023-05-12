@@ -355,7 +355,7 @@ export default function Home() {
                                 />
                             </label>
                             <label>
-                                Distance:
+                                Distance (m):
                                 <input
                                     type="number"
                                     id="target"

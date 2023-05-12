@@ -198,11 +198,8 @@ function GroupView(props) {
                     </div>
 
 
-                    {owner && (<div class="groupBox5">
-                        <h3>Create Goal</h3>
-                    </div>)}
 
-                    <div class="groupBox6">
+                    <div class="groupBox3">
                         <h3>Leave Group</h3>
                         <button className="group-btn" onClick={leaveGroup}>Leave</button>
                     </div>
