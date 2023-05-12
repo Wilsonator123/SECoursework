@@ -66,7 +66,8 @@ function GroupCreationForm(props) {
         >
             <div class="grid-container-group">
                 <div class="groupBox1">
-                    <button onClick={props.onClose}>Close</button>
+                    <button className="close-button" onClick={props.onClose}>
+                    <i class="fa-solid fa-xmark fa-xl"></i></button> 
                     <h2>Create Group</h2>
                     <form class="group-form" onSubmit={handleSubmit}>
                         <label htmlFor="name">Name:</label>

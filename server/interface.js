@@ -639,12 +639,18 @@ class Interface {
         const mailOptions = {
             from: "se.healthtracker101@gmail.com",
             to: email,
-            subject: "Health Tracker: Join Group",
-            html: `<div>
+            subject: "Health Tracker: Join Group", 
+            html: `
+            <head>  
+            <link rel="stylesheet" type="text/css" href="/css/email.css">
+            </head>  
+            <body>
+            <div>
                     <p>You have been invited to join a group. Click</p>
                     <a href="${groupPageUrl}">here</a>
                     <p> to join. \nOtherwise, enter code: ${group_id}</p>
-                </div>`,
+            </div>
+            </body>`,
         };
 
         //Sends our email
@@ -1026,13 +1032,19 @@ class Interface {
                             from: "se.healthtracker101@gmail.com",
                             to: user.email,
                             subject: "Health Tracker: You completed a Group Goal",
-                            html: `<div>
+                            html: `
+                            <head>  
+                                <link rel="stylesheet" type="text/css" href="/css/email.css">
+                            </head>  
+                            <body>
+                            <div>
                                     <p>You have completed a goal for ${result3[0].name}</p>
                                     <p>Details:</p>
                                     <p>Goal Name: ${goal.name}</p>
                                     <p>Goal Type: ${goal.goalType}</p>
                                     <p>Target: ${goal.target}</p>
-                                </div>`,
+                                </div> 
+                                </body>`,
                         };
                     }
 
@@ -1042,13 +1054,19 @@ class Interface {
                         from: "se.healthtracker101@gmail.com",
                         to: user.email,
                         subject: "Health Tracker: A Group Member completed a Group Goal",
-                        html: `<div>
+                        html: `
+                        <head>  
+                                <link rel="stylesheet" type="text/css" href="/css/email.css">
+                        </head>  
+                        <body>
+                        <div>
                                 <p>${user.username} has completed a goal for ${result3[0].name}</p>
                                 <p>Details:</p>
                                 <p>Goal Name: ${goal.name}</p>
                                 <p>Goal Type: ${goal.goalType}</p>
                                 <p>Target: ${goal.target}</p>
-                            </div>`,
+                        </div>
+                        </body>`,
                     };
                     }
             
@@ -1202,11 +1220,17 @@ class Interface {
                     from: "se.healthtracker101@gmail.com",
                     to: user.email,
                     subject: "Health Tracker: Add Group Goal",
-                    html: `<div>
+                    html: ` 
+                            <head>  
+                                <link rel="stylesheet" type="text/css" href="/css/email.css">
+                            </head> 
+                            <body>
+                            <div>
                             <p>You have been sent a goal from one of your groups. Click</p>
                             <a href="${groupGoalPageUrl}">here</a>
-                            <p> to add it. \nOtherwise, enter code: ${ownerGoalID}</p>
-                        </div>`,
+                            <p> to add it. \nOtherwise, enter code: ${ownerGoalID}</p> 
+                            </div>
+                            </body>`,
                 };
         
                 //Sends our email

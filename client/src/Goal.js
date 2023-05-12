@@ -397,11 +397,13 @@ export default function Home() {
                             <button class="submit-btn"type="submit">Add Group Goal</button>
                         </form>
                     )}
-                </div>
+                </div> 
+                <h1 className="goals-title"> Your Goals </h1>
 
             <div className="goal-Grid">
                 <GoalView goal={goal} props={getGoals} />
-            </div>
+            </div> 
+    
         </div>
     );
 }

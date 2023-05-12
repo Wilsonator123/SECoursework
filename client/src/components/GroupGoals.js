@@ -117,7 +117,7 @@ export default function GroupGoals(props) {
     }, []);
 
     return (
-        <div><div id="pageContainer">
+        <div><div id="pageContainer2">
 
             <div className="goalBox2">
             {props.owner && (<div className="goalBox-header">
@@ -130,7 +130,7 @@ export default function GroupGoals(props) {
                     </button>
                 </div>)}
                 {showExerciseGoalForm && (
-                    <form onSubmit={handleSubmit} className="goal-form">
+                    <form onSubmit={handleSubmit} className="exercisegoal-form">
                         <label>
                             Goal Name:
                             <input
@@ -167,7 +167,7 @@ export default function GroupGoals(props) {
                                 value={form.target}
                                 onChange={handleChange} />
                         </label>
-                        <button type="submit">Submit goal</button>
+                        <button className="submit-btn" type="submit">Submit goal</button>
                     </form>
                 )}
             </div>

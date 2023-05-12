@@ -61,7 +61,7 @@ export default function JoinGroup(props) {
             id="groupPageContainer"
         >
         <div class="groupBox1">
-        <button onClick={props.onClose}>Close</button>
+        <button  className="close-button" onClick={props.onClose}> <i class="fa-solid fa-xmark fa-xl"></i></button>
         <h3>Join Group</h3>
         <form class="group-form" onSubmit={handleJoinGroupSubmit}>
         <label htmlFor="email">Group Code:</label>
@@ -82,7 +82,7 @@ export default function JoinGroup(props) {
         </button>
     </form>
     </div>
-    </div>,
-    document.getElementById("joinGroupForm")
+    </div>
+    ,document.getElementById("joinGroupForm")
     );
 }
