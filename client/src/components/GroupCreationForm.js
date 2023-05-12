@@ -71,7 +71,7 @@ function GroupCreationForm(props) {
                     <h2>Create Group</h2>
                     <form class="group-form" onSubmit={handleSubmit}>
                         <label htmlFor="name">Name:</label>
-                        <input
+                        <input className="input-box2"
                             type="text"
                             id="name"
                             name="name"
