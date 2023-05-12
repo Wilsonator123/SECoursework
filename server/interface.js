@@ -644,11 +644,11 @@ class Interface {
             <head>  
             <style>
             @import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
-            *{
+            * {
                 font-family: 'Cabin', sans-serif;
             }
-
-            .email-btn{
+        
+            .email-btn {
                 font-size: 25px;
                 background-color: #ebbb52;
                 border-radius: 8px;
@@ -657,10 +657,11 @@ class Interface {
                 padding: 15px 15px;
                 margin-top: 20px;
                 margin-bottom: 20px;
-                margin-left: 35%;
                 text-align: center;
+                display: inline-block; 
+                text-decoration: none; 
             }
-
+        
             .email-container {
                 border: 3px solid #444444;
                 background-color: #7FACBF;
@@ -670,7 +671,7 @@ class Interface {
                 text-align: center;
                 margin-bottom: 30px;
             }
-
+        
             h1 {
                 font-size: 36px;
                 font-weight: 700;
@@ -678,17 +679,17 @@ class Interface {
                 color: #444444;
                 text-align: center;
             }
-
-            .email-goal{
+        
+            .email-goal {
                 text-align: left;
             }
             </style>
             </head>
             <body>
             <div class="email-container">
-                    <h1>You have been invited to join a group</h1>
-                    <button class="email-btn" href="${groupPageUrl}">Join</button>
-                    <h1>\nOtherwise, enter code: ${group_id}</h1>
+                <h1>You have been invited to join a Group!</h1>
+                <a class="email-btn" href="${groupPageUrl}">Join</a>
+                <h1>Otherwise, enter code: ${group_id}</h1>
             </div>
             </body>`,
         };
@@ -1345,56 +1346,56 @@ class Interface {
                     to: user.email,
                     subject: "Health Tracker: Add Group Goal",
                     html: ` 
-                            <head>  
-                            <style>
-                            @import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
-                            *{
-                                font-family: 'Cabin', sans-serif;
-                            }
+                    <head>  
+                    <style>
+                        @import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
+                        * {
+                            font-family: 'Cabin', sans-serif;
+                        }
                 
-                            .email-btn{
-                                font-size: 25px;
-                                background-color: #ebbb52;
-                                border-radius: 8px;
-                                border: 2px solid #444444;
-                                color: #444444;
-                                padding: 15px 15px;
-                                margin-top: 20px;
-                                margin-bottom: 20px;
-                                margin-left: 35%;
-                                text-align: center;
-                            }
+                        .email-btn {
+                            font-size: 25px;
+                            background-color: #ebbb52;
+                            border-radius: 8px;
+                            border: 2px solid #444444;
+                            color: #444444;
+                            padding: 15px 15px;
+                            margin-top: 20px;
+                            margin-bottom: 20px;
+                            
+                            text-align: center;
+                        }
                 
-                            .email-container {
-                                border: 3px solid #444444;
-                                background-color: #7FACBF;
-                                margin: 10px;
-                                padding: 10px;
-                                border-radius: 25px;
-                                text-align: center;
-                                margin-bottom: 30px;
-                            }
+                        .email-container {
+                            border: 3px solid #444444;
+                            background-color: #7FACBF;
+                            margin: 10px;
+                            padding: 10px;
+                            border-radius: 25px;
+                            text-align: center;
+                            margin-bottom: 30px;
+                        }
                 
-                            h1 {
-                                font-size: 36px;
-                                font-weight: 700;
-                                margin-bottom: 25px;
-                                color: #444444;
-                                text-align: center;
-                            }
+                        h1 {
+                            font-size: 36px;
+                            font-weight: 700;
+                            margin-bottom: 25px;
+                            color: #444444;
+                            text-align: center;
+                        }
                 
-                            .email-goal{
-                                text-align: left;
-                            }
-                            </style>
-                            </head> 
-                            <body>
-                            <div class="email-container">
-                            <h1>You have been sent a goal from one of your groups</h1>
-                            <button class="email-btn" href="${groupGoalPageUrl}">Add</a>
-                            <h2>\nOtherwise, enter code: ${ownerGoalID}</h2> 
-                            </div>
-                            </body>`,
+                        .email-goal {
+                            text-align: left;
+                        }
+                    </style>
+                </head> 
+                <body>
+                    <div class="email-container">
+                        <h1>You have been sent a goal from one of your groups</h1>
+                        <a class="email-btn" href="${groupGoalPageUrl}">Add</a>
+                        <h2>Otherwise, enter code: ${ownerGoalID}</h2> 
+                    </div>
+                </body>`,
                 };
         
                 //Sends our email

@@ -1,6 +1,6 @@
 import HealthDetails from "./components/HealthDetails";
 import RecordWeight from "./components/RecordWeight";
-import "./css/account.css";
+import "./css/Account.css";
 import "./css/index.css";
 
 import React, { useState, useEffect } from "react";

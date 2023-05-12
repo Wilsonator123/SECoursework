@@ -1,4 +1,4 @@
-import "../css/account.css";
+import "../css/Account.css";
 import { useState, useEffect } from "react";
 
 
