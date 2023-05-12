@@ -1233,6 +1233,7 @@ class Interface {
         const { user_id, name, group_id, goalType, target, start, end, notes } =
             body;
         
+        
         let current = body.current;
         if (
             name === "" ||
@@ -1241,11 +1242,14 @@ class Interface {
             start === "" ||
             end === ""
         ) {
+            
             return false;
         }
         if (!this.dateCheck(start, end)) return false;
         //Update User Profile
         current = 0;
+
+        
 
         
         //GET A LIST OF ALL USERS IN GROUP
@@ -1312,7 +1316,6 @@ class Interface {
 
         const groupGoalPageUrl = `http://localhost:3000/Goal?id=${ownerGoalID}`;
         
-
         //Loop through the users - group owner gets goal automatically added, everyone else gets a link.
         info.forEach(user => {
             
@@ -1381,6 +1384,7 @@ class Interface {
                     </div>
                 </body>`,
                 };
+                
         
                 //Sends our email
                 transporter.sendMail(mailOptions, function (error, info) {
@@ -1389,7 +1393,7 @@ class Interface {
                         return false;
                     } else {
                         
-                        return true;
+                        //return true;
                     }
                 });
             }
