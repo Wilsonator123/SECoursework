@@ -173,7 +173,7 @@ function GroupView(props) {
                         <h3>Add User</h3>
                         <form class="group-form" onSubmit={handleAddUserSubmit}>
                         <label htmlFor="email">User Email:</label>
-                        <input
+                        <input className="input-box" 
                             type="email"
                             id="email"
                             name="email"
@@ -185,7 +185,7 @@ function GroupView(props) {
                         {addUserError && <p id="addUserError">{addUserError}</p>}
                         <br />
 
-                        <button class="group-btn" type="submit">
+                        <button className="group-btn" type="submit">
                             Add User
                         </button>
                     </form>
@@ -204,7 +204,7 @@ function GroupView(props) {
 
                     <div class="groupBox6">
                         <h3>Leave Group</h3>
-                        <button onClick={leaveGroup}>Leave</button>
+                        <button className="group-btn" onClick={leaveGroup}>Leave</button>
                     </div>
 
 

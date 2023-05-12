@@ -11,7 +11,7 @@
     border-radius: 25px;
     border: 2px solid #444444; 
 }
-.groupBox1, .groupBox2, .groupBox3, .groupBox4, .groupBox5{
+.groupBox1, .groupBox2, .groupBox3, .groupBox4, .groupBox5, .groupBox6{
     margin: 50px;
     padding: 50px;
     background: #7ebb94;
@@ -145,7 +145,7 @@
     border: 1px solid; 
     /* margin: 5px; */  
     display: inline-block;
-    width: 80px;
+    width: 150px;
     margin: 10px; 
     align-items: center;
 } 
