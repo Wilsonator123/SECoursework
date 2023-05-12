@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./Navbar";
 import Navbar from "./Navbar";
+import "./css/index.css";
 
 class Home extends React.Component {
     render() {

@@ -66,11 +66,12 @@ function GroupCreationForm(props) {
         >
             <div class="grid-container-group">
                 <div class="groupBox1">
-                    <button onClick={props.onClose}>Close</button>
+                    <button className="close-button" onClick={props.onClose}>
+                    <i class="fa-solid fa-xmark fa-xl"></i></button> 
                     <h2>Create Group</h2>
                     <form class="group-form" onSubmit={handleSubmit}>
                         <label htmlFor="name">Name:</label>
-                        <input
+                        <input className="input-box2"
                             type="text"
                             id="name"
                             name="name"
@@ -89,7 +90,7 @@ function GroupCreationForm(props) {
 
 
                 </div>
-                </div>
+            </div>
         </div>,
         document.getElementById("groupCreationForm")
     );

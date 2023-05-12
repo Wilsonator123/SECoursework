@@ -18,6 +18,7 @@ export default function Home(data, props) {
             .then((data) => {
                 console.log(data);
                 props.getGoals();
+                window.location.reload(false);
             });
     };
 

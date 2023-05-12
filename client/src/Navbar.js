@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./Navbar";
 import { Outlet, Link } from "react-router-dom";
 import "./css/header.css";
+import "./css/index.css";
 
 export default function Navbar() {
     useEffect(() => {
@@ -27,8 +28,9 @@ export default function Navbar() {
             <header>
                 <div class="header-left">
                     <div class="logo">
-                        {/* <img src="./logo.png" alt=""> */}
-                        Logo
+                    <div class="logo">
+                        <img className="logo" src="./logo5.png" alt="" />
+                    </div>
                     </div>
                     <nav>
                         <ul>
