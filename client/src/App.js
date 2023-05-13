@@ -3,6 +3,7 @@ import { useState } from "react";
 import AccountCreation from "./components/AccountCreation";
 import Login from "./components/LogIn";
 import PropTypes from "prop-types";
+import "./css/index.css";
 
 //Inspiration for authentication code taken from
 //https://www.digitalocean.com/community/tutorials/how-to-add-login-authentication-to-react-applications
@@ -34,6 +35,7 @@ export default function App({ setToken }) {
                     </div>
                     <div class="kms">
                     <p class="button-text">{currentForm ? "Already have an account?" : "Don't have an account yet? "}
+                    <br/>
                     <button class="login-btn" onClick = {toggleForm}>
                         {currentForm ? "Login" : "Sign Up" }
                     </button>  

@@ -45,7 +45,7 @@ export default function HealthDetails({ userID }) {
 
     return (
         <div>
-        <p>BMI: {BMI}</p>
+        <p class="text-bmi">BMI: {BMI}</p>
         </div>
     );
 }

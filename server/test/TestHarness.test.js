@@ -519,7 +519,8 @@ describe('Group Tests', function() {
 
     it('Return true if a valid group goal is made', function() {
 
-      const result = backend.createGroupGoal({user_id: 1, name: "testGoal", group_id: 1, goalType: 'exercise', target: 500, start: "2023-05-10", end: "2023-05-17", notes: ""});
+      const result = backend.createGroupGoal({user_id: 1, name: "testGoal", group_id: 1, goalType: 'exercise', target: 500, start: "2023-06-30", end: "2023-07-17", notes: ""});
+  
       assert.isTrue(result);
 
     });
@@ -528,7 +529,7 @@ describe('Group Tests', function() {
 
     it('Return false if an invalid end date is given', function() {
 
-      const result = backend.createGroupGoal({user_id: 1, name: "testGoal", group_id: 1, goalType: 'exercise', target: 500, start: "2023-05-10", end: "2023-05-09", notes: ""});
+      const result = backend.createGroupGoal({user_id: 1, name: "testGoal", group_id: 1, goalType: 'exercise', target: 500, start: "2023-06-30", end: "2023-06-09", notes: ""});
       assert.isFalse(result);
 
     });
@@ -556,6 +557,7 @@ describe('Group Tests', function() {
     it('Return false if an invalid code', function() {
 
       const result = backend.acceptGoalInvite({goal_id: 123, user_id: 1});
+      
       assert.isTrue(result.error === "No goal found with this code.");
 
     });

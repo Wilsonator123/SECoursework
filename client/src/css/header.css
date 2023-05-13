@@ -99,6 +99,11 @@ header .header-right .hamburger div {
     margin: 6px 0;
     background: #E8E7ED;
 }
+.logo{
+    width: 100%; 
+    height: 100%;
+    padding: 15px; 
+}
 @media only screen and (max-width: 1000px) {
     header {
         padding: 0 20px;
@@ -124,5 +129,8 @@ header .header-right .hamburger div {
     }
     header .header-left nav ul {
         display: block;
+    } 
+    .logo{
+        display: none;
     }
 }

@@ -57,32 +57,32 @@ export default function JoinGroup(props) {
 
 
     return ReactDom.createPortal(
-        <div
-            id="groupPageContainer"
-        >
-        <div class="groupBox1">
-        <button onClick={props.onClose}>Close</button>
-        <h3>Join Group</h3>
-        <form class="group-form" onSubmit={handleJoinGroupSubmit}>
-        <label htmlFor="email">Group Code:</label>
-        <input
-            type="number"
-            id="group_id"
-            name="group_id"
-            value={joinGroupForm.group_id}
-            onChange={handleJoinGroupChange}
-        />
+        <div id="groupPageContainer">
+            <div class="grid-container-group">
+                <div class="groupBox1">
+                <button  className="close-button" onClick={props.onClose}> <i class="fa-solid fa-xmark fa-xl"></i></button>
+                <h2>Join Group</h2>
+                <form class="group-form" onSubmit={handleJoinGroupSubmit}>
+                <label htmlFor="email">Group Code:</label>
+                <input className="input-box"
+                    type="number"
+                    id="group_id"
+                    name="group_id"
+                    value={joinGroupForm.group_id}
+                    onChange={handleJoinGroupChange}
+                />
 
-        <br/>
-        {joinGroupError && <p id="joinGroupError">{joinGroupError}</p>}
-        <br />
+                <br/>
+                {joinGroupError && <p id="joinGroupError">{joinGroupError}</p>}
+                <br />
 
-        <button class="group-btn" type="submit">
-            Join
-        </button>
-    </form>
+                <button class="group-btn" type="submit">
+                    Join
+                </button>
+            </form>
+            </div>
+        </div>
     </div>
-    </div>,
-    document.getElementById("joinGroupForm")
+    ,document.getElementById("joinGroupForm")
     );
 }

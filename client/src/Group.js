@@ -4,6 +4,7 @@ import GroupCreationForm from "./components/GroupCreationForm";
 import JoinGroup from "./components/JoinGroup";
 import GroupView from "./components/GroupView";
 import { useNavigate } from "react-router-dom";
+import "./css/index.css";
 
 export default function Group() {
     //Used to get users id from session storage
@@ -104,22 +105,26 @@ export default function Group() {
 
             {showJoinGroupForm ? (
                 <JoinGroup onClose={renderJoinGroupForm} />
-            ) : null}
+            ) : null} 
 
             <div id="pageContainer">
-                <h1> GROUP PAGE </h1>
-                <button onClick={renderGroupCreationForm}>Create Group</button>
-                <button onClick={renderJoinGroupForm}>Join Group</button>
+                <h1> GROUP PAGE <br /><img className="group-img" src="./group.png" alt="" />  </h1>
+    
+                <div className="group-buttons">
+                <button className="submit-btn" onClick={renderGroupCreationForm}>Create Group</button>
+                <button className="submit-btn"onClick={renderJoinGroupForm}>Join Group</button> 
+                </div>
                 <div id="groupCreationForm" />
                 <div id="joinGroupForm" />
-
-                <h2>Your Groups</h2>
+                <div className="header-container">
+                <h1>Your Groups</h1>
+                
 
                 {/*Gets the groups and maps them in divs*/}
                 {userGroups.map((userGroup) => (
                     <div key={userGroup.id}>
                         <br />
-                        <button onClick={() => setShowGroupView(userGroup.id)}>
+                        <button className="groups-btn" onClick={() => setShowGroupView(userGroup.id)}>
                             {userGroup.name}
                         </button>
                         {showGroupView === userGroup.id ? (
@@ -129,8 +134,9 @@ export default function Group() {
                                 name={userGroup.name}
                             />
                         ) : null}
-                    </div>
-                ))}
+                    </div> 
+                ))}  
+                </div>
             </div>
         </div>
     );
