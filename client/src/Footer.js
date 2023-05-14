@@ -50,7 +50,7 @@ function Footer() {
                         <Link to="/">Privacy Policy</Link>
                     </li>
                 </ul>
-                <p className="copyright">Team Name &copy; 2023</p>
+                <p className="copyright">Team 101 &copy; 2023</p>
 
                 <div class="logo">
                     <img className="logo" src="./logo5.png" alt="" />

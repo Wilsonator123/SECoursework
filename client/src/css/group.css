@@ -24,14 +24,16 @@
 .groupBox1 {
     grid-column: 2;
     background:#7EBB94;
-    width: 500px;
-    height:250px;
+    width: 400px; 
+    height: 300px;
+    /* min-height:200px; */
 }
 
 .groupBox2 {
     grid-column: 1;
     background:#7EBB94;   
     text-align: center;
+    padding-right: 230px;
 }
 .groupBox3 {
     grid-column: 1 / span 2;
@@ -40,13 +42,15 @@
 }  
 
 .groupBox2 h3{
-    text-align: left;
-    margin-bottom: 20px; 
+    text-align: left; 
+    margin-bottom: 20px;  
+    /* padding-right: 40px; */
 }
 .groupBox2 h2{
     font-size: 30px; 
-    text-align: center;
     margin-bottom: 20px; 
+    margin-right: -150px;
+ 
 }
 .groupBox3 h3{
     font-size: 30px; 
@@ -83,7 +87,8 @@
 .createGroup, .joinGroup {
     background-color: #EBBB52;
     border-radius: 8px;
-    padding: 32px 16px;
+    padding: 32px 16px; 
+    padding-bottom: 30px;
 }
 
 .createGroup {

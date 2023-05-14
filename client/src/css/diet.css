@@ -8,14 +8,20 @@
     /* background-color: #b7b7b7; */
     justify-content: center;
     display: flex;
+    background-color: #e8e7ed;   
+    border-radius: 25px;  
+    border: 2px solid #444444;  
+
+
 }
 
 .grid-container-diet {
     display: grid;
-    grid: 800px / auto auto; 
-    background-color: #e8e7ed; 
+    grid: 900px / auto auto; 
+    /* background-color: #e8e7ed;  */
     /* border: 3px solid #444444;  */
-    border-radius: 8px; 
+    border-radius: 8px;   
+
 }
 
 h1 {
@@ -75,7 +81,11 @@ h1 {
 
 .meal-form {
     font-size: 16px; 
-    display: block;
+    display: flex;
+    justify-content: center;
+    flex-direction: column; 
+    align-items: center;
+
 }
 
 .meal-form input, .meal-from select{
@@ -87,14 +97,17 @@ h1 {
     /* margin: 5px; */  
     display: inline-block;
     width: 250px;
-    margin: 10px; 
-    /* margin-left: 20px; */
-    /* align-items: center; */
+    margin: 10px;
 } 
 
- 
+ .meal-form select{
+    align-self: center;
+    margin-right: 40px; 
+    min-width: 240px; 
+    font-size: 18px;
+ }
 .meal-form label{
-    margin-left: 20px;
+    margin-right: 80px;
 }
 
 
@@ -147,6 +160,7 @@ h1 {
     text-align: center;
     margin-top: 25px;
     margin-bottom: 25px;
+
 
 }
 
@@ -286,16 +300,16 @@ tbody {
 }
 
 .breakfast {
-    color: red;
+    color: #FA8B8C;
 }
 .lunch {
-    color: green;
+    color: #7ebb94;
 }
 .dinner {
-    color: blue;
+    color: #7FACBF;
 }
 .snack {
-    color: purple;
+    color: #766db0;
 }
 
 .viewMeal{
@@ -304,4 +318,12 @@ tbody {
     border: 2px solid #444444;
     color: #444444;
     padding: 15px 15px;
+}
+
+.dietBox1{
+    height: 800px; 
+    /* max-width: 600px;  */
+    justify-content: center; 
+    grid-column: 1 / span 2; 
+
 }

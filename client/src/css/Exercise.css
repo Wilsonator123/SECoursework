@@ -25,14 +25,17 @@ h1 {
     border: 2px solid #444444;
   }
 
-  .exercise-form {
+  #exerciseForm {
+    display: flex;
     font-size: 25px;
     margin-top: 20px;
+    justify-content: center; 
+    align-items: center;
   }
 
 
 
-.exercise-form input,
+  #exerciseForm input,
 select {
     font-size: 25px;
     background-color: #e8e7ed;
@@ -42,7 +45,7 @@ select {
     margin-top: 25px;
     margin-left: 36px;
 }
-.exercise-form label {
+#exerciseForm label {
     display: inline-block;
     width: 200px;
 }
@@ -180,6 +183,7 @@ select {
     display: flex; 
     background: none;
     border: none;
-    padding: 10px; 
+    padding: 10px;  
+    flex-direction: row-reverse;
 }
 
