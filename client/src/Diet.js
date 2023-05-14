@@ -78,9 +78,10 @@ export default function Diet() {
                 <div className="dietHeader">
                     <h2>Record Meal</h2>
                     <button className="click-me" onClick={renderForm}>
-                        Click me
+                        Add New Meal
                     </button>
                 </div>
+
                 <div id="dietForm" />
 
                 <div id="meals">

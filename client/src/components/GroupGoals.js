@@ -105,7 +105,14 @@ export default function GroupGoals(props) {
                 body: JSON.stringify(form),
             })
                 .then((res) => res.json())
-                .then((data) => console.log(data));
+                .then((data) => {console.log(data);
+                    if (!data){
+                        alert("Error creating Group Goal");
+                    }
+                });
+
+
+            
             getGoals();
         
     };
@@ -159,11 +166,12 @@ export default function GroupGoals(props) {
                                 value={form.end} />
                         </label>
                         <label>
-                            Distance:
+                            Distance (m):
                             <input
                                 type="number"
                                 id="target"
                                 name="target"
+                                min="1"
                                 value={form.target}
                                 onChange={handleChange} />
                         </label>

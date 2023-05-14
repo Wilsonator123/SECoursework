@@ -158,7 +158,7 @@ function AccountCreation({ setToken }) {
 
             <br />
 
-            <label htmlFor="lastname">lastname:</label>
+            <label htmlFor="lastname">Last Name:</label>
             <input
                 type="text"
                 id="lastname"

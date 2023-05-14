@@ -10,7 +10,7 @@ const crypto = require("crypto");
 class Interface {
     constructor() {
         this.database = new dB("database.db", {
-            verbose: console.log,
+            verbose: null,
         });
 
         //IMPORTANT DATABASE STUFF WE MIGHT NEED AGAIN!
@@ -19,6 +19,7 @@ class Interface {
         this.database.exec(
             fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8")
         );
+
 
         //this.database.exec("DROP TABLE user");
     }
@@ -45,7 +46,7 @@ class Interface {
 
     checkEmailFormat(email) {
         //Returns true if email is in correct format, false if it is not
-        console.log("Email: " + email);
+        //console.log("Email: " + email);
         const re = /\S+@\S+\.\S+/; //Regex for email format
         return re.test(email);
     }
@@ -72,7 +73,7 @@ class Interface {
     }
 
     createUser(body, img) {
-        console.log("Body :" + body);
+        //console.log("Body :" + body);
         
         //Creates a new user
         const {
@@ -104,6 +105,7 @@ class Interface {
         ) {
             return false;
         }
+        
         if (!this.checkEmail(email)) return false;
         if (!this.checkUsername(username)) return false;
         const stmt = this.database.prepare(
@@ -188,8 +190,6 @@ class Interface {
 
     bmi(id) {
         //Returns BMI for a specific user
-        console.log("In interface method");
-        console.log(id);
         const stmt = this.database.prepare("SELECT * FROM user WHERE id = ?");
         const info = stmt.all(id);
         const weight = info[0].weight;
@@ -294,7 +294,7 @@ class Interface {
         );
         const info2 = stmt2.all(activity);
         const type = info2[0].type;
-        console.log("TYPE: " + type);
+        
         if (result.changes !== 0 && type === 1) this.updateEGoal(id, distance);
         return result;
     }
@@ -359,7 +359,6 @@ class Interface {
     }
 
     getFood(body) {
-        console.log(body);
         const stmt = this.database.prepare(
             "SELECT * FROM food WHERE (createdBy = ? OR createdBy = 0) AND LOWER(name) LIKE ? ORDER BY name ASC LIMIT 6"
         );
@@ -406,10 +405,10 @@ class Interface {
     }
 
     getCalories(food, foodAmount, drink, drinkAmount) {
-        console.log(food, foodAmount, drink, drinkAmount);
+
         var foodCalories = 0;
         var drinkCalories = 0;
-        console.log("in getCalories");
+
         if (food !== "") {
             const stmt = this.database.prepare(
                 "SELECT calories FROM food WHERE name = ?"
@@ -482,9 +481,6 @@ class Interface {
         }
 
         var calories = this.getCalories(food, foodAmount, drink, drinkAmount);
-        console.log(user_id);
-        console.log(name);
-        console.log(typeof user_id);
 
         const date = new Date().toISOString().slice(0, 10);
 
@@ -512,13 +508,12 @@ class Interface {
     //Return true only if group name hasnt been taken before
     checkGroupName(body) {
         const { name } = body;
-        console.log(name);
-        console.log(body);
+
         const stmt = this.database.prepare(
             "SELECT * FROM `group` WHERE name = ?"
         );
         const info = stmt.get(body);
-        console.log(info);
+
         if (info === undefined) {
             return true;
         }
@@ -530,13 +525,14 @@ class Interface {
 
     createGroup(body) {
         const { user_id, name } = body;
-
+        
         if (user_id === "" || name === "") {
             return false;
         }
 
         //Checking the unique group name again
         if (!this.checkGroupName(name)) {
+            
             return false;
         }
 
@@ -545,7 +541,7 @@ class Interface {
         );
 
         const result = stmt.run(name, user_id);
-
+        
         const getIDstmt = this.database.prepare(
             "SELECT * from `group` WHERE name = ?"
         );
@@ -557,7 +553,7 @@ class Interface {
         );
 
         const result2 = stmt2.run(idResult, user_id);
-
+        
         return true;
     }
 
@@ -594,18 +590,14 @@ class Interface {
     sendGroupInvite(body) {
         //Emails a user about joining a group
         const { group_id, email } = body;
-
+        
         //First check if email in system:
         const stmt = this.database.prepare(
             "SELECT * from user WHERE email = ?"
         );
         const info = stmt.get(email);
-        if (info === undefined) {
-            return false;
-        } else if (info.length === 0) {
-            return res
-                .status(400)
-                .json({ error: "User with this email not found" });
+        if (info === undefined || info.length === 0) {
+            return { error: "User with this email not found" };
         }
 
         //Then check email is not already in the given group
@@ -616,12 +608,11 @@ class Interface {
         if (info2 === undefined) {
             //This is what we want, so just continue on
         } else if (info2.length !== 0) {
-            return res
-                .status(400)
-                .json({ error: "User is already a member of this group" });
+            
+            return { error: "User is already a member of this group" };
         }
 
-        console.log("Valid email, so try and send");
+        
 
         //If all this is met, send an email.
 
@@ -700,7 +691,6 @@ class Interface {
                 console.log(error);
                 return false;
             } else {
-                console.log("Email sent: " + info.response);
                 return true;
             }
         });
@@ -737,9 +727,9 @@ class Interface {
             "SELECT * from `group` WHERE id = ?"
         );
         const info3 = stmt3.get(group_id);
-        console.log(info3);
+        
         if (info3 === undefined) {
-            console.log("Group not found error");
+            
             return { error: "Group not found" };
         }
 
@@ -756,16 +746,11 @@ class Interface {
             return { error: "User is already a member of this group" };
         }
 
-        console.log(userID);
-        console.log(user_id);
 
-        console.log(typeof userID);
-        console.log(typeof user_id);
-        console.log(userID == user_id);
 
         //Check the userID matches the current account logged in
         if (userID != user_id) {
-            console.log("HAH GOT YA");
+            
             return { error: "Not logged in as the right user to accept this" };
         }
 
@@ -788,13 +773,13 @@ class Interface {
                 "SELECT email from user WHERE id = ?"
             );
             const info5 = stmt5.get(user_id);
-            console.log(info5);
+            
             if (info5 === undefined) {
                 return { error: "Account with that email not found" };
             }
 
             const body2 = ({ group_id: group_id, email: info5.email, user_id: user_id })
-            console.log(body2);
+            
             return this.acceptGroupInvite(body2);
     
         }
@@ -804,22 +789,22 @@ class Interface {
     //Checks if user is owner of group or not - if so, they see the group modification details. If not, they get the member view
     checkOwner(body){
         const { group_id, user_id } = body;
-        console.log(body);
+        
 
         //Get users email
         const stmt = this.database.prepare(
             "SELECT * from `group` WHERE owner_id = ? AND id = ?"
         );
         const info = stmt.get(user_id, group_id);
-        console.log(info);
+        
 
         if (info === undefined) {
-            console.log("NOT OWNER");
+            
             return false;
         }
 
-        else{
-            console.log("IS OWNER");
+        else {
+
             return true;
         }
     }
@@ -829,7 +814,7 @@ class Interface {
     //Remove a non-owner from a group, or an owner if the group only has one member
     leaveGroup(body){
         const { group_id, user_id } = body;
-        console.log(body);
+        
 
         //If user is owner and group size is 1, allow them to leave. Otherwise, dont.
         //If user is NOT the owner, allow them to leave
@@ -837,7 +822,7 @@ class Interface {
             "SELECT * from `group` WHERE owner_id = ? AND id = ?"
         );
         const info = stmt.get(user_id, group_id);
-        console.log(info);
+        
 
         if (info === undefined) {
             const stmt2 = this.database.prepare(
@@ -855,11 +840,11 @@ class Interface {
                 "SELECT COUNT(*) FROM group_user WHERE group_id = ?"
             )
             const info3 = stmt3.get(group_id);
-            console.log(info3);     
+            
             //If only one member left in group remove them and delete group
 
             if(info3['COUNT(*)'] <= 1){
-                console.log("Removing owner");
+                
                 const stmt4 = this.database.prepare(
                     "DELETE from group_user WHERE user_id = ? AND group_id = ?"
                 );
@@ -874,7 +859,7 @@ class Interface {
                 return true;
             }
             else{
-                console.log("Will not remove owner");
+                
                 return false;
             }
         }
@@ -927,8 +912,7 @@ class Interface {
 
     updateEGoal(id, distance) {
         //user_id
-        console.log("updateGoal");
-        console.log(id, distance);
+
 
         const stmt = this.database.prepare(
             "SELECT * from goal WHERE user_id = ? AND goalType = 'exercise' AND status = 'ACTIVE'"
@@ -1248,7 +1232,8 @@ class Interface {
     createGroupGoal(body) {
         const { user_id, name, group_id, goalType, target, start, end, notes } =
             body;
-        console.log(body);
+        
+        
         let current = body.current;
         if (
             name === "" ||
@@ -1257,11 +1242,14 @@ class Interface {
             start === "" ||
             end === ""
         ) {
+            
             return false;
         }
         if (!this.dateCheck(start, end)) return false;
         //Update User Profile
         current = 0;
+
+        
 
         
         //GET A LIST OF ALL USERS IN GROUP
@@ -1321,21 +1309,20 @@ class Interface {
             end,
             notes
         );
-        console.log(result2);
+        
 
         const ownerGoalID = result2[0].id;
 
 
         const groupGoalPageUrl = `http://localhost:3000/Goal?id=${ownerGoalID}`;
         
-
         //Loop through the users - group owner gets goal automatically added, everyone else gets a link.
         info.forEach(user => {
-            console.log("USER ID:" + user.user_id);
-            console.log(ownerID);
+            
+            
             if (user.user_id == ownerID[0].owner_id){
                 //IF owner, pass here as already done
-                console.log("Doesn't send to owner")
+                
 
             }
             else {
@@ -1397,6 +1384,7 @@ class Interface {
                     </div>
                 </body>`,
                 };
+                
         
                 //Sends our email
                 transporter.sendMail(mailOptions, function (error, info) {
@@ -1404,8 +1392,8 @@ class Interface {
                         console.log(error);
                         return false;
                     } else {
-                        console.log("Email sent: " + info.response);
-                        return true;
+                        
+                        //return true;
                     }
                 });
             }
@@ -1429,8 +1417,7 @@ class Interface {
         const { goal_id, user_id } =
             body;
         
-        console.log("Testing accept goal invite");
-        console.log(body);
+
 
 
         //Get goal which will be copied into the user
@@ -1443,8 +1430,7 @@ class Interface {
         );
 
 
-        console.log("RESULT2");
-        console.log(result2);
+
 
         //Return an error if no goal found with the code.
         if (result2.length === 0){
@@ -1491,8 +1477,7 @@ class Interface {
         );
         
 
-        console.log("RESULT3");
-        console.log(result3);
+
 
         if(result3.length !== 0){
             return { error: "User already has this group goal on their account." }
@@ -1694,166 +1679,6 @@ class Interface {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-    testHarness(){
-        console.log("TEST HARNESS");
-        // First Sprint Test Cases:
-
-
-
-            //Account Creation
-            let body = {
-
-                username: "unitTest",
-                firstname: "Unit",
-                lastname: "Test",
-                email: "driverandrew@yahoo.com",
-                password: "test",
-        
-                gender: "male",
-                dob: new Date("2003-04-21").toDateString(),
-                height: "170",
-                weight: "60",
-                tweight: "65"
-
-            };
-
-
-
-            let img = "default.png";
-
-
-                // A new user registration: the Health Tracker User enters valid details.
-
-                //NEED GEORGE TO FIX THE GOAL CREATION ON ACCOUNT CREATION BEFORE I CAN WRITE THESE TESTS!
-                //(this.createUser(body, img));
-
-                // A new user registration: The Health Tracker User enters a non-unique username
-
-                // A new user registration: the Health Tracker User enters an invalid email
-
-                // A new user registration: the Health Tracker User enters an email that is already in use by another account
-
-                // A new user registration: the Health Tracker User enters invalid health data.
-
-                
-
-
-                //GEORGE - DO THIS ONE PLS
-                // A new user registration: the Health Tracker User enters health data that suggests a deviation from the norm 
-
-
-
-                console.log("\nACCOUNT CREATION TESTS PASSED\n");
-
-
-
-                console.log("\nA user logs in - a user logs in with valid details");
-                //assert(this.checkLogin("unitTest", "test"));
-
-                console.log("\nLOGIN TESTS PASSED\n")
-
-
-
-
-            //Goals
-
-                // A user creates a goal: the Health Tracker User creates a valid goal.
-
-                // A user creates a goal: the Health Tracker User enters an invalid weight goal.
-
-                // A user creates a goal: the Health Tracker User enters an invalid distance goal.
-
-                // A user creates a goal: the Health Tracker User does not enter a goal name.
-
-            
-                
-            
-            //Exercise
-
-                // A user records an exercise: Valid recording of exercise.
-
-                // A user records an exercise: The Health Tracker User enters an invalid duration.
-
-                // A user records an exercise: The Health Tracker User enters an invalid distance.
-
-
-
-            
-            //Meal
-
-                // A user records a meal: The Health Tracker User records a valid meal with food from a predefined list
-
-                // A user records a meal: The Health Tracker User records a valid meal by defining a new custom food item.
-
-                // A user records a meal: The Health Tracker User enters invalid new food item
-
-                // A user records a meal: The Health Tracker User enters an invalid serving size
-
-
-
-        
-
-
-
-        //Second Sprint Test Cases
-
-            //Groups
-
-                //The Health Tracker User validly joins a group
-
-                // A user joins a group: The Health Tracker User tries to join a group with invalid details
-
-                // A user joins a group: The Health Tracker User tries to join a group they are already in
-
-                // A user leaves a group: the Health Tracker User leaves their group.
-
-                // A user creates a group: The Health Tracker User creates a valid group
-
-                // A user creates a group: The Health Tracker User tries to create a group with a non-unique name.
-
-                // A user adds members: The Health Tracker User tries to add an invalid member
-            
-
-
-
-            // Group Goals
-
-                // A user creates a group goal: The Health Tracker User creates a valid group goal.
-
-                // A user creates a group goal: The Health Tracker tries to create an invalid group goal.
-
-                // A user completes a group goal: The Health Tracker user logs exercise that completes a group goal.
-
-            
-
-
-            // Goals
-
-                //  A user’s goal expires: the Health Tracker User logs in when their goal has expired.
-
-
-            
-
-
-
-
-
-
-
-
-
-
-    }
 }
 
 module.exports = { Interface };

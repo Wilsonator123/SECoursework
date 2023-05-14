@@ -35,6 +35,7 @@ export default function App({ setToken }) {
                     </div>
                     <div class="kms">
                     <p class="button-text">{currentForm ? "Already have an account?" : "Don't have an account yet? "}
+                    <br/>
                     <button class="login-btn" onClick = {toggleForm}>
                         {currentForm ? "Login" : "Sign Up" }
                     </button>  

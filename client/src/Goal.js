@@ -249,6 +249,7 @@ export default function Home() {
                                 type="number"
                                 id="current"
                                 name="current"
+                                min="1"
                                 value={form.current}
                                 onChange={handleChange}
                             />
@@ -274,6 +275,7 @@ export default function Home() {
                                     type="text"
                                     id="name"
                                     name="name"
+                                    required
                                     onChange={handleChange}
                                     value={form.name}
                                 />
@@ -304,6 +306,7 @@ export default function Home() {
                                     type="number"
                                     id="target"
                                     name="target"
+                                    min="1"
                                     value={form.target}
                                     onChange={handleChange}
                                 />
@@ -330,6 +333,7 @@ export default function Home() {
                                     type="text"
                                     id="name"
                                     name="name"
+                                    required
                                     onChange={handleChange}
                                     value={form.name}
                                 />
@@ -355,13 +359,15 @@ export default function Home() {
                                 />
                             </label>
                             <label>
-                                Distance:
+                                Distance (m):
                                 <input
                                     type="number"
                                     id="target"
                                     name="target"
                                     value={form.target}
+                                    min="1"
                                     onChange={handleChange}
+
                                 />
                             </label>
                             <button class="submit-btn" type="submit">Submit goal</button>
