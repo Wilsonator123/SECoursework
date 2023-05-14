@@ -190,11 +190,14 @@ function GroupView(props) {
                     <GroupGoals owner={owner} group_id={props.group_id} />
                 </div>
 
-                <div class="groupBox3">
-                    <h3>Leave Group</h3>
-                    <button className="group-btn" onClick={leaveGroup}>
+                <div class="groupBox3"> 
+                
+                    <h3>Leave Group</h3> 
+                    <div class="center-btn">
+                    <button className="group-btn" onClick={leaveGroup}> 
                         Leave
-                    </button>
+                    </button> 
+                    </div>
                 </div>
             </div>
         </div>,

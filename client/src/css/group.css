@@ -30,17 +30,23 @@
 
 .groupBox2 {
     grid-column: 1;
-    background:#7EBB94;  
+    background:#7EBB94;   
+    text-align: center;
 }
 .groupBox3 {
     grid-column: 1 / span 2;
     background:#7EBB94;
 
-} 
+}  
+
+.groupBox2 h3{
+    text-align: left;
+    margin-bottom: 20px;
+}
 .groupBox2 h2{
     font-size: 30px; 
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 20px; 
 }
 .groupBox3 h3{
     font-size: 30px; 
@@ -182,6 +188,10 @@
     margin: 10px; 
     align-items: center;
 } 
+
+.group-form{
+    text-align: center;
+}
 
 
 
