@@ -107,7 +107,7 @@ function RecordExercise({ onClose }) {
         <div className="exercise-box">
             <button className="close-btn" onClick={handleClose}>
                 <i class="fa-solid fa-xmark fa-xl"></i>
-            </button>
+            </button> 
             <form class="exercise-form" onSubmit={handleSubmit}>
                 <label htmlFor="name">Name:</label>
                 <input
@@ -175,10 +175,13 @@ function RecordExercise({ onClose }) {
                     </div>
                 )}
 
-                <br />
+                <br /> 
+                <div className="center-btn">
                 <button class="exercise-btn" type="submit">
                     Record Exercise
-                </button>
+                </button>  
+                </div>
+
             </form>
         </div>,
 

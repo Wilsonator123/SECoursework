@@ -197,10 +197,10 @@ function GroupView(props) {
                         <GroupGoals owner={owner} group_id={props.group_id}/>
                     </div>
 
-
+{/* 
                     {owner && (<div class="groupBox5">
                         <h3>Create Goal</h3>
-                    </div>)}
+                    </div>)} */}
 
                     <div class="groupBox6">
                         <h3>Leave Group</h3>

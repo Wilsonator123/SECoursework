@@ -73,7 +73,7 @@ export default function NewFood({getFood}) {
     return (
         <div>
             <br/>
-            <h2>Add New Food:</h2>
+            <h2 className="add-food-btn">Add New Food:</h2>
         <form class="meal-form" onSubmit={handleSubmit}>
 
 
@@ -103,8 +103,9 @@ export default function NewFood({getFood}) {
             />
 
             <br/>
-
+            <div className="center-btn">
             <button class="food-btn" type="submit">Add Food</button>
+            </div>
 
             <p class="message">{foodMessage}</p>
 
