@@ -105,7 +105,14 @@ export default function GroupGoals(props) {
                 body: JSON.stringify(form),
             })
                 .then((res) => res.json())
-                .then((data) => console.log(data));
+                .then((data) => {console.log(data);
+                    if (!data){
+                        alert("Error creating Group Goal");
+                    }
+                });
+
+
+            
             getGoals();
         
     };
@@ -117,7 +124,7 @@ export default function GroupGoals(props) {
     }, []);
 
     return (
-        <div><div id="pageContainer">
+        <div><div id="pageContainer2">
 
             <div className="goalBox2">
             {props.owner && (<div className="goalBox-header">
@@ -130,7 +137,7 @@ export default function GroupGoals(props) {
                     </button>
                 </div>)}
                 {showExerciseGoalForm && (
-                    <form onSubmit={handleSubmit} className="goal-form">
+                    <form onSubmit={handleSubmit} className="exercisegoal-form">
                         <label>
                             Goal Name:
                             <input
@@ -159,15 +166,16 @@ export default function GroupGoals(props) {
                                 value={form.end} />
                         </label>
                         <label>
-                            Distance:
+                            Distance (m):
                             <input
                                 type="number"
                                 id="target"
                                 name="target"
+                                min="1"
                                 value={form.target}
                                 onChange={handleChange} />
                         </label>
-                        <button type="submit">Submit goal</button>
+                        <button className="submit-btn" type="submit">Submit goal</button>
                     </form>
                 )}
             </div>

@@ -93,7 +93,7 @@ export default function RecordWeight(props) {
         <h3>Record Weight</h3>
         <form class="group-form" onSubmit={handleRecordWeightSubmit}>
         <label htmlFor="weight">Weight (kg):</label>
-            <input
+            <input class ="input-box"
                 type="number"
                 id="weight"
                 name="weight"
@@ -122,7 +122,7 @@ export default function RecordWeight(props) {
     <div>
         <form class="group-form" onSubmit={handleWaitIntervalSubmit}>
         <label htmlFor="weight">Ask for a new weight in this many days:</label>
-            <input
+            <input class="input-box"
                 type="number"
                 id="waitInterval"
                 name="waitInterval"

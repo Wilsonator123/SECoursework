@@ -22,6 +22,7 @@ h1 {
     grid-column: 1 / span 2;
     display: flex;
     justify-content: center;
+    border: 2px solid #444444;
 }
 
 .exercise-form {
@@ -173,10 +174,10 @@ select {
 }
 
 .close-btn {
-    display: flex;
+    display: flex; 
     float: right;
-    justify-content: right;
     background: none;
     border: none;
-    padding: 10px;
+    padding: 10px; 
 }
+

@@ -1,6 +1,6 @@
 const dB = require("better-sqlite3");
 const fs = require("fs");
-var assert = require("assert");
+var assert = require('assert');
 const path = require("path");
 const { start } = require("repl");
 
@@ -20,12 +20,14 @@ class Interface {
             fs.readFileSync(path.join(__dirname, "ddl.sql"), "utf8")
         );
 
+
         //this.database.exec("DROP TABLE user");
     }
     /************************************************************************/
 
     /*********************************USER**********************************/
-
+    
+    
     getUser(id) {
         //Returns the user with the given id
         const stmt = this.database.prepare("SELECT * FROM user WHERE id = ?");
@@ -33,8 +35,8 @@ class Interface {
         return info;
     }
 
-    recordWeight(body) {
-        const { id, weight } = body;
+    recordWeight(body){
+        const {id, weight} = body;
         const stmt = this.database.prepare(
             "UPDATE user SET weight = ? WHERE id = ?"
         );
@@ -72,7 +74,7 @@ class Interface {
 
     createUser(body, img) {
         //console.log("Body :" + body);
-
+        
         //Creates a new user
         const {
             username,
@@ -87,6 +89,8 @@ class Interface {
             dob,
         } = body;
 
+        
+        
         if (
             username === "" ||
             firstname === "" ||
@@ -101,7 +105,7 @@ class Interface {
         ) {
             return false;
         }
-
+        
         if (!this.checkEmail(email)) return false;
         if (!this.checkUsername(username)) return false;
         const stmt = this.database.prepare(
@@ -113,7 +117,7 @@ class Interface {
             firstname,
             lastname,
             gender,
-            crypto.createHash("md5").update(password).digest("hex"),
+            crypto.createHash('md5').update(password).digest('hex'),
             email,
             weight,
             height,
@@ -147,10 +151,7 @@ class Interface {
             const stmt = this.database.prepare(
                 "SELECT id FROM user WHERE email = ? AND password = ?"
             );
-            const info = stmt.all(
-                login,
-                crypto.createHash("md5").update(password).digest("hex")
-            );
+            const info = stmt.all(login, crypto.createHash('md5').update(password).digest('hex'));
             if (info.length === 0)
                 return false; //If email and password do not match
             else return info[0].id; //If email and password match
@@ -161,10 +162,7 @@ class Interface {
                 "SELECT * FROM user WHERE username = ? AND password = ?"
             );
 
-            const info = stmt.all(
-                login,
-                crypto.createHash("md5").update(password).digest("hex")
-            );
+            const info = stmt.all(login, crypto.createHash('md5').update(password).digest('hex'));
             if (info.length === 0)
                 return false; //If username and password do not match
             else return info[0].id; //If username and password match
@@ -268,7 +266,6 @@ class Interface {
             "SELECT exercise.name, activity.name AS type, time, distance, date FROM exercise JOIN activity on exercise.type=activity.id WHERE user_id = ? ORDER BY date ASC, exercise.id ASC"
         );
         const info = stmt.all(id);
-
         return info;
     }
 
@@ -297,11 +294,12 @@ class Interface {
         );
         const info2 = stmt2.all(activity);
         const type = info2[0].type;
-
+        
         if (result.changes !== 0 && type === 1) this.updateEGoal(id, distance);
         return result;
     }
     /************************************************************************/
+
 
     /********************************MEALS********************************/
     getUserMeals(body) {
@@ -365,6 +363,7 @@ class Interface {
             "SELECT * FROM food WHERE (createdBy = ? OR createdBy = 0) AND LOWER(name) LIKE ? ORDER BY name ASC LIMIT 6"
         );
         const info = stmt.all(body.id, `%${body.food}%`);
+        console.log(info);
         return info;
     }
 
@@ -406,6 +405,7 @@ class Interface {
     }
 
     getCalories(food, foodAmount, drink, drinkAmount) {
+
         var foodCalories = 0;
         var drinkCalories = 0;
 
@@ -414,9 +414,6 @@ class Interface {
                 "SELECT calories FROM food WHERE name = ?"
             );
             let data = stmt.get(food);
-            if (data === undefined) {
-                return false;
-            }
             foodCalories = (data.calories * foodAmount) / 100;
         }
         if (drink !== "") {
@@ -424,9 +421,6 @@ class Interface {
                 "SELECT calories FROM drink WHERE name = ?"
             );
             let data = stmt.get(drink);
-            if (data === undefined) {
-                return false;
-            }
             drinkCalories = (data.calories * drinkAmount) / 100;
         }
         return foodCalories + drinkCalories;
@@ -434,11 +428,9 @@ class Interface {
 
     checkFood(body) {
         const { food } = body;
-
         const stmt = this.database.prepare("SELECT * FROM food WHERE name = ?");
         const info = stmt.get(food);
-        console.log(info);
-        if (info === undefined) {
+        if (info.length === 0) {
             return false;
         }
         return true;
@@ -450,7 +442,7 @@ class Interface {
             "SELECT * FROM drink WHERE name = ?"
         );
         const info = stmt.get(drink);
-        if (info === undefined) {
+        if (info.length === 0) {
             return false;
         }
         return true;
@@ -477,7 +469,7 @@ class Interface {
             drink,
             drinkAmount,
         } = body;
-        console.log(body);
+
         if (
             user_id === "" ||
             name === "" ||
@@ -491,29 +483,23 @@ class Interface {
         var calories = this.getCalories(food, foodAmount, drink, drinkAmount);
 
         const date = new Date().toISOString().slice(0, 10);
-        if (
-            this.checkDrink({ drink: drink }) &&
-            this.checkFood({ food: food })
-        ) {
-            const stmt = this.database.prepare(
-                "INSERT INTO meal (name, mealType, date, user_id, food, foodAmount, drink, drinkAmount, calories) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-            );
 
-            const result = stmt.run(
-                name,
-                mealType,
-                date,
-                user_id,
-                food,
-                foodAmount,
-                drink,
-                drinkAmount,
-                calories
-            );
-            return true;
-        } else {
-            return false;
-        }
+        const stmt = this.database.prepare(
+            "INSERT INTO meal (name, mealType, date, user_id, food, foodAmount, drink, drinkAmount, calories) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        );
+
+        const result = stmt.run(
+            name,
+            mealType,
+            date,
+            user_id,
+            food,
+            foodAmount,
+            drink,
+            drinkAmount,
+            calories
+        );
+        return true;
     }
     /************************************************************************/
 
@@ -539,13 +525,14 @@ class Interface {
 
     createGroup(body) {
         const { user_id, name } = body;
-
+        
         if (user_id === "" || name === "") {
             return false;
         }
 
         //Checking the unique group name again
         if (!this.checkGroupName(name)) {
+            
             return false;
         }
 
@@ -554,7 +541,7 @@ class Interface {
         );
 
         const result = stmt.run(name, user_id);
-
+        
         const getIDstmt = this.database.prepare(
             "SELECT * from `group` WHERE name = ?"
         );
@@ -566,7 +553,7 @@ class Interface {
         );
 
         const result2 = stmt2.run(idResult, user_id);
-
+        
         return true;
     }
 
@@ -603,7 +590,7 @@ class Interface {
     sendGroupInvite(body) {
         //Emails a user about joining a group
         const { group_id, email } = body;
-
+        
         //First check if email in system:
         const stmt = this.database.prepare(
             "SELECT * from user WHERE email = ?"
@@ -621,8 +608,11 @@ class Interface {
         if (info2 === undefined) {
             //This is what we want, so just continue on
         } else if (info2.length !== 0) {
+            
             return { error: "User is already a member of this group" };
         }
+
+        
 
         //If all this is met, send an email.
 
@@ -640,12 +630,59 @@ class Interface {
         const mailOptions = {
             from: "se.healthtracker101@gmail.com",
             to: email,
-            subject: "Health Tracker: Join Group",
-            html: `<div>
-                    <p>You have been invited to join a group. Click</p>
-                    <a href="${groupPageUrl}">here</a>
-                    <p> to join. \nOtherwise, enter code: ${group_id}</p>
-                </div>`,
+            subject: "Health Tracker: Join Group", 
+            html: `
+            <head>  
+            <style>
+            @import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
+            * {
+                font-family: 'Cabin', sans-serif;
+            }
+        
+            .email-btn {
+                font-size: 25px;
+                background-color: #ebbb52;
+                border-radius: 8px;
+                border: 2px solid #444444;
+                color: #444444;
+                padding: 15px 15px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                text-align: center;
+                display: inline-block; 
+                text-decoration: none; 
+            }
+        
+            .email-container {
+                border: 3px solid #444444;
+                background-color: #7FACBF;
+                margin: 10px;
+                padding: 10px;
+                border-radius: 25px;
+                text-align: center;
+                margin-bottom: 30px;
+            }
+        
+            h1 {
+                font-size: 36px;
+                font-weight: 700;
+                margin-bottom: 25px;
+                color: #444444;
+                text-align: center;
+            }
+        
+            .email-goal {
+                text-align: left;
+            }
+            </style>
+            </head>
+            <body>
+            <div class="email-container">
+                <h1>You have been invited to join a Group!</h1>
+                <a class="email-btn" href="${groupPageUrl}">Join</a>
+                <h1>Otherwise, enter code: ${group_id}</h1>
+            </div>
+            </body>`,
         };
 
         //Sends our email
@@ -661,6 +698,13 @@ class Interface {
         return true;
     }
 
+
+
+
+
+
+
+
     //Multi purpose function for adding users to groups based on either clicking an email link or typing in hash code:
     acceptGroupInvite(body) {
         //Emails a user about joining a group
@@ -671,19 +715,21 @@ class Interface {
             "SELECT * from user WHERE email = ?"
         );
         const info = stmt.get(email);
-
+        
+        
         if (info === undefined) {
             return { error: "Account with that email not found" };
         }
 
         //Then check if group in system:
-
+        
         const stmt3 = this.database.prepare(
             "SELECT * from `group` WHERE id = ?"
         );
         const info3 = stmt3.get(group_id);
-
+        
         if (info3 === undefined) {
+            
             return { error: "Group not found" };
         }
 
@@ -700,8 +746,11 @@ class Interface {
             return { error: "User is already a member of this group" };
         }
 
+
+
         //Check the userID matches the current account logged in
         if (userID != user_id) {
+            
             return { error: "Not logged in as the right user to accept this" };
         }
 
@@ -714,49 +763,58 @@ class Interface {
         return true;
     }
 
+
     //Additional functionality needed when adding user by a code - need to get their email first
-    addUserViaCode(body) {
-        const { user_id, group_id } = body;
+    addUserViaCode(body){
+            const { user_id, group_id } = body;
+    
+            //Get users email
+            const stmt5 = this.database.prepare(
+                "SELECT email from user WHERE id = ?"
+            );
+            const info5 = stmt5.get(user_id);
+            
+            if (info5 === undefined) {
+                return { error: "Account with that email not found" };
+            }
 
-        //Get users email
-        const stmt5 = this.database.prepare(
-            "SELECT email from user WHERE id = ?"
-        );
-        const info5 = stmt5.get(user_id);
-
-        if (info5 === undefined) {
-            return { error: "Account with that email not found" };
+            const body2 = ({ group_id: group_id, email: info5.email, user_id: user_id })
+            
+            return this.acceptGroupInvite(body2);
+    
         }
 
-        const body2 = {
-            group_id: group_id,
-            email: info5.email,
-            user_id: user_id,
-        };
-
-        return this.acceptGroupInvite(body2);
-    }
-
+    
+    
     //Checks if user is owner of group or not - if so, they see the group modification details. If not, they get the member view
-    checkOwner(body) {
+    checkOwner(body){
         const { group_id, user_id } = body;
+        
 
         //Get users email
         const stmt = this.database.prepare(
             "SELECT * from `group` WHERE owner_id = ? AND id = ?"
         );
         const info = stmt.get(user_id, group_id);
+        
 
         if (info === undefined) {
+            
             return false;
-        } else {
+        }
+
+        else {
+
             return true;
         }
     }
 
+
+
     //Remove a non-owner from a group, or an owner if the group only has one member
-    leaveGroup(body) {
+    leaveGroup(body){
         const { group_id, user_id } = body;
+        
 
         //If user is owner and group size is 1, allow them to leave. Otherwise, dont.
         //If user is NOT the owner, allow them to leave
@@ -764,6 +822,7 @@ class Interface {
             "SELECT * from `group` WHERE owner_id = ? AND id = ?"
         );
         const info = stmt.get(user_id, group_id);
+        
 
         if (info === undefined) {
             const stmt2 = this.database.prepare(
@@ -771,32 +830,43 @@ class Interface {
             );
             stmt2.run(user_id, group_id);
 
+
             return true;
-        } else {
+        }
+
+        else{
+            
             const stmt3 = this.database.prepare(
                 "SELECT COUNT(*) FROM group_user WHERE group_id = ?"
-            );
+            )
             const info3 = stmt3.get(group_id);
-
+            
             //If only one member left in group remove them and delete group
 
-            if (info3["COUNT(*)"] <= 1) {
+            if(info3['COUNT(*)'] <= 1){
+                
                 const stmt4 = this.database.prepare(
                     "DELETE from group_user WHERE user_id = ? AND group_id = ?"
                 );
                 stmt4.run(user_id, group_id);
 
+                
                 //Deletes the group
                 const stmt5 = this.database.prepare(
                     "DELETE from `group` WHERE id = ?"
                 );
                 stmt5.run(group_id);
                 return true;
-            } else {
+            }
+            else{
+                
                 return false;
             }
         }
     }
+
+
+
 
     /*********************************GOALS**********************************/
     createGoal(body) {
@@ -842,6 +912,7 @@ class Interface {
 
     updateEGoal(id, distance) {
         //user_id
+
 
         const stmt = this.database.prepare(
             "SELECT * from goal WHERE user_id = ? AND goalType = 'exercise' AND status = 'ACTIVE'"
@@ -940,72 +1011,174 @@ class Interface {
         return info;
     }
 
+
+
     // for finishing a goal - does an extra check on group goals to see if emails need to be checked
     finishGoal(id) {
+
         //Get all goals that are about to be completed.
         const stmt2 = this.database.prepare(
             "SELECT * FROM goal WHERE user_id = ? AND target <= current AND status = 'ACTIVE'"
         );
         const result2 = stmt2.all(id);
 
-        result2.forEach((goal) => {
+        result2.forEach(goal => {
+
             //If part of a group, send email to all users in group
-            if (goal.group_id !== null) {
+            if (goal.group_id !== null){
+
                 //Get details about group
                 const stmt3 = this.database.prepare(
                     "SELECT * FROM `group` WHERE id = ?"
-                );
+                )
                 const result3 = stmt3.all(goal.group_id);
+
 
                 const stmt2 = this.database.prepare(
                     "SELECT * FROM user JOIN group_user on user.id = group_user.user_id WHERE group_user.group_id = ?"
                 );
                 const info = stmt2.all(goal.group_id);
 
-                info.forEach((user) => {
+                info.forEach(user => {
+
+
                     const transporter = nodemailer.createTransport({
                         service: "gmail",
                         auth: {
                             user: "se.healthtracker101@gmail.com",
                             pass: "btssdtghvfwpyiyo",
-                        },
+                        }
                     });
 
                     let mailOptions;
                     //If it is the user who completed the goal, tell them that
-                    if (user.user_id === goal.user_id) {
+                    if (user.user_id === goal.user_id){
                         mailOptions = {
                             from: "se.healthtracker101@gmail.com",
                             to: user.email,
-                            subject:
-                                "Health Tracker: You completed a Group Goal",
-                            html: `<div>
-                                    <p>You have completed a goal for ${result3[0].name}</p>
-                                    <p>Details:</p>
-                                    <p>Goal Name: ${goal.name}</p>
-                                    <p>Goal Type: ${goal.goalType}</p>
-                                    <p>Target: ${goal.target}</p>
-                                </div>`,
+                            subject: "Health Tracker: You completed a Group Goal",
+                            html: `
+                            <head>
+                            <style>  
+                            @import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
+                            *{
+                                font-family: 'Cabin', sans-serif;
+                            }
+                            
+                            .email-btn{
+                                font-size: 25px;
+                                background-color: #ebbb52;
+                                border-radius: 8px;
+                                border: 2px solid #444444;
+                                color: #444444;
+                                padding: 15px 15px;
+                                margin-top: 20px;
+                                margin-bottom: 20px;
+                                margin-left: 35%;
+                                text-align: center;
+                            }
+                            
+                            .email-container {
+                                border: 3px solid #444444;
+                                background-color: #7FACBF;
+                                margin: 10px;
+                                padding: 10px;
+                                border-radius: 25px;
+                                text-align: center;
+                                margin-bottom: 30px;
+                            }
+                            
+                            h1 {
+                                font-size: 36px;
+                                font-weight: 700;
+                                margin-bottom: 25px;
+                                color: #444444;
+                                text-align: center;
+                            }
+                            
+                            .email-goal{
+                                text-align: left;
+                            }
+                            </style>
+                            </head>  
+                            <body>
+                            <div class="email-container">
+                                    <h1>You have completed a goal for ${result3[0].name}</h1>
+                                    <div class="email-goal">
+                                    <h2>Details:</h2>
+                                    <h3>Goal Name: ${goal.name}</h3>
+                                    <h3>Goal Type: ${goal.goalType}</h3>
+                                    <h3>Target: ${goal.target}</h3>
+                                    </div>
+                                </div> 
+                                </body>`,
                         };
                     }
+
 
                     //Otherwise, notify that another user has completed the goal.
-                    else {
-                        mailOptions = {
-                            from: "se.healthtracker101@gmail.com",
-                            to: user.email,
-                            subject:
-                                "Health Tracker: A Group Member completed a Group Goal",
-                            html: `<div>
-                                <p>${user.username} has completed a goal for ${result3[0].name}</p>
-                                <p>Details:</p>
-                                <p>Goal Name: ${goal.name}</p>
-                                <p>Goal Type: ${goal.goalType}</p>
-                                <p>Target: ${goal.target}</p>
-                            </div>`,
-                        };
+                    else {mailOptions = {
+                        from: "se.healthtracker101@gmail.com",
+                        to: user.email,
+                        subject: "Health Tracker: A Group Member completed a Group Goal",
+                        html: `
+                        <head>  
+                        <style>
+                        @import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
+                        *{
+                            font-family: 'Cabin', sans-serif;
+                        }
+            
+                        .email-btn{
+                            font-size: 25px;
+                            background-color: #ebbb52;
+                            border-radius: 8px;
+                            border: 2px solid #444444;
+                            color: #444444;
+                            padding: 15px 15px;
+                            margin-top: 20px;
+                            margin-bottom: 20px;
+                            margin-left: 35%;
+                            text-align: center;
+                        }
+            
+                        .email-container {
+                            border: 3px solid #444444;
+                            background-color: #7FACBF;
+                            margin: 10px;
+                            padding: 10px;
+                            border-radius: 25px;
+                            text-align: center;
+                            margin-bottom: 30px;
+                        }
+            
+                        h1 {
+                            font-size: 36px;
+                            font-weight: 700;
+                            margin-bottom: 25px;
+                            color: #444444;
+                            text-align: center;
+                        }
+            
+                        .email-goal{
+                            text-align: left;
+                        }
+                        </style>
+                        </head>  
+                        <body>
+                        <div class="email-container">
+                                <h1>${user.username} has completed a goal for ${result3[0].name}</h1>
+                                <div class="email-goal">
+                                <h2>Details:</h2>
+                                <h3>Goal Name: ${goal.name}</h3>
+                                <h3>Goal Type: ${goal.goalType}</h3>
+                                <h3>Target: ${goal.target}</h3>
+                                </div>
+                        </div>
+                        </body>`,
+                    };
                     }
-
+            
                     //Sends our email
                     transporter.sendMail(mailOptions, function (error, info) {
                         if (error) {
@@ -1015,10 +1188,17 @@ class Interface {
                             console.log("Email sent: " + info.response);
                             return true;
                         }
-                    });
+
                 });
+
+                });
+            
+
             }
+            
         });
+
+
 
         //Set all to completed after
         const stmt = this.database.prepare(
@@ -1028,9 +1208,18 @@ class Interface {
         return info;
     }
 
+
+
+
+
+
+
+
+
     getGroupGoals(body) {
         //Returns all group goals for a user
-        const { id, group_id } = body;
+        const { id, group_id } =
+        body;
         const stmt = this.database.prepare(
             "SELECT * FROM goal WHERE group_id = ? AND user_id = ? AND status = 'ACTIVE'"
         );
@@ -1038,10 +1227,13 @@ class Interface {
         return info;
     }
 
+
+
     createGroupGoal(body) {
         const { user_id, name, group_id, goalType, target, start, end, notes } =
             body;
-
+        
+        
         let current = body.current;
         if (
             name === "" ||
@@ -1050,12 +1242,16 @@ class Interface {
             start === "" ||
             end === ""
         ) {
+            
             return false;
         }
         if (!this.dateCheck(start, end)) return false;
         //Update User Profile
         current = 0;
 
+        
+
+        
         //GET A LIST OF ALL USERS IN GROUP
         const stmt2 = this.database.prepare(
             "SELECT * FROM user JOIN group_user on user.id = group_user.user_id WHERE group_user.group_id = ?"
@@ -1068,6 +1264,9 @@ class Interface {
         );
         const ownerID = stmt3.all(group_id);
 
+
+
+        
         //Prepares email stuff
         const transporter = nodemailer.createTransport({
             service: "gmail",
@@ -1076,6 +1275,7 @@ class Interface {
                 pass: "btssdtghvfwpyiyo",
             },
         });
+
 
         //Add admin goal first and get its id
         const stmt = this.database.prepare(
@@ -1093,12 +1293,12 @@ class Interface {
             end,
             notes
         );
-
+        
         const stmt5 = this.database.prepare(
             "SELECT id FROM goal WHERE user_id = ? AND name = ? AND group_id = ? and goalType = ? and current = ? and target = ? and start = ? and end = ? and notes = ?"
         );
 
-        const result2 = stmt5.all(
+        const result2= stmt5.all(
             user_id,
             name,
             group_id,
@@ -1109,77 +1309,162 @@ class Interface {
             end,
             notes
         );
+        
 
         const ownerGoalID = result2[0].id;
 
-        const groupGoalPageUrl = `http://localhost:3000/Goal?id=${ownerGoalID}`;
 
+        const groupGoalPageUrl = `http://localhost:3000/Goal?id=${ownerGoalID}`;
+        
         //Loop through the users - group owner gets goal automatically added, everyone else gets a link.
-        info.forEach((user) => {
-            if (user.user_id == ownerID[0].owner_id) {
+        info.forEach(user => {
+            
+            
+            if (user.user_id == ownerID[0].owner_id){
                 //IF owner, pass here as already done
-            } else {
+                
+
+            }
+            else {
+                
+                
                 const mailOptions = {
                     from: "se.healthtracker101@gmail.com",
                     to: user.email,
                     subject: "Health Tracker: Add Group Goal",
-                    html: `<div>
-                            <p>You have been sent a goal from one of your groups. Click</p>
-                            <a href="${groupGoalPageUrl}">here</a>
-                            <p> to add it. \nOtherwise, enter code: ${ownerGoalID}</p>
-                        </div>`,
+                    html: ` 
+                    <head>  
+                    <style>
+                        @import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
+                        * {
+                            font-family: 'Cabin', sans-serif;
+                        }
+                
+                        .email-btn {
+                            font-size: 25px;
+                            background-color: #ebbb52;
+                            border-radius: 8px;
+                            border: 2px solid #444444;
+                            color: #444444;
+                            padding: 15px 15px;
+                            margin-top: 20px;
+                            margin-bottom: 20px;
+                            
+                            text-align: center;
+                        }
+                
+                        .email-container {
+                            border: 3px solid #444444;
+                            background-color: #7FACBF;
+                            margin: 10px;
+                            padding: 10px;
+                            border-radius: 25px;
+                            text-align: center;
+                            margin-bottom: 30px;
+                        }
+                
+                        h1 {
+                            font-size: 36px;
+                            font-weight: 700;
+                            margin-bottom: 25px;
+                            color: #444444;
+                            text-align: center;
+                        }
+                
+                        .email-goal {
+                            text-align: left;
+                        }
+                    </style>
+                </head> 
+                <body>
+                    <div class="email-container">
+                        <h1>You have been sent a goal from one of your groups</h1>
+                        <a class="email-btn" href="${groupGoalPageUrl}">Add</a>
+                        <h2>Otherwise, enter code: ${ownerGoalID}</h2> 
+                    </div>
+                </body>`,
                 };
-
+                
+        
                 //Sends our email
                 transporter.sendMail(mailOptions, function (error, info) {
                     if (error) {
                         console.log(error);
                         return false;
                     } else {
-                        return true;
+                        
+                        //return true;
                     }
                 });
             }
+
+
+    
+            
         });
 
         return true;
+
+
+        
     }
 
+
+
+
     //Can be used for both types of group goal adding
-    acceptGoalInvite(body) {
-        const { goal_id, user_id } = body;
+    acceptGoalInvite(body){
+        const { goal_id, user_id } =
+            body;
+        
+
+
 
         //Get goal which will be copied into the user
-        const stmt5 = this.database.prepare("SELECT * FROM goal WHERE id = ?");
+        const stmt5 = this.database.prepare(
+            "SELECT * FROM goal WHERE id = ?"
+        );
 
-        const result2 = stmt5.all(goal_id);
+        const result2= stmt5.all(
+            goal_id
+        );
+
+
+
 
         //Return an error if no goal found with the code.
-        if (result2.length === 0) {
-            return { error: "No goal found with this code." };
+        if (result2.length === 0){
+            return { error: "No goal found with this code." }
         }
+
 
         //Check if user is part of group. If not, disallow them from adding the goal
         const stmt6 = this.database.prepare(
             "SELECT * FROM group_user WHERE user_id = ? AND group_id = ?"
         );
-        const result6 = stmt6.all(user_id, result2[0].group_id);
+        const result6= stmt6.all(
+            user_id, result2[0].group_id
+        );
 
-        if (result6.length === 0) {
-            return { error: "You are not a member of this group." };
+        if (result6.length === 0){
+            return { error: "You are not a member of this group." }
         }
+
+
 
         //Disallow goal if out of date
-        if (result2[0].status !== "ACTIVE") {
-            return { error: "This group goal is no longer active." };
+        if (result2[0].status !== 'ACTIVE'){
+            return { error: "This group goal is no longer active." }
         }
+        
+
 
         //Check the user doesn't already have the goal. If so, return false with a message
         const stmt3 = this.database.prepare(
             "SELECT id FROM goal WHERE user_id = ? AND name = ? AND group_id = ? and goalType = ? and current = ? and target = ? and start = ? and end = ? and notes = ?"
         );
 
-        const result3 = stmt3.all(
+        const result3= stmt3.all(
             user_id,
             result2[0].name,
             result2[0].group_id,
@@ -1190,13 +1475,21 @@ class Interface {
             result2[0].end,
             result2[0].notes
         );
+        
 
-        if (result3.length !== 0) {
-            return {
-                error: "User already has this group goal on their account.",
-            };
+
+
+        if(result3.length !== 0){
+            return { error: "User already has this group goal on their account." }
         }
 
+
+
+       
+
+
+
+        
         //Add this goal to the user
         const stmt = this.database.prepare(
             "INSERT INTO goal (user_id, name, group_id, goalType, current, target, start, end, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
@@ -1217,6 +1510,8 @@ class Interface {
         return true;
     }
 
+
+    
     checkGroupGoals(id) {
         //NEED TO UPDATE FINISH GOALS TO SEND OUT EMAILS TO ALL MEMBERS IF GROUP ID IS NOT NULL
         this.finishGoal(id);
@@ -1228,6 +1523,12 @@ class Interface {
         stmt.run(id, date);
         return true;
     }
+
+
+
+
+
+
 
     estimateGoal(id) {
         //We need to use BMI to create a goal
@@ -1376,6 +1677,8 @@ class Interface {
             );
         }
     }
+
+
 }
 
 module.exports = { Interface };

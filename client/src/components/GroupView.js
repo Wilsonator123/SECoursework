@@ -149,11 +149,11 @@ function GroupView(props) {
         <div
             id="groupPageContainer"
         >
-            <div class="grid-container-group">
-
-
-                    <div class="groupBox1">
-                        <button onClick={props.onClose}>Close</button>
+            {/* <div class="grid-container-group">  */}
+            <div className="grid-container-group2"> 
+            
+                    <div class="groupBox2">
+                    
                         <h2>{props.name}</h2>
 
                         <h3>Members:</h3>
@@ -163,24 +163,17 @@ function GroupView(props) {
                                 <p>{user.firstname} {user.lastname}:    {user.username}</p>
                             </div>
                         ))}
+                        
 
 
 
                     </div>
-                    <br />
-                    <div class="groupBox1">
-                        <h3>Goals</h3>
-                        <GroupGoals owner={owner} group_id={props.group_id}/>
-                    </div>
-
-
-                    
-
-                    {owner && ( <div class="groupBox1">
+                    {owner && ( <div class="groupBox4">
+                    <button className="close-button" onClick={props.onClose}><i class="fa-solid fa-xmark fa-xl"></i></button>
                         <h3>Add User</h3>
                         <form class="group-form" onSubmit={handleAddUserSubmit}>
                         <label htmlFor="email">User Email:</label>
-                        <input
+                        <input className="input-box" 
                             type="email"
                             id="email"
                             name="email"
@@ -192,21 +185,23 @@ function GroupView(props) {
                         {addUserError && <p id="addUserError">{addUserError}</p>}
                         <br />
 
-                        <button class="group-btn" type="submit">
+                        <button className="group-btn" type="submit">
                             Add User
                         </button>
                     </form>
                     </div>)}
 
+                    <br />
+                    <div class="groupBox3">
+                        <h3>Goals</h3>
+                        <GroupGoals owner={owner} group_id={props.group_id}/>
+                    </div>
 
 
-                    {owner && (<div class="groupBox1">
-                        <h3>Create Goal</h3>
-                    </div>)}
 
-                    <div class="groupBox1">
+                    <div class="groupBox3">
                         <h3>Leave Group</h3>
-                        <button onClick={leaveGroup}>Leave</button>
+                        <button className="group-btn" onClick={leaveGroup}>Leave</button>
                     </div>
 
 
