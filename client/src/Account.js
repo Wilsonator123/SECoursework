@@ -6,6 +6,7 @@ import React, { useState, useEffect } from "react";
 
 export default function Account({ userID }) {
     //Used to get all exercises a user has done
+
     const [userExercises, setUserExercises] = useState([]);
     const [userMeals, setUserMeals] = useState([]);
     const [user, setUser] = useState([[]]);
@@ -15,7 +16,6 @@ export default function Account({ userID }) {
 
     //Used to get users id from session storage
     const tokenString = localStorage.getItem("token");
-
 
     const userToken = JSON.parse(tokenString);
 
@@ -134,7 +134,7 @@ export default function Account({ userID }) {
                 </div>
 
                 <div class="group-box">
-                   <RecordWeight />
+                    <RecordWeight />
                 </div>
                 <br />
                 <br />

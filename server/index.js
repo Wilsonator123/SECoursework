@@ -9,7 +9,7 @@ const https = require("https");
 const serverKey = fs.readFileSync("./key.pem");
 const serverCert = fs.readFileSync("./cert.pem");
 
-//import {testHarness} from './testHarness.js';
+
 
 const cors = require("cors");
 const multer = require("multer");
@@ -274,5 +274,3 @@ const sslServer = https.createServer({ key: serverKey, cert: serverCert }, app);
 app.listen(3001, () => {
     console.log("Server running on port 3001");
 });
-
-
