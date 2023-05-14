@@ -182,10 +182,10 @@ function DietForm({ onClose }) {
             }}
         >
             <div class="grid-container-diet">
-                <div class="dietBox1">
+                < div class="dietBox1"> 
                     <button className="close-btn" onClick={handleClose}>
                         <i class="fa-solid fa-xmark fa-xl"></i>
-                    </button>
+                    </button> 
                     <h2>Record Meal</h2>
                     <form class="meal-form" onSubmit={handleSubmit}>
                         <label htmlFor="name">Name:</label>
@@ -312,10 +312,11 @@ function DietForm({ onClose }) {
                         />
 
                         <br />
-
+                        <div className="center-btn">
                         <button class="meal-btn" type="submit">
                             Record Meal
-                        </button>
+                        </button> 
+                        </div>
                     </form>
                 </div>
                 <div class="dietBox2">

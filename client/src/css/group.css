@@ -36,6 +36,27 @@
     grid-column: 1 / span 2;
     background:#7EBB94;
 
+} 
+.groupBox2 h2{
+    font-size: 30px; 
+    text-align: center;
+    margin-bottom: 20px;
+}
+.groupBox3 h3{
+    font-size: 30px; 
+    text-align: center;
+    margin-bottom: 20px;
+}
+.groupBox4 h3{
+    font-size: 30px; 
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.groupBox6 h3{
+    font-size: 30px; 
+    text-align: center;
+    margin-bottom: 20px;
 }
 .groupBox4 {
     grid-column: 2;
@@ -48,10 +69,9 @@
     height: 400px;
 }
 .groupBox6 {
-    grid-column: 2;
-    background:#7FACBF;
-    width: 400px;
-    height: 400px;
+    grid-column: 1 / span 2;
+    background:#7FACBF; 
+    text-align: center;
 }
 
 .createGroup, .joinGroup {
