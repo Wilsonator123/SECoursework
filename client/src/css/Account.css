@@ -15,7 +15,8 @@
 }
 .profile-box h1 {
     text-align: center;
-    padding-top: 20px;
+    margin-bottom: 50px;  
+    margin-top: 10px;
 }
 
 .bmi-box{ 
@@ -40,12 +41,28 @@
     background-color: #7FACBF;
     grid-column: 1;
     border: 2px solid #444444;
+} 
+
+.exerciseHistory-box p{ 
+    font-size: 26px;
+} 
+
+.exerciseHistory-box h2{
+    font-size: 30px;
 }
 .mealHistory-box{
     background-color: #7EBB94;
     grid-column: 2;
-    border: 2px solid #444444;
+    border: 2px solid #444444; 
 
+} 
+
+.mealHistory-box h2{
+    font-size: 30px; 
+}
+
+.mealHistory-box p{
+    font-size: 26px;
 }
 
   .date-text{
@@ -89,6 +106,11 @@
 .text-bmi{
     text-align: center;
     font-size: 50px; 
-    padding: 40px 40px;  
+    padding: 50px 150px;  
     margin-top: 10%;
+}
+
+h2{
+    margin: 20px;
+    font-size: 30px;
 }

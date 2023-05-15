@@ -43,14 +43,14 @@ export default function Navbar() {
                             <li>
                                 <Link to="/Goal">Goals</Link>
                             </li>
-                            <li>
+                            <li>e
                                 <Link to="/Group">Groups</Link>
                             </li>
                             <li>
                                 <Link to="/Account">Account</Link>
                             </li>
                             <li>
-                                <Link onClick={handleLogout}>Logout</Link>
+                                <Link id="logout" onClick={handleLogout}>Logout</Link>
                             </li>
                         </ul>
                     </nav>

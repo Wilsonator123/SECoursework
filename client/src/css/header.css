@@ -66,6 +66,15 @@ header .header-left nav ul {
 } 
 .logo{
     color: #E8E7ED;
+} 
+
+#logout{
+    color:#ebbb52; 
+} 
+
+#logout a:hover, 
+#logout a.active{
+    color:#eb0c0c; 
 }
 nav ul li a {
     display: block;

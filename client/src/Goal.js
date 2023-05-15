@@ -268,7 +268,8 @@ export default function Home() {
                         </button>
                     </div>
                     {showDietGoalForm && (
-                        <form onSubmit={handleSubmit} className="goal-form">
+                        <form onSubmit={handleSubmit} className="goal-form"> 
+                        
                             <label>
                                 Goal Name:
                                 <input
@@ -312,6 +313,7 @@ export default function Home() {
                                 />
                             </label>
                             <button class="submit-btn" type="submit">Submit goal</button>
+                        
                         </form>
                     )}
                 </div>

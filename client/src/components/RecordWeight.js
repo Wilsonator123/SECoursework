@@ -90,7 +90,7 @@ export default function RecordWeight(props) {
     return (
 <div>
         <div>
-        <h3>Record Weight</h3>
+        <h2>Record Weight</h2>
         <form class="group-form" onSubmit={handleRecordWeightSubmit}>
         <label htmlFor="weight">Weight (kg):</label>
             <input class ="input-box"
