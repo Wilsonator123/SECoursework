@@ -21,16 +21,14 @@ export default function Navbar() {
         window.location.reload();
     };
 
-    
-
     return (
         <>
             <header>
                 <div class="header-left">
                     <div class="logo">
-                    <div class="logo">
-                        <img className="logo" src="./logo5.png" alt="" />
-                    </div>
+                        <div class="logo">
+                            <img className="logo" src="./logo5.png" alt="" />
+                        </div>
                     </div>
                     <nav>
                         <ul>
@@ -43,14 +41,16 @@ export default function Navbar() {
                             <li>
                                 <Link to="/Goal">Goals</Link>
                             </li>
-                            <li>e
+                            <li>
                                 <Link to="/Group">Groups</Link>
                             </li>
                             <li>
                                 <Link to="/Account">Account</Link>
                             </li>
                             <li>
-                                <Link id="logout" onClick={handleLogout}>Logout</Link>
+                                <Link id="logout" onClick={handleLogout}>
+                                    Logout
+                                </Link>
                             </li>
                         </ul>
                     </nav>

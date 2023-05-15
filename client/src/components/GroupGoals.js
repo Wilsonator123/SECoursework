@@ -42,7 +42,10 @@ export default function GroupGoals(props) {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ id: tokenString, group_id: props.group_id }),
+                body: JSON.stringify({
+                    id: tokenString,
+                    group_id: props.group_id,
+                }),
             }
         );
         const data = await response.json();
@@ -53,24 +56,18 @@ export default function GroupGoals(props) {
         }
     }
 
-
-
-
     const checkGoals = () => {
         fetch("http://localhost:3001/api/checkGroupGoals", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ id: userToken, group_id: props.group_id}),
+            body: JSON.stringify({ id: userToken, group_id: props.group_id }),
         })
             .then((res) => res.json())
             .then((data) => console.log(data))
             .catch((err) => console.log(err));
     };
-
-
-
 
     const handleExerciseGoalClick = () => {
         setForm({ ...form, goalType: "exercise", target: "" });
@@ -97,26 +94,23 @@ export default function GroupGoals(props) {
         setShowExerciseGoalForm(false);
 
         // Handle exercise goal form submission
-            fetch("http://localhost:3001/api/createGroupGoal", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(form),
-            })
-                .then((res) => res.json())
-                .then((data) => {console.log(data);
-                    if (!data){
-                        alert("Error creating Group Goal");
-                    }
-                });
+        fetch("http://localhost:3001/api/createGroupGoal", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(form),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                console.log(data);
+                if (!data) {
+                    alert("Error creating Group Goal");
+                }
+            });
 
-
-            
-            getGoals();
-        
+        getGoals();
     };
-
 
     useEffect(() => {
         checkGoals();
@@ -124,65 +118,76 @@ export default function GroupGoals(props) {
     }, []);
 
     return (
-        <div><div id="pageContainer2">
-
-            <div className="goalBox2">
-            {props.owner && (<div className="goalBox-header">
-                    <h2>Exercise</h2>
-                    <button
-                        onClick={handleExerciseGoalClick}
-                        className="form-btn"
-                    >
-                        {showExerciseGoalForm ? "-" : "+"}
-                    </button>
-                </div>)}
-                {showExerciseGoalForm && (
-                    <form onSubmit={handleSubmit} className="exercisegoal-form">
-                        <label>
-                            Goal Name:
-                            <input
-                                type="text"
-                                id="name"
-                                name="name"
-                                onChange={handleChange}
-                                value={form.name} />
-                        </label>
-                        <label>
-                            Start Date
-                            <input
-                                type="date"
-                                id="start"
-                                name="start"
-                                onChange={handleChange}
-                                value={form.start} />
-                        </label>
-                        <label>
-                            End Date
-                            <input
-                                type="date"
-                                id="end"
-                                name="end"
-                                onChange={handleChange}
-                                value={form.end} />
-                        </label>
-                        <label>
-                            Distance (m):
-                            <input
-                                type="number"
-                                id="target"
-                                name="target"
-                                min="1"
-                                value={form.target}
-                                onChange={handleChange} />
-                        </label>
-                        <button className="submit-btn" type="submit">Submit goal</button>
-                    </form>
-                )}
+        <div>
+            <div id="pageContainer2">
+                <div className="goalBox2">
+                    {props.owner && (
+                        <div className="goalBox-header">
+                            <h2>Exercise</h2>
+                            <button
+                                onClick={handleExerciseGoalClick}
+                                className="form-btn"
+                            >
+                                {showExerciseGoalForm ? "-" : "+"}
+                            </button>
+                        </div>
+                    )}
+                    {showExerciseGoalForm && (
+                        <form
+                            onSubmit={handleSubmit}
+                            className="exercisegoal-form"
+                        >
+                            <label>
+                                Goal Name:
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    onChange={handleChange}
+                                    value={form.name}
+                                />
+                            </label>
+                            <label>
+                                Start Date
+                                <input
+                                    type="date"
+                                    id="start"
+                                    name="start"
+                                    onChange={handleChange}
+                                    value={form.start}
+                                />
+                            </label>
+                            <label>
+                                End Date
+                                <input
+                                    type="date"
+                                    id="end"
+                                    name="end"
+                                    onChange={handleChange}
+                                    value={form.end}
+                                />
+                            </label>
+                            <label>
+                                Distance (km):
+                                <input
+                                    type="number"
+                                    id="target"
+                                    name="target"
+                                    min="1"
+                                    value={form.target}
+                                    onChange={handleChange}
+                                />
+                            </label>
+                            <button className="submit-btn" type="submit">
+                                Submit goal
+                            </button>
+                        </form>
+                    )}
+                </div>
             </div>
-        </div><div className="goal-Grid">
+            <div className="goal-Grid">
                 <GoalView goal={goal} props={getGoals} />
-            </div></div>
-        
-        
+            </div>
+        </div>
     );
 }
